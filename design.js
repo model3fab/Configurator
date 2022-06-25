@@ -1,0 +1,1 @@
+'{"parameters":[{"name":"largo","type":"cm","min":20,"max":400,"default"=120},{"name":"alto","type":"cm","min":40,"max":250,"default"=180},{"name":"profundidad","type":"cm","min":20,"max":120,"default"=60}]}'
