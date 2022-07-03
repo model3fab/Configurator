@@ -133,9 +133,9 @@ designObj = designArr["4cubo"];
 designObj = designArr["cubo"];
 designObj = designArr["cajon"];
 designObj = designArr["2cajoneras"];
-designObj = designArr["armario"];
 designObj = designArr["cajonera"];
 designObj = designArr["rotation"];
+designObj = designArr["armario"];
 
 materialsObj = JSON.parse(materialsStr);
 materialOptionsObj = JSON.parse(materialOptionsStr);
@@ -997,6 +997,8 @@ function ramp(a,b,c,d,t) {
                                 updateDesign.pieces[i].array[array_i].mesh=dot;
                                 if (node == null) debugger;
                                 node.add( dot );
+                                dot.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+
                                 
                             const addSceneCallback = prepareACallbackFunctionForLoader(node);
                             loader.load( 'models/legoCube/scene.gltf',   addSceneCallback, undefined, function ( error ) {
@@ -1022,6 +1024,7 @@ function ramp(a,b,c,d,t) {
                                 geometry.translate( 0.5, 0.5, 0.5 ) ;
                                 //geometry = new THREE.BoxGeometry( eval(updateDesign.pieces[i].lx), eval(updateDesign.pieces[i].ly), eval(updateDesign.pieces[i].lz));
                                 mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
 /*
                                 var group = new THREE.Group();
                                 group.add(mesh)
@@ -1066,12 +1069,12 @@ function ramp(a,b,c,d,t) {
                                 eval(updateDesign.pieces[i].ly), 
                                 eval(updateDesign.pieces[i].lz));
                                    
-                            updateDesign.pieces[i].array[array_i].mesh.rotation.x = 
-                                eval(updateDesign.pieces[i].rx) * Math.PI / 180.;
-                            updateDesign.pieces[i].array[array_i].mesh.rotation.y = 
-                                eval(updateDesign.pieces[i].ry) * Math.PI / 180.;
                             updateDesign.pieces[i].array[array_i].mesh.rotation.z = 
                                 eval(updateDesign.pieces[i].rz) * Math.PI / 180.;
+                            updateDesign.pieces[i].array[array_i].mesh.rotation.y = 
+                                eval(updateDesign.pieces[i].ry) * Math.PI / 180.;
+                            updateDesign.pieces[i].array[array_i].mesh.rotation.x = 
+                                eval(updateDesign.pieces[i].rx) * Math.PI / 180.;
 
                             
 /*
@@ -1352,7 +1355,7 @@ function readFile() {
 <br><a href=escene25.html>v 25</a> Load GLTF objects, forms to edit objects
 <br><a href=escene26.html>v 26</a> Forms to edit parameters. Save file
 <br><a href=escene27.html>v 27</a> Rotaciones desde el origen. Crear nuevo objeto y cambio de nombre
-<br><a href=escene28.html>v 28</a> Edición de materiales
+<br><a href=escene28.html>v 28</a> Rotation ZYX. Edición de materiales
 
   <script>
 document.write("parameters: " + designObj.parameters.length);
@@ -1370,6 +1373,7 @@ V- Duplicar objeto de colección
 V- Crear nuevo objeto
 - Editar materiales
 - Guardar materiales
+- Limpiar Collection de código
 
 
 -->
