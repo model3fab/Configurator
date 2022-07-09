@@ -145,26 +145,8 @@ function loadJSON() {
 <button onclick="readFile()">Read file</button>
 <br>
 <textarea ROWS=1 COLS=1 id='jsonObj'>
-{"materialsArr":{},"designArr":{
-"init":{"name":"init","parameters":[],"pieces":[]},
-
-"rotation":{"name":"rotation","parameters":[{"name":"lx","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"ly","type":"cm","min":"0","max":"200","step":"1","default":"50"},{"name":"lz","type":"cm","min":"0","max":"200","step":"1","default":"5"},{"name":"rx","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"ry","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"rz","type":"m","min":"0","max":"400","step":".5","default":"0"},{"name":"x","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"y","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"z","type":"cm","min":"-100","max":"400","step":".5","default":"0"},{"name":"sx","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sy","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz","type":"m","min":".1","max":"10","step":".1","default":"1"}],"pieces":[{"name":"p1","material":"plywood6","lx":"lx","ly":"ly","lz":"lz","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x","y":"y","z":"z"}]},
-
-"cubo":{"name":"cubo","parameters":[{"name":"largo","type":"cm","min":20,"max":400,"default":100},{"name":"alto","type":"cm","min":40,"max":250,"default":100},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"balda1_sub","type":"cm","min":0,"max":200,"default":100}],"pieces":[{"name":"cubo","material":"dice","lx":"largo","ly":"profundidad","lz":"alto","rx":0,"ry":0,"rz":0,"x":"0","y":"0","z":"balda1_sub"}]},
-
-
-"cajon":{"name":"cajon","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":10,"max":120,"default":30},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2}],"pieces":[{"name":"lado derecho","material":"plywood6","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","material":"plywood6","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","rx":0,"ry":0,"rz":0,"x":"largo-espesor","y":0,"z":"espesor"},{"name":"base","material":"kitchen_wood","lx":"largo","ly":"profundidad - espesor","lz":"espesor","rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"fondo","material":"plywood6","lx":"largo - espesor * 2","ly":"espesor","lz":"alto-espesor","rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"espesor"},{"name":"frente","material":"plywood6","lx":"largo","ly":"espesor","lz":"alto","rx":0,"ry":0,"rz":0,"x":"0","y":"profundidad - espesor","z":"0"},{"name":"tirador","material":"kitchen_wood","lx":"largo/10","ly":"espesor","lz":"alto/10","rx":0,"ry":0,"rz":0,"x":"largo/2-largo/10/2","y":"profundidad","z":"alto/2"}]},
-
-"cajonera":{"name":"cajonera","parameters":[{"name":"largo","type":"cm","min":20,"max":400,"default":100},{"name":"alto","type":"cm","min":40,"max":250,"default":200},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"name":"cajones","type":"m","min":0,"max":20,"default":2},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","material":"dice","subsystem":"cajon","parameters":[{"name":"largo","default":"largo"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"espesor"},{"name":"profundidad","default":"profundidad"}],"array_size":"cajones","lx":"1","ly":"1","lz":"1","rx":0,"ry":0,"rz":0,"x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},
-
-
-"marco":{"name":"marco","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":"1","max":"10","step":".2","default":"2"},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2}],"pieces":[{"name":"lado derecho","material":"plywood6","lx":"espesor","ly":"profundidad","lz":"alto","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"0","y":"0","z":"0"},{"name":"lado izquierdo","material":"plywood6","lx":"espesor","ly":"profundidad","lz":"alto","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor","y":"0","z":"0"},{"name":"base","material":"plywood6","lx":"largo-espesor*2","ly":"profundidad","lz":"espesor","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"0"},{"name":"alto","material":"plywood6","lx":"largo - espesor * 2","ly":"profundidad","lz":"espesor","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"alto-espesor"},{"name":"panel","material":"glass2","lx":"largo-espesor","ly":"profundidad/2","lz":"alto-espesor","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor/2","y":"profundidad/2","z":"espesor/2"},{"name":"tirador","material":"kitchen_wood","lx":"espesor/2","ly":".015","lz":"0.03","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor*.75","y":"profundidad","z":"alto/2"}]},
-
-"components":{"name":"components","parameters":[{"name":"lx","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"ly","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"lz","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"rx","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"ry","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"rz","type":"m","min":"0","max":"400","step":".5","default":"0"},{"name":"x","type":"cm","min":"-300","max":"400","step":"1","default":"0"},{"name":"y","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"z","type":"cm","min":"-100","max":"400","step":".5","default":"0"},{"name":"sx","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sy","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz","type":"m","min":".1","max":"10","step":".1","default":"1"}],"pieces":[{"name":"p1","type":"Cylinder","rt":"lx/2","rb":"ly/2","lz":"lz","material":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90 + rx","ry":"ry","rz":"rz","x":"x","y":"y","z":"z + lz/2"},{"name":"p1","type":"Box","lx":"lx","ly":"ly","lz":"lz","material":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x + 1.2","y":"y","z":"z"},{"name":"triangle","type":"Triangle","b":"lx","h":"ly","d":"0.3","lz":"lz","material":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"2.4+x","y":"y","z":"z"}]},
-
-"armario":{"name":"armario","parameters":[{"name":"largo_m1","type":"cm","min":20,"max":400,"default":60},{"name":"largo_modulo_cajones","type":"cm","min":20,"max":400,"default":60},{"name":"alto","type":"cm","min":40,"max":250,"default":180},{"name":"profundidad","type":"cm","min":20,"max":120,"default":60},{"name":"espesor","type":"cm","min":1,"max":12,"default":4},{"name":"espesor_cajon","type":"cm","min":1,"max":12,"default":2},{"name":"balda1","type":"cm","min":0,"max":200,"default":30},{"name":"balda_caj","type":"cm","min":0,"max":200,"default":0},{"name":"altura_cajonera","type":"m","min":0,"max":100,"default":60},{"name":"espaciado_vert","type":"cm","min":0,"max":10,"default":1},{"name":"espaciado_hor","type":"cm","min":0,"max":10,"default":1},{"name":"modulos","type":"m","min":0,"max":10,"default":3},{"name":"cajones","type":"m","min":0,"max":20,"default":6},{"name":"tiempo","type":"m","min":0,"max":300,"default":0}],"pieces":[{"name":"objeto gltf","type":"Gltf","url":"models/legoCube/scene.gltf","material":"plywood6","sx":".1","sy":".1","sz":".1","rx":"90","ry":"0","rz":"0","x":"largo_m1*0.3","y":"profundidad/2","z":"balda1+espesor+0.0215"},{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + largo_modulo_cajones * (array_i + 1)-espesor","y":0,"z":"espesor"},{"name":"centro","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"tapa","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"0","z":"alto-espesor"},{"name":"fondo","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"espesor","lz":"alto","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"-espesor","z":"0"},{"name":"balda","type":"Box","lx":"largo_m1-espesor*2","ly":"profundidad","lz":"espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"balda1"},{"name":"balda cajones","type":"Box","lx":"largo_modulo_cajones-espesor","ly":"profundidad","lz":"espesor","material":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + array_i*(largo_modulo_cajones)","y":0,"z":"(alto - 2*espesor)*altura_cajonera/100 + + espesor + espaciado_vert + balda_caj"},{"name":"cajoneras","type":"Module","subsystem":"cajonera","parameters":[{"name":"largo","default":"largo_modulo_cajones - espesor - espaciado_hor*2"},{"name":"alto","default":"(alto - 2*espesor)*altura_cajonera/100"},{"name":"profundidad","default":"profundidad - espesor"},{"name":"espaciado","default":"espaciado_vert"},{"name":"espesor","default":"espesor_cajon"},{"name":"cajones","default":"cajones"},{"name":"tiempo","default":"tiempo"}],"material":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1+array_i*(largo_modulo_cajones)+espaciado_hor","y":"0","z":"espesor"},{"name":"puerta","type":"Module","subsystem":"marco","parameters":[{"name":"largo","default":"largo_m1"},{"name":"alto","default":"alto-espesor"},{"name":"profundidad","default":"espesor"},{"name":"espesor","default":"espesor*3"}],"material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"ramp(0,50,100,150,tiempo)*120","x":"0","y":"profundidad","z":"0"},{"name":"barra","type":"Cylinder","rt":"espesor/2","rb":"espesor/2","lz":"largo_m1 + largo_modulo_cajones * modulos","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"90","ry":"90","rz":"0","x":"(largo_m1 + largo_modulo_cajones * modulos)/2","y":"profundidad","z":"alto-espesor/2"}]}
-
-}}</textarea>
+{"materialsArr":{},"designArr":{"init":{"name":"init","parameters":[],"pieces":[]},"components":{"name":"components","parameters":[{"name":"lx","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"ly","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"lz","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"rx","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"ry","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"rz","type":"m","min":"0","max":"400","step":".5","default":"0"},{"name":"x","type":"cm","min":"-300","max":"400","step":"1","default":"0"},{"name":"y","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"z","type":"cm","min":"-100","max":"400","step":".5","default":"0"},{"name":"sx","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sy","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz","type":"m","min":".1","max":"10","step":".1","default":"1"}],"pieces":[{"name":"cilindro","type":"Cylinder","rt":"lx/2","rb":"ly/2","lz":"lz","material":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90 + rx","ry":"ry","rz":"rz","x":"x","y":"y","z":"z + lz/2"},{"name":"cubo","type":"Box","lx":"lx","ly":"ly","lz":"lz","material":"dice","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x + 1","y":"y","z":"z"},{"name":"triangle","type":"Triangle","b":"lx","h":"ly","d":"0.3","lz":"lz","material":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"2.4+x","y":"y","z":"z"},{"name":"prisma","type":"Extrude","shape_array":[["0","0"],["lx","0"],["0.8","ly"],[".2","1"]],"lz":"lz","material":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"-2","y":"y","z":"z"}]},"cajon_curva":{"name":"cajon_curva","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":10,"max":120,"default":30},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"rebaje_largo","type":"cm","min":"0.5","max":"20","default":"10"},{"name":"rebaje_alto","type":"cm","min":"0.5","max":"10","step":".2","default":"2"}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo","ly":"profundidad - espesor","lz":"espesor","material":"kitchen_wood","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"fondo","type":"Box","lx":"largo - espesor * 2","ly":"espesor","lz":"alto-espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"espesor"},{"name":"frente","type":"Extrude","shape_array":[["0","0"],["largo","0"],["largo","alto"],["largo-((largo-0.12-rebaje_largo)/2)","alto"],["largo-((largo-0.12-rebaje_largo)/2)-0.06","alto-rebaje_alto","largo-((largo-0.12-rebaje_largo)/2)-0.04","alto","largo-((largo-0.12-rebaje_largo)/2)-0.02","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)+0.06","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)","alto","((largo-0.12-rebaje_largo)/2)+0.02","alto-rebaje_alto","((largo-0.12-rebaje_largo)/2)+0.04","alto"],["0","alto"]],"lz":"espesor","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"90","ry":"0","rz":"0","x":"0","y":"profundidad","z":"0"},{"name":"tirador","type":"Box","lx":"largo/10","ly":"espesor","lz":"alto/10","material":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo/2-largo/10/2","y":"profundidad","z":"alto/2"}]},"cajonera":{"name":"cajonera","parameters":[{"name":"largo","type":"cm","min":20,"max":400,"default":100},{"name":"alto","type":"cm","min":40,"max":250,"default":200},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"name":"cajones","type":"m","min":0,"max":20,"default":2},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","subsystem":"cajon_curva","parameters":[{"name":"largo","default":"largo"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"espesor"},{"name":"profundidad","default":"profundidad"},{"name":"rebaje_largo","default":"largo/3"},{"name":"rebaje_alto","default":"(alto-espaciado*(cajones-1))/cajones/3"}],"material":"dice","array_size":"cajones","sx":1,"sy":1,"sz":1,"rx":"0","ry":"0","rz":"0","x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},"marco":{"name":"marco","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":"1","max":"10","step":".2","default":"2"},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"0","y":"0","z":"0"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor","y":"0","z":"0"},{"name":"base","type":"Box","lx":"largo-espesor*2","ly":"profundidad","lz":"espesor","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"0"},{"name":"alto","type":"Box","lx":"largo - espesor * 2","ly":"profundidad","lz":"espesor","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"alto-espesor"},{"name":"panel","type":"Box","lx":"largo-espesor","ly":"profundidad/2","lz":"alto-espesor","material":"glass2","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor/2","y":"profundidad/2","z":"espesor/2"},{"name":"tirador","type":"Box","lx":"espesor/2","ly":".015","lz":"0.03","material":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor*.75","y":"profundidad","z":"alto/2"}]},"armario":{"name":"armario","parameters":[{"name":"largo_m1","type":"cm","min":20,"max":400,"default":60},{"name":"largo_modulo_cajones","type":"cm","min":20,"max":400,"default":60},{"name":"alto","type":"cm","min":40,"max":250,"default":180},{"name":"profundidad","type":"cm","min":20,"max":120,"default":60},{"name":"espesor","type":"cm","min":1,"max":12,"default":4},{"name":"espesor_cajon","type":"cm","min":1,"max":12,"default":2},{"name":"balda1","type":"cm","min":0,"max":200,"default":30},{"name":"balda_caj","type":"cm","min":0,"max":200,"default":0},{"name":"altura_cajonera","type":"m","min":0,"max":100,"default":60},{"name":"espaciado_vert","type":"cm","min":0,"max":10,"default":1},{"name":"espaciado_hor","type":"cm","min":0,"max":10,"default":1},{"name":"modulos","type":"m","min":0,"max":10,"default":3},{"name":"cajones","type":"m","min":0,"max":20,"default":6},{"name":"tiempo","type":"m","min":0,"max":300,"default":0}],"pieces":[{"name":"objeto gltf","type":"Gltf","url":"models/legoCube/scene.gltf","material":"plywood6","sx":".1","sy":".1","sz":".1","rx":"90","ry":"0","rz":"0","x":"largo_m1*0.3","y":"profundidad/2","z":"balda1+espesor+0.0215"},{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + largo_modulo_cajones * (array_i + 1)-espesor","y":0,"z":"espesor"},{"name":"centro","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"tapa","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"0","z":"alto-espesor"},{"name":"fondo","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"espesor","lz":"alto","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"-espesor","z":"0"},{"name":"balda","type":"Box","lx":"largo_m1-espesor*2","ly":"profundidad","lz":"espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"balda1"},{"name":"balda cajones","type":"Box","lx":"largo_modulo_cajones-espesor","ly":"profundidad","lz":"espesor","material":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + array_i*(largo_modulo_cajones)","y":0,"z":"(alto - 2*espesor)*altura_cajonera/100 + + espesor + espaciado_vert + balda_caj"},{"name":"cajoneras","type":"Module","subsystem":"cajonera","parameters":[{"name":"largo","default":"largo_modulo_cajones - espesor - espaciado_hor*2"},{"name":"alto","default":"(alto - 2*espesor)*altura_cajonera/100"},{"name":"profundidad","default":"profundidad - espesor"},{"name":"espaciado","default":"espaciado_vert"},{"name":"espesor","default":"espesor_cajon"},{"name":"cajones","default":"cajones"},{"name":"tiempo","default":"tiempo"}],"material":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1+array_i*(largo_modulo_cajones)+espaciado_hor","y":"0","z":"espesor"},{"name":"puerta","type":"Module","subsystem":"marco","parameters":[{"name":"largo","default":"largo_m1"},{"name":"alto","default":"alto-espesor"},{"name":"profundidad","default":"espesor"},{"name":"espesor","default":"espesor*3"}],"material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"ramp(0,50,100,150,tiempo)*120","x":"0","y":"profundidad","z":"0"},{"name":"barra","type":"Cylinder","rt":"espesor/2","rb":"espesor/2","lz":"largo_m1 + largo_modulo_cajones * modulos","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"90","ry":"90","rz":"0","x":"(largo_m1 + largo_modulo_cajones * modulos)/2","y":"profundidad","z":"alto-espesor/2"}]}}}
+</textarea>
 <br>
 <button onclick="exportCollection()">Show JSON</button><a href='https://codebeautify.org/jsonviewer'>See JSON beautify</a><button onclick="loadJSON()">Load JSON</button>
 
@@ -644,6 +626,7 @@ function ramp(a,b,c,d,t) {
     typeProperties["Box"] = ["lx","ly", "lz"];
     typeProperties["Cylinder"] = ["rt","rb", "lz"];
     typeProperties["Triangle"] = ["b","h", "d", "lz"];
+    typeProperties["Extrude"] = ["shape_array", "lz"];
     /*
     <-->d
        /\      |h
@@ -660,6 +643,7 @@ function ramp(a,b,c,d,t) {
     pieceProperties["Box"]      = pieceProperties1.concat(typeProperties["Box"],      pieceProperties3);
     pieceProperties["Cylinder"] = pieceProperties1.concat(typeProperties["Cylinder"], pieceProperties3);
     pieceProperties["Triangle"] = pieceProperties1.concat(typeProperties["Triangle"], pieceProperties3);
+    pieceProperties["Extrude"]  = pieceProperties1.concat(typeProperties["Extrude"], pieceProperties3);
     pieceProperties["Gltf"]     = pieceProperties1.concat(typeProperties["Gltf"],     pieceProperties3);
     pieceProperties["Module"]   = pieceProperties1.concat(typeProperties["Module"],   pieceProperties3);
 
@@ -951,16 +935,21 @@ function ramp(a,b,c,d,t) {
                     propertyValue = objectElement[properties[j]];
                 }
             }
-            var divEl = document.createElement("DIV");
-            var span1El = document.createElement("SPAN");
-            var text1Node = document.createTextNode(propertyName);
-            divEl.appendChild(span1El);
-            span1El.appendChild(text1Node);
-            var span2El = document.createElement("INPUT");
-            span2El.setAttribute("id", propertyName);
-            span2El.value = propertyValue;
-            divEl.appendChild(span2El);
-            formEl.appendChild(divEl);
+            if (form_entity == "obj_piece" && propertyName == "shape_array") {
+                console.log("shape_array");
+                createShapeForm(propertyValue, formEl);
+            } else {
+                var divEl = document.createElement("DIV");
+                var span1El = document.createElement("SPAN");
+                var text1Node = document.createTextNode(propertyName);
+                divEl.appendChild(span1El);
+                span1El.appendChild(text1Node);
+                var span2El = document.createElement("INPUT");
+                span2El.setAttribute("id", propertyName);
+                span2El.value = propertyValue;
+                divEl.appendChild(span2El);
+                formEl.appendChild(divEl);
+            }
         }
         var buttonEl = document.createElement("BUTTON");
         buttonEl.setAttribute("onClick", "updateObject()");
@@ -974,6 +963,99 @@ function ramp(a,b,c,d,t) {
         formEl.appendChild(buttonCancelEl);
     }
     
+    var shapePoints;
+    function createShapeForm(propertyValue, parentDiv) {
+        shapePoints = 0;
+        var divEl = document.createElement("DIV");
+        divEl.setAttribute("id", "shapeForm");
+        parentDiv.appendChild(divEl);
+        divEl.appendChild(createPointOfShapeHeader());
+        if (propertyValue == null || propertyValue == "") {
+            createPointOfShapeForm(['','']);
+            createPointOfShapeForm(['','']);
+            createPointOfShapeForm(['','']);
+        } else {
+            for (var k =0; k< propertyValue.length; k++) {
+                createPointOfShapeForm(propertyValue[k]);
+            }
+        }
+        var buttonLineEl = document.createElement("BUTTON");
+        buttonLineEl.setAttribute("id", "addShapeLine");
+        buttonLineEl.setAttribute("onClick", "createPointOfShapeForm(['',''])");
+        var t = document.createTextNode("Add Line");
+        buttonLineEl.appendChild(t);
+        divEl.appendChild(buttonLineEl);
+        var buttonCurveEl = document.createElement("BUTTON");
+        buttonCurveEl.setAttribute("id", "addShapeCurve");
+        buttonCurveEl.setAttribute("onClick", "createPointOfShapeForm(['','','','','',''])");
+        var t = document.createTextNode("Add Curve");
+        buttonCurveEl.appendChild(t);
+        divEl.appendChild(buttonCurveEl);
+        
+        return divEl
+    }
+    function createPointOfShapeHeader() {
+        var divEl = document.createElement("DIV");
+        var span1El = document.createElement("SPAN");
+        var text1Node = document.createTextNode("Shape points");
+        span1El.appendChild(text1Node);
+        divEl.appendChild(span1El);
+        var span1El = document.createElement("SPAN");
+        var text1Node = document.createTextNode("X");
+        span1El.setAttribute("class", "pointHeader");
+        span1El.appendChild(text1Node);
+        divEl.appendChild(span1El);
+        var span2El = document.createElement("SPAN");
+        var text2Node = document.createTextNode("Y");
+        span2El.setAttribute("class", "pointHeader");
+        span2El.appendChild(text2Node);
+        divEl.appendChild(span2El);
+        return divEl
+    }
+    inputNames = ["x", "y", "c1x", "c1y","c2x","c2y"];
+    function createPointOfShapeForm(pointValue) {
+        shapePoints++;
+        var divEl = document.createElement("DIV");
+        var span1El = document.createElement("SPAN");
+        var text1Node = document.createTextNode("Point " + shapePoints);
+        span1El.appendChild(text1Node);
+        divEl.appendChild(span1El);
+        
+        for (i_point = 0; i_point < pointValue.length; i_point++) {
+            var spanXEl = document.createElement("INPUT");
+            point_id = inputNames[i_point] + "_" + shapePoints;
+            spanXEl.setAttribute("id", point_id);
+            spanXEl.setAttribute("class", "point");
+            spanXEl.value = pointValue[i_point];
+            divEl.appendChild(spanXEl);
+        }
+        
+/*
+        var spanXEl = document.createElement("INPUT");
+        point_id = "x_" + shapePoints;
+        spanXEl.setAttribute("id", point_id);
+        spanXEl.setAttribute("class", "x_point");
+        spanXEl.value = pointValue[0];
+        divEl.appendChild(spanXEl);
+        
+        var spanYEl = document.createElement("INPUT");
+        point_id = "y_" + shapePoints;
+        spanYEl.setAttribute("id", point_id);
+        spanYEl.setAttribute("class", "y_point");
+        spanYEl.value = pointValue[1];
+        divEl.appendChild(spanYEl);
+*/        
+        document.getElementById("shapeForm").appendChild(divEl);
+        buttonAdd = document.getElementById("addShapeLine");
+        if (buttonAdd != null) {
+            document.getElementById("shapeForm").appendChild(buttonAdd); // move to the end of the points
+        }
+        buttonAdd = document.getElementById("addShapeCurve");
+        if (buttonAdd != null) {
+            document.getElementById("shapeForm").appendChild(buttonAdd); // move to the end of the points
+        }
+        return divEl
+    }
     function addHiddenField(name, value) {
         var hiddenEl = document.createElement("INPUT");
         hiddenEl.setAttribute("id", name);
@@ -1013,19 +1095,25 @@ function ramp(a,b,c,d,t) {
 
         for (var j =0; j< properties.length; j++) {
             var propertyName  = properties[j];
-            field = document.querySelector("div#editObject #" + propertyName);
-            var propertyValue = null;
-            if (field != null) {
-                propertyValue  = 
-                field.value;
-            }
-            if (propertyValue != "") {  // not set void properties
-                if (propertyName == "parameters") {  // not update parameters 
-                    if (sys_formType != "N") {
-                        pieceObj[propertyName] = objectArray[sys_array]["parameters"];  // get the parameters from the original
+            if (sys_type == "sys_piece" && propertyName == "shape_array") {
+                console.log("updateObject shape_array");
+                shapeArray = readShapeArray();
+                pieceObj[propertyName] = shapeArray;
+            } else {
+                field = document.querySelector("div#editObject #" + propertyName);
+                var propertyValue = null;
+                if (field != null) {
+                    propertyValue  = 
+                    field.value;
+                }
+                if (propertyValue != "") {  // not set void properties
+                    if (propertyName == "parameters") {  // not update parameters 
+                        if (sys_formType != "N") {
+                            pieceObj[propertyName] = objectArray[sys_array]["parameters"];  // get the parameters from the original
+                        }
+                    } else {
+                        pieceObj[propertyName] = propertyValue;
                     }
-                } else {
-                    pieceObj[propertyName] = propertyValue;
                 }
             }
         }
@@ -1042,6 +1130,30 @@ function ramp(a,b,c,d,t) {
         } else {
             printModelTable(sys_object, designArr[sys_object]);
         }
+    }
+    function readShapeArray() {
+        shapeArray = [];
+        for (var k =1; k<= shapePoints; k++) {
+            point = [];
+            xValue = document.getElementById("x_" + k);
+            yValue = document.getElementById("y_" + k);
+            if (xValue != null && yValue != null && xValue.value != "" && yValue.value != "") {
+                point[0] = xValue.value;
+                point[1] = yValue.value;
+                // "c1x", "c1y","c2x","c2y"
+                c1xValue = document.getElementById("c1x_" + k);
+                if (c1xValue != null && c1xValue.value != "") point[2] = c1xValue.value;
+                c1yValue = document.getElementById("c1y_" + k);
+                if (c1yValue != null && c1yValue.value != "") point[3] = c1yValue.value;
+                c2xValue = document.getElementById("c2x_" + k);
+                if (c2xValue != null && c2xValue.value != "") point[4] = c2xValue.value;
+                c2yValue = document.getElementById("c2y_" + k);
+                if (c2yValue != null && c2yValue.value != "") point[5] = c2yValue.value;
+
+                shapeArray.push(point);
+            }
+        }
+        return shapeArray;
     }
     function cancelEdit() {
         var formEl = document.getElementById("editObject");
@@ -1231,8 +1343,51 @@ function ramp(a,b,c,d,t) {
                                    Number(eval(updateDesign.pieces[i].y)), 
                                    Number(eval(updateDesign.pieces[i].z)));
 
+// Extrude 
+                        } else if (updateDesign.pieces[i].type == 'Extrude') {
+                            if (!isMesh(updateDesign.pieces[i].array[array_i].mesh)) {
+                                console.log("Create Extrude geometry");
+                                
+                                const shape = new THREE.Shape();
+                                shape.moveTo( 0,0 );
+                                shape.lineTo( 0, 1 );
+                                shape.lineTo( 1, 0.5 );
+                                shape.lineTo( 0, 0 );
+
+                                const extrudeSettings = {
+                                    bevelEnabled: false
+                                };
+
+                                const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+                                mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                
+                                updateDesign.pieces[i].array[array_i].mesh=mesh;
+                                //updateDesign.pieces[i].array[array_i].mesh.b = 1.;
+                                updateDesign.pieces[i].array[array_i].mesh.shape_array = [];
+                                shape_array = updateDesign.pieces[i].shape_array;
+                                for (var k =0; k< shape_array.length; k++) {
+                                    updateDesign.pieces[i].array[array_i].mesh.shape_array[k] = [];
+                                    updateDesign.pieces[i].array[array_i].mesh.shape_array[k][0] = 0;
+                                    updateDesign.pieces[i].array[array_i].mesh.shape_array[k][1] = 0;
+                                }
+
+                                updateDesign.pieces[i].array[array_i].mesh.lz = 0.076;  // random number
+                                node.add( mesh );
+                            }
+                            // Position
+                            updateDesign.pieces[i].array[array_i].mesh.position.set(
+                                   Number(eval(updateDesign.pieces[i].x)),
+                                   Number(eval(updateDesign.pieces[i].y)), 
+                                   Number(eval(updateDesign.pieces[i].z)));
+
 // Box
                         } else {
+                            if (updateDesign.pieces[i].type != 'Box') {
+                                console.warn("type not defined for piece :" + i + " type: " + updateDesign.pieces[i].type);
+                                updateDesign.pieces[i].type = "Box";
+                            }
                             if (!isMesh(updateDesign.pieces[i].array[array_i].mesh)) {
                                 console.log("Create mesh geometry");
                                 geometry = new THREE.BoxGeometry( 1., 1., 1. );
@@ -1254,15 +1409,15 @@ function ramp(a,b,c,d,t) {
                                    Number(eval(updateDesign.pieces[i].z)));
 
                         }
-// Box
                         // Set default values if non exist
                         setDefaultValues(updateDesign.pieces[i]);
                         if (updateDesign.pieces[i].array[array_i].mesh != undefined) {
                             updateDesign.pieces[i].array[array_i].mesh.visible = true;
 
 
+                            // Box
                             if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
-                                updateDesign.pieces[i].array[array_i].mesh.geometry.type == "BoxGeometry") {
+                                updateDesign.pieces[i].type == "Box") {  // geometry.type == "BoxGeometry" We compare with pieces.type because different types can share same geometry.type
 
                                     lx = eval(updateDesign.pieces[i].lx);
                                     ly = eval(updateDesign.pieces[i].ly);
@@ -1280,134 +1435,7 @@ function ramp(a,b,c,d,t) {
                                         updateDesign.pieces[i].array[array_i].mesh.geometry =  new THREE.BoxGeometry(lx, ly, lz); 
                                         updateDesign.pieces[i].array[array_i].mesh.geometry.translate(lx/2, ly/2, lz/2);
                                     }
-                            }
-                                   
-                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
-                                updateDesign.pieces[i].array[array_i].mesh.geometry.type == "CylinderGeometry") {
-                                    rt = eval(updateDesign.pieces[i].rt);
-                                    rb = eval(updateDesign.pieces[i].rb);
-                                    lz = eval(updateDesign.pieces[i].lz);
-
-                                    if (updateDesign.pieces[i].array[array_i].mesh.rt != rt ||
-                                        updateDesign.pieces[i].array[array_i].mesh.rb != rb ||
-                                        updateDesign.pieces[i].array[array_i].mesh.lz != lz) {  // only create if theres is a change
-
-                                        updateDesign.pieces[i].array[array_i].mesh.rt = rt;
-                                        updateDesign.pieces[i].array[array_i].mesh.rb = rb;
-                                        updateDesign.pieces[i].array[array_i].mesh.lz = lz;
-
-                                        updateDesign.pieces[i].array[array_i].mesh.geometry.dispose();
-                                        updateDesign.pieces[i].array[array_i].mesh.geometry =  new THREE.CylinderGeometry(rt, rb, lz, 32); 
-                                        //updateDesign.pieces[i].array[array_i].mesh.geometry.translate(rt/2, rb/2, lz/2);
-                                        // Cylinder
-                                        if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
-                                            updateDesign.pieces[i].array[array_i].mesh.geometry.type == "CylinderGeometry") {
-                                            //scale texture
-                                            //we change the uv coordinates of the geometry, so the same texture can be applied to different faces and different pieces
-                                            //Float32Array(392) [0, 1, 0.03125, 1, ... 
-                                            uva= updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").array;
-                                            
-                                            /*
-                                            33     lateral v = 1
-                                            33  66 lateral v = 0
-                                            32 132 centro top
-                                            33 196 circulo
-                                            32 262 centro botttom
-                                            33 326 circulo
-                                               392
-                                            */
-                                            for (var iuv =0; iuv< 65; iuv = iuv + 2) {
-                                                uva[iuv]     *= rt * 2 * Math.PI;
-                                                uva[iuv + 1] *= lz;
-                                            }
-                                            for (var iuv =0; iuv< 65; iuv = iuv + 2) {
-                                                uva[66 + iuv]     *= rb * 2 * Math.PI;
-                                                //uva[66 + iuv + 1] *= lz;  // os 0
-                                            }
-                                            // circle top
-                                            for (var iuv =0; iuv< 65; iuv = iuv + 2) {
-                                                uva[196 + iuv]     = (uva[196 + iuv]-0.5)*rt*2+0.5;
-                                                uva[196 + iuv + 1] = (uva[196 + iuv + 1]-0.5)*rt*2+0.5;  // os 0
-                                            }
-                                            // circle bottom
-                                            for (var iuv =0; iuv< 65; iuv = iuv + 2) {
-                                                uva[326 + iuv]     = (uva[326 + iuv]-0.5)*rb*2+0.5;
-                                                uva[326 + iuv + 1] = (uva[326 + iuv + 1]-0.5)*rb*2+0.5;  // os 0
-                                            }
-
-                                            updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
-                                        }
-                                    }
-                            }
-                            
-                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
-                                updateDesign.pieces[i].array[array_i].mesh.geometry.type == "ExtrudeGeometry") {
-                                    b = eval(updateDesign.pieces[i].b);
-                                    h = eval(updateDesign.pieces[i].h);
-                                    d = eval(updateDesign.pieces[i].d);
-                                    lz = eval(updateDesign.pieces[i].lz);
-
-                                    if (updateDesign.pieces[i].array[array_i].mesh.b != b ||
-                                        updateDesign.pieces[i].array[array_i].mesh.h != h ||
-                                        updateDesign.pieces[i].array[array_i].mesh.d != d ||
-                                        updateDesign.pieces[i].array[array_i].mesh.lz != lz) {  // only create if theres is a change
-
-                                        updateDesign.pieces[i].array[array_i].mesh.b = b;
-                                        updateDesign.pieces[i].array[array_i].mesh.h = h;
-                                        updateDesign.pieces[i].array[array_i].mesh.d = d;
-                                        updateDesign.pieces[i].array[array_i].mesh.lz = lz;
-
-                                        updateDesign.pieces[i].array[array_i].mesh.geometry.dispose();
-                                        const shape = new THREE.Shape();
-                                        shape.moveTo( 0,0 );
-                                        shape.lineTo( b, 0);   
-                                        shape.lineTo( d, h );
-                                        shape.lineTo( 0, 0 );
-
-                                        const extrudeSettings = {
-                                            steps: 1,
-                                            depth: lz,
-                                            bevelEnabled: false
-                                        };
-
-                                        updateDesign.pieces[i].array[array_i].mesh.geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
-
-                                        mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
-                                        mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
-                                        
-                                        updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
-                                    }
-                            }
-
-                                   
-/*
- replace scale by update of BoxGeometry
-*/
-
-                            updateDesign.pieces[i].array[array_i].mesh.scale.set(
-                                eval(updateDesign.pieces[i].sx), 
-                                eval(updateDesign.pieces[i].sy), 
-                                eval(updateDesign.pieces[i].sz));
-
-                            updateDesign.pieces[i].array[array_i].mesh.rotation.z = 
-                                eval(updateDesign.pieces[i].rz) * Math.PI / 180.;
-                            updateDesign.pieces[i].array[array_i].mesh.rotation.y = 
-                                eval(updateDesign.pieces[i].ry) * Math.PI / 180.;
-                            updateDesign.pieces[i].array[array_i].mesh.rotation.x = 
-                                eval(updateDesign.pieces[i].rx) * Math.PI / 180.;
-
-                            
-/*
-                            updateDesign.pieces[i].array[array_i].mesh.position.x = 
-                                   Number(eval(updateDesign.pieces[i].x));
-                            updateDesign.pieces[i].array[array_i].mesh.position.y = 
-                                   Number(eval(updateDesign.pieces[i].y));
-                            updateDesign.pieces[i].array[array_i].mesh.position.z = 
-                                   Number(eval(updateDesign.pieces[i].z));                            
-*/
-                            // Box
-                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
-                                updateDesign.pieces[i].array[array_i].mesh.geometry.type == "BoxGeometry") {
+                                    
                                 //scale texture
                                 //we change the uv coordinates of the geometry, so the same texture can be applied to different faces and different pieces
                                 //Float32Array(48) [0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,
@@ -1451,7 +1479,189 @@ function ramp(a,b,c,d,t) {
                                 uva[ini + 3] = eval(updateDesign.pieces[i].ly);
                                 uva[ini + 6] = eval(updateDesign.pieces[i].lx);
                                 updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
+                                    
                             }
+                                   
+                            // Cylinder
+                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
+                                updateDesign.pieces[i].type == "Cylinder") {  // geometry.type == "CylinderGeometry"
+                                    rt = eval(updateDesign.pieces[i].rt);
+                                    rb = eval(updateDesign.pieces[i].rb);
+                                    lz = eval(updateDesign.pieces[i].lz);
+
+                                    if (updateDesign.pieces[i].array[array_i].mesh.rt != rt ||
+                                        updateDesign.pieces[i].array[array_i].mesh.rb != rb ||
+                                        updateDesign.pieces[i].array[array_i].mesh.lz != lz) {  // only create if theres is a change
+
+                                        updateDesign.pieces[i].array[array_i].mesh.rt = rt;
+                                        updateDesign.pieces[i].array[array_i].mesh.rb = rb;
+                                        updateDesign.pieces[i].array[array_i].mesh.lz = lz;
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.dispose();
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry =  new THREE.CylinderGeometry(rt, rb, lz, 32); 
+                                        //updateDesign.pieces[i].array[array_i].mesh.geometry.translate(rt/2, rb/2, lz/2);
+
+                                        //scale texture
+                                        //we change the uv coordinates of the geometry, so the same texture can be applied to different faces and different pieces
+                                        //Float32Array(392) [0, 1, 0.03125, 1, ... 
+                                        uva= updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").array;
+                                        
+                                        /*
+                                        33     lateral v = 1
+                                        33  66 lateral v = 0
+                                        32 132 centro top
+                                        33 196 circulo
+                                        32 262 centro botttom
+                                        33 326 circulo
+                                           392
+                                        */
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[iuv]     *= rt * 2 * Math.PI;
+                                            uva[iuv + 1] *= lz;
+                                        }
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[66 + iuv]     *= rb * 2 * Math.PI;
+                                            //uva[66 + iuv + 1] *= lz;  // os 0
+                                        }
+                                        // circle top
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[196 + iuv]     = (uva[196 + iuv]-0.5)*rt*2+0.5;
+                                            uva[196 + iuv + 1] = (uva[196 + iuv + 1]-0.5)*rt*2+0.5;  // os 0
+                                        }
+                                        // circle bottom
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[326 + iuv]     = (uva[326 + iuv]-0.5)*rb*2+0.5;
+                                            uva[326 + iuv + 1] = (uva[326 + iuv + 1]-0.5)*rb*2+0.5;  // os 0
+                                        }
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
+                                    }
+                            }
+                            // Triangle
+                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
+                                updateDesign.pieces[i].type == "Triangle") {  // geometry.type == "ExtrudeGeometry"
+                                    b = eval(updateDesign.pieces[i].b);
+                                    h = eval(updateDesign.pieces[i].h);
+                                    d = eval(updateDesign.pieces[i].d);
+                                    lz = eval(updateDesign.pieces[i].lz);
+
+                                    if (updateDesign.pieces[i].array[array_i].mesh.b != b ||
+                                        updateDesign.pieces[i].array[array_i].mesh.h != h ||
+                                        updateDesign.pieces[i].array[array_i].mesh.d != d ||
+                                        updateDesign.pieces[i].array[array_i].mesh.lz != lz) {  // only create if theres is a change
+
+                                        updateDesign.pieces[i].array[array_i].mesh.b = b;
+                                        updateDesign.pieces[i].array[array_i].mesh.h = h;
+                                        updateDesign.pieces[i].array[array_i].mesh.d = d;
+                                        updateDesign.pieces[i].array[array_i].mesh.lz = lz;
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.dispose();
+                                        const shape = new THREE.Shape();
+                                        shape.moveTo( 0,0 );
+                                        shape.lineTo( b, 0);   
+                                        shape.lineTo( d, h );
+                                        shape.lineTo( 0, 0 );
+
+                                        const extrudeSettings = {
+                                            steps: 1,
+                                            depth: lz,
+                                            bevelEnabled: false
+                                        };
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+                                        mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                        mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                        
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
+                                    }
+                            }
+                            // Extrude
+                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
+                                updateDesign.pieces[i].type == "Extrude") {  // geometry.type == "ExtrudeGeometry"
+                                    //b = eval(updateDesign.pieces[i].b);
+                                    shape_array = updateDesign.pieces[i].shape_array;
+                                    lz = eval(updateDesign.pieces[i].lz);
+
+                                    var changeArray = false;
+                                    for (var k =0; k< shape_array.length; k++) {
+                                        if (updateDesign.pieces[i].array[array_i].mesh.shape_array[k][0] != 
+                                           eval(shape_array[k][0])) changeArray = true;
+                                        if (updateDesign.pieces[i].array[array_i].mesh.shape_array[k][1] != 
+                                           eval(shape_array[k][1])) changeArray = true;
+                                    }
+                                    if (//updateDesign.pieces[i].array[array_i].mesh.b != b ||
+                                        shape_array != null && 
+                                        (updateDesign.pieces[i].array[array_i].mesh.lz != lz
+                                        || changeArray)) {  // only create if theres is a change
+
+                                        //updateDesign.pieces[i].array[array_i].mesh.b = b;
+                                        updateDesign.pieces[i].array[array_i].mesh.lz = lz;
+                                        for (var k =0; k< shape_array.length; k++) {
+                                            updateDesign.pieces[i].array[array_i].mesh.shape_array[k] = [];
+                                            updateDesign.pieces[i].array[array_i].mesh.shape_array[k][0] = 
+                                               eval(shape_array[k][0]);
+                                            updateDesign.pieces[i].array[array_i].mesh.shape_array[k][1] = 
+                                               eval(shape_array[k][1]);
+                                        }
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.dispose();
+                                        const shape = new THREE.Shape();
+                                        shape.moveTo( eval(shape_array[0][0]), eval(shape_array[0][1]));
+                                        for (var k =1; k< shape_array.length; k++) {
+                                            if (shape_array[k].length == 2) {
+                                                shape.lineTo( eval(shape_array[k][0]), eval(shape_array[k][1]));   
+                                            } else {
+                                                shape.bezierCurveTo(
+                                                    eval(shape_array[k][2]), eval(shape_array[k][3]),
+                                                    eval(shape_array[k][4]), eval(shape_array[k][5]),
+                                                    eval(shape_array[k][0]), eval(shape_array[k][1])
+                                                )
+                                            }
+                                        }
+                                        shape.lineTo( eval(shape_array[0][0]), eval(shape_array[0][1]));
+
+                                        const extrudeSettings = {
+                                            steps: 1,
+                                            depth: lz,
+                                            bevelEnabled: false
+                                        };
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+                                        mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                        mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                        
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
+                                    }
+                            }
+
+                                   
+/*
+ replace scale by update of BoxGeometry
+*/
+
+                            updateDesign.pieces[i].array[array_i].mesh.scale.set(
+                                eval(updateDesign.pieces[i].sx), 
+                                eval(updateDesign.pieces[i].sy), 
+                                eval(updateDesign.pieces[i].sz));
+
+                            updateDesign.pieces[i].array[array_i].mesh.rotation.z = 
+                                eval(updateDesign.pieces[i].rz) * Math.PI / 180.;
+                            updateDesign.pieces[i].array[array_i].mesh.rotation.y = 
+                                eval(updateDesign.pieces[i].ry) * Math.PI / 180.;
+                            updateDesign.pieces[i].array[array_i].mesh.rotation.x = 
+                                eval(updateDesign.pieces[i].rx) * Math.PI / 180.;
+
+                            
+/*
+                            updateDesign.pieces[i].array[array_i].mesh.position.x = 
+                                   Number(eval(updateDesign.pieces[i].x));
+                            updateDesign.pieces[i].array[array_i].mesh.position.y = 
+                                   Number(eval(updateDesign.pieces[i].y));
+                            updateDesign.pieces[i].array[array_i].mesh.position.z = 
+                                   Number(eval(updateDesign.pieces[i].z));                            
+*/
                         }
                             
                     }
@@ -1593,6 +1803,17 @@ function ramp(a,b,c,d,t) {
     background-color: #bfdfe9;
     margin-right: 1em;
 }
+#modelDiv div#editObject span.pointHeader {
+    width: 4.6em;
+    margin-right: 1em;
+}
+#modelDiv .point {
+    width: 5em;
+    margin-right: 1em;
+}
+button#addShapeLine {
+    margin-left: 9.6em;
+}
 #modelDiv table {
     table-layout: fixed;
     width: 100%;
@@ -1618,10 +1839,11 @@ function ramp(a,b,c,d,t) {
 td+td {
   width: auto;
 }
+
 </style>
 
 
-<h3>Version 34</h3>
+<h3>Version 35.a</h3>
 <h3>Previous versions</h3>
 <br><a href=escene10.html>v 10</a> Include Subsystems
 <br><a href=escene11.html>v 11</a> Subsystems with evalText for each subsystem
@@ -1647,7 +1869,9 @@ td+td {
 <br><a href=escene31.html>v 31</a> Versión de ejemplo.
 <br><a href=escene32.html>v 32</a> Campo type
 <br><a href=escene33.html>v 33</a> Textura de cilindros proporcional
-<br><a href=escene34.html>v 34</a> Formulario de materiales
+<br><a href=escene34.html>v 34</a> Triángulos
+<br><a href=escene35.html>v 35</a> Extrusión
+<br><a href=escene36.html>v 36</a> Formulario de materiales
 
   <script>
 document.write("parameters: " + designObj.parameters.length);
@@ -1676,7 +1900,7 @@ V- decidir nombres de campos y de tipos de primitivas
 V- ejemplo completo
 v33
 V- textura (uv) de cilindros escaladas - shapes, definidas por puntos, para extrusión
-v34
+v35
 - Formuario para editar materiales
 - Guardar materiales
 - environment mapping
@@ -1693,6 +1917,7 @@ v34
 - crear un objeto a partir de otro: armario con decoración -> desde armario
 
 - boton New para tipo de pieza (Box, Cylinder, Module, Gltf)
+- extruxión
 - bevels
 - bezier:
     http://jrlazz.eu5.org/ggk/bezcurto.html
