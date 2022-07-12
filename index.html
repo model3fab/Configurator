@@ -8,84 +8,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <script>
-//collection - product -piece
-
-materialArr = {
-  "materials": [
-    {
-      "name": "UV_map",
-      "type": "single",
-      "texture": "textures/uv_grid_opengl.jpg"
-    },
-    {
-      "name": "glass1",
-      "type": "glass1"
-    },
-    {
-      "name": "glass2",
-      "type": "glass2"
-    },
-    {
-      "name": "envmap",
-      "type": "envmap"
-    },
-    {
-      "name": "UV_6map",
-      "type": "array",
-      "texture1": "textures/uv_grid_opengl.jpg",
-      "texture2": "textures/uv_grid_opengl.jpg",
-      "texture3": "textures/uv_grid_opengl.jpg",
-      "texture4": "textures/uv_grid_opengl.jpg",
-      "texture5": "textures/uv_grid_opengl.jpg",
-      "texture6": "textures/uv_grid_opengl.jpg"
-    },
-    {
-      "name": "dice",
-      "type": "array",
-      "texture1": "images/Dice-Blue-1.png",
-      "texture2": "images/Dice-Blue-2.png",
-      "texture3": "images/Dice-Blue-3.png",
-      "texture4": "images/Dice-Blue-4.png",
-      "texture5": "images/Dice-Blue-5.png",
-      "texture6": "images/Dice-Blue-6.png"
-    },
-    {
-      "name": "dice2",
-      "type": "array",
-      "texture1": "images/Dice-Blue-1.png",
-      "texture2": "images/Dice-Blue-2.png",
-      "texture3": "images/Dice-Blue-3.png",
-      "texture4": "images/Dice-Blue-4.png",
-      "texture5": "images/Dice-Blue-5.png",
-      "texture6": "images/Dice-Blue-6.png"
-    },
-    {
-      "name": "plywood6",
-      "type": "array",
-      "texture1": "textures/plywood_diff_1k.jpg",
-      "texture2": "textures/plywood_diff_1k.jpg",
-      "texture3": "textures/plywood_diff_1k.jpg",
-      "texture4": "textures/plywood_diff_1k.jpg",
-      "texture5": "textures/plywood_diff_1k.jpg",
-      "texture6": "textures/plywood_diff_1k.jpg"
-    },
-    {
-      "name": "plywood",
-      "type": "single",
-      "texture": "textures/plywood_diff_1k.jpg"
-    },
-    {
-      "name": "kitchen_wood",
-      "type": "single",
-      "texture": "textures/kitchen_wood_diff_1k.jpg"
-    },
-    {
-      "name": "wood_table",
-      "type": "single",
-      "texture": "textures/wood_table_001_diff_1k.jpg"
-    }
-  ]
-}
 
 materialOptionsObj = {
   "materialOptions": [
@@ -128,8 +50,7 @@ function readFile() {
     {
         var textFromFileLoaded = fileLoadedEvent.target.result;
         document.getElementById("jsonObj").value = textFromFileLoaded;
-        designArr = JSON.parse(document.getElementById('jsonObj').value).designArr;
-        init();
+        loadJSON();
     };
     fileReader.readAsText(fileToLoad, "UTF-8");
 }
@@ -200,7 +121,7 @@ function loadJSON() {
     },
     {
       "name": "plywood6",
-      "type": "array",
+      "type": "arrayEnvmap",   "//first_comment":  "array",
       "texture1": "textures/plywood_diff_1k.jpg",
       "texture2": "textures/plywood_diff_1k.jpg",
       "texture3": "textures/plywood_diff_1k.jpg",
@@ -224,7 +145,7 @@ function loadJSON() {
       "texture": "textures/wood_table_001_diff_1k.jpg"
     }
   ],
-"designArr":{"init":{"name":"init","parameters":[],"pieces":[]},"components":{"name":"components","parameters":[{"name":"lx","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"ly","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"lz","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"rx","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"ry","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"rz","type":"m","min":"0","max":"400","step":".5","default":"0"},{"name":"x","type":"cm","min":"-300","max":"400","step":"1","default":"0"},{"name":"y","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"z","type":"cm","min":"-100","max":"400","step":".5","default":"0"},{"name":"sx","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sy","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz2","type":"formula","default":"sz+1"}, {"name":"precio","type":"formula","default":"Math.round(lx/3*ly/7*lz*300)"}],"pieces":[{"name":"cilindro","type":"Cylinder","rt":"lx/2","rb":"ly/2","lz":"lz","material":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90 + rx","ry":"ry","rz":"rz","x":"x","y":"y","z":"z + lz/2"},{"name":"cubo","type":"Box","lx":"lx","ly":"ly","lz":"lz","material":"dice","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x + 1","y":"y","z":"z"},{"name":"triangle","type":"Triangle","b":"lx","h":"ly","d":"0.3","lz":"lz","material":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"2.4+x","y":"y","z":"z"},{"name":"prisma","type":"Extrude","shape_array":[["0","0"],["lx","0"],["0.8","ly"],[".2","1"]],"lz":"lz","material":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x-2","y":"y","z":"z"}]},"cajon_curva":{"name":"cajon_curva","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":10,"max":120,"default":30},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"rebaje_largo","type":"cm","min":"0.5","max":"20","default":"10"},{"name":"rebaje_alto","type":"cm","min":"0.5","max":"10","step":".2","default":"2"}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo","ly":"profundidad - espesor","lz":"espesor","material":"kitchen_wood","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"fondo","type":"Box","lx":"largo - espesor * 2","ly":"espesor","lz":"alto-espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"espesor"},{"name":"frente","type":"Extrude","shape_array":[["0","0"],["largo","0"],["largo","alto"],["largo-((largo-0.12-rebaje_largo)/2)","alto"],["largo-((largo-0.12-rebaje_largo)/2)-0.06","alto-rebaje_alto","largo-((largo-0.12-rebaje_largo)/2)-0.04","alto","largo-((largo-0.12-rebaje_largo)/2)-0.02","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)+0.06","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)","alto","((largo-0.12-rebaje_largo)/2)+0.02","alto-rebaje_alto","((largo-0.12-rebaje_largo)/2)+0.04","alto"],["0","alto"]],"lz":"espesor","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"90","ry":"0","rz":"0","x":"0","y":"profundidad","z":"0"},{"name":"tirador","type":"Box","lx":"largo/10","ly":"espesor","lz":"alto/10","material":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo/2-largo/10/2","y":"profundidad","z":"alto/2"}]},"cajonera":{"name":"cajonera","parameters":[{"name":"largo","type":"cm","min":20,"max":400,"default":100},{"name":"alto","type":"cm","min":40,"max":250,"default":200},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"name":"cajones","type":"m","min":0,"max":20,"default":2},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","subsystem":"cajon_curva","parameters":[{"name":"largo","default":"largo"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"espesor"},{"name":"profundidad","default":"profundidad"},{"name":"rebaje_largo","default":"largo/3"},{"name":"rebaje_alto","default":"(alto-espaciado*(cajones-1))/cajones/3"}],"material":"dice","array_size":"cajones","sx":1,"sy":1,"sz":1,"rx":"0","ry":"0","rz":"0","x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},"marco":{"name":"marco","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":"1","max":"10","step":".2","default":"2"},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"0","y":"0","z":"0"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor","y":"0","z":"0"},{"name":"base","type":"Box","lx":"largo-espesor*2","ly":"profundidad","lz":"espesor","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"0"},{"name":"alto","type":"Box","lx":"largo - espesor * 2","ly":"profundidad","lz":"espesor","material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"alto-espesor"},{"name":"panel","type":"Box","lx":"largo-espesor","ly":"profundidad/2","lz":"alto-espesor","material":"glass2","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor/2","y":"profundidad/2","z":"espesor/2"},{"name":"tirador","type":"Box","lx":"espesor/2","ly":".015","lz":"0.03","material":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor*.75","y":"profundidad","z":"alto/2"}]},"armario":{"name":"armario","parameters":[{"name":"largo_m1","type":"cm","min":20,"max":400,"default":60},{"name":"largo_modulo_cajones","type":"cm","min":20,"max":400,"default":60},{"name":"alto","type":"cm","min":40,"max":250,"default":180},{"name":"profundidad","type":"cm","min":20,"max":120,"default":60},{"name":"espesor","type":"cm","min":1,"max":12,"default":4},{"name":"espesor_cajon","type":"cm","min":1,"max":12,"default":2},{"name":"balda1","type":"cm","min":0,"max":200,"default":30},{"name":"balda_caj","type":"cm","min":0,"max":200,"default":0},{"name":"altura_cajonera","type":"m","min":0,"max":100,"default":60},{"name":"espaciado_vert","type":"cm","min":0,"max":10,"default":1},{"name":"espaciado_hor","type":"cm","min":0,"max":10,"default":1},{"name":"modulos","type":"m","min":0,"max":10,"default":3},{"name":"cajones","type":"m","min":0,"max":20,"default":6},{"name":"tiempo","type":"m","min":0,"max":300,"default":0}],"pieces":[{"name":"objeto gltf","type":"Gltf","url":"models/legoCube/scene.gltf","material":"plywood6","sx":".1","sy":".1","sz":".1","rx":"90","ry":"0","rz":"0","x":"largo_m1*0.3","y":"profundidad/2","z":"balda1+espesor+0.0215"},{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + largo_modulo_cajones * (array_i + 1)-espesor","y":0,"z":"espesor"},{"name":"centro","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"tapa","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"0","z":"alto-espesor"},{"name":"fondo","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"espesor","lz":"alto","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"-espesor","z":"0"},{"name":"balda","type":"Box","lx":"largo_m1-espesor*2","ly":"profundidad","lz":"espesor","material":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"balda1"},{"name":"balda cajones","type":"Box","lx":"largo_modulo_cajones-espesor","ly":"profundidad","lz":"espesor","material":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + array_i*(largo_modulo_cajones)","y":0,"z":"(alto - 2*espesor)*altura_cajonera/100 + + espesor + espaciado_vert + balda_caj"},{"name":"cajoneras","type":"Module","subsystem":"cajonera","parameters":[{"name":"largo","default":"largo_modulo_cajones - espesor - espaciado_hor*2"},{"name":"alto","default":"(alto - 2*espesor)*altura_cajonera/100"},{"name":"profundidad","default":"profundidad - espesor"},{"name":"espaciado","default":"espaciado_vert"},{"name":"espesor","default":"espesor_cajon"},{"name":"cajones","default":"cajones"},{"name":"tiempo","default":"tiempo"}],"material":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1+array_i*(largo_modulo_cajones)+espaciado_hor","y":"0","z":"espesor"},{"name":"puerta","type":"Module","subsystem":"marco","parameters":[{"name":"largo","default":"largo_m1"},{"name":"alto","default":"alto-espesor"},{"name":"profundidad","default":"espesor"},{"name":"espesor","default":"espesor*3"}],"material":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"ramp(0,50,100,150,tiempo)*120","x":"0","y":"profundidad","z":"0"},{"name":"barra","type":"Cylinder","rt":"espesor/2","rb":"espesor/2","lz":"largo_m1 + largo_modulo_cajones * modulos","material":"envmap","sx":"1","sy":"1","sz":"1","rx":"90","ry":"90","rz":"0","x":"(largo_m1 + largo_modulo_cajones * modulos)/2","y":"profundidad","z":"alto-espesor/2"}]}}}
+"designArr":{"init":{"name":"init","parameters":[],"pieces":[]},"components":{"name":"components","parameters":[{"name":"lx","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"ly","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"lz","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"rx","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"ry","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"rz","type":"m","min":"0","max":"400","step":".5","default":"0"},{"name":"x","type":"cm","min":"-300","max":"400","step":"1","default":"0"},{"name":"y","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"z","type":"cm","min":"-100","max":"400","step":".5","default":"0"},{"name":"sx","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sy","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz2","type":"formula","default":"sz+1"}, {"name":"precio","type":"formula","default":"Math.round(lx/3*ly/7*lz*300)"}],"pieces":[{"name":"cilindro","type":"Cylinder","rt":"lx/2","rb":"ly/2","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90 + rx","ry":"ry","rz":"rz","x":"x","y":"y","z":"z + lz/2"},{"name":"cubo","type":"Box","lx":"lx","ly":"ly","lz":"lz","material_1":"dice","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x + 1","y":"y","z":"z"},{"name":"triangle","type":"Triangle","b":"lx","h":"ly","d":"0.3","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"2.4+x","y":"y","z":"z"},{"name":"prisma","type":"Extrude","shape_array":[["0","0"],["lx","0"],["0.8","ly"],[".2","1"]],"lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x-2","y":"y","z":"z"}]},"cajon_curva":{"name":"cajon_curva","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":10,"max":120,"default":30},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"rebaje_largo","type":"cm","min":"0.5","max":"20","default":"10"},{"name":"rebaje_alto","type":"cm","min":"0.5","max":"10","step":".2","default":"2"}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo","ly":"profundidad - espesor","lz":"espesor","material_1":"kitchen_wood","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"fondo","type":"Box","lx":"largo - espesor * 2","ly":"espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"espesor"},{"name":"frente","type":"Extrude","shape_array":[["0","0"],["largo","0"],["largo","alto"],["largo-((largo-0.12-rebaje_largo)/2)","alto"],["largo-((largo-0.12-rebaje_largo)/2)-0.06","alto-rebaje_alto","largo-((largo-0.12-rebaje_largo)/2)-0.04","alto","largo-((largo-0.12-rebaje_largo)/2)-0.02","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)+0.06","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)","alto","((largo-0.12-rebaje_largo)/2)+0.02","alto-rebaje_alto","((largo-0.12-rebaje_largo)/2)+0.04","alto"],["0","alto"]],"lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"90","ry":"0","rz":"0","x":"0","y":"profundidad","z":"0"},{"name":"tirador","type":"Box","lx":"largo/10","ly":"espesor","lz":"alto/10","material_1":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo/2-largo/10/2","y":"profundidad","z":"alto/2"}]},"cajonera":{"name":"cajonera","parameters":[{"name":"largo","type":"cm","min":20,"max":400,"default":100},{"name":"alto","type":"cm","min":40,"max":250,"default":200},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"name":"cajones","type":"m","min":0,"max":20,"default":2},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","subsystem":"cajon_curva","parameters":[{"name":"largo","default":"largo"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"espesor"},{"name":"profundidad","default":"profundidad"},{"name":"rebaje_largo","default":"largo/3"},{"name":"rebaje_alto","default":"(alto-espaciado*(cajones-1))/cajones/3"}],"material_1":"dice","array_size":"cajones","sx":1,"sy":1,"sz":1,"rx":"0","ry":"0","rz":"0","x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},"marco":{"name":"marco","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":"1","max":"10","step":".2","default":"2"},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"0","y":"0","z":"0"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor","y":"0","z":"0"},{"name":"base","type":"Box","lx":"largo-espesor*2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"0"},{"name":"alto","type":"Box","lx":"largo - espesor * 2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"alto-espesor"},{"name":"panel","type":"Box","lx":"largo-espesor","ly":"profundidad/2","lz":"alto-espesor","material_1":"glass2","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor/2","y":"profundidad/2","z":"espesor/2"},{"name":"tirador","type":"Box","lx":"espesor/2","ly":".015","lz":"0.03","material_1":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor*.75","y":"profundidad","z":"alto/2"}]},"armario":{"name":"armario","parameters":[{"name":"largo_m1","type":"cm","min":20,"max":400,"default":60},{"name":"largo_modulo_cajones","type":"cm","min":20,"max":400,"default":60},{"name":"alto","type":"cm","min":40,"max":250,"default":180},{"name":"profundidad","type":"cm","min":20,"max":120,"default":60},{"name":"espesor","type":"cm","min":1,"max":12,"default":4},{"name":"espesor_cajon","type":"cm","min":1,"max":12,"default":2},{"name":"balda1","type":"cm","min":0,"max":200,"default":30},{"name":"balda_caj","type":"cm","min":0,"max":200,"default":0},{"name":"altura_cajonera","type":"m","min":0,"max":100,"default":60},{"name":"espaciado_vert","type":"cm","min":0,"max":10,"default":1},{"name":"espaciado_hor","type":"cm","min":0,"max":10,"default":1},{"name":"modulos","type":"m","min":0,"max":10,"default":3},{"name":"cajones","type":"m","min":0,"max":20,"default":6},{"name":"tiempo","type":"m","min":0,"max":300,"default":0}],"pieces":[{"name":"objeto gltf","type":"Gltf","url":"models/legoCube/scene.gltf","material_1":"plywood6","sx":".1","sy":".1","sz":".1","rx":"90","ry":"0","rz":"0","x":"largo_m1*0.3","y":"profundidad/2","z":"balda1+espesor+0.0215"},{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material_1":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + largo_modulo_cajones * (array_i + 1)-espesor","y":0,"z":"espesor"},{"name":"centro","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"tapa","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"0","z":"alto-espesor"},{"name":"fondo","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"espesor","lz":"alto","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"-espesor","z":"0"},{"name":"balda","type":"Box","lx":"largo_m1-espesor*2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"balda1"},{"name":"balda cajones","type":"Box","lx":"largo_modulo_cajones-espesor","ly":"profundidad","lz":"espesor","material_1":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + array_i*(largo_modulo_cajones)","y":0,"z":"(alto - 2*espesor)*altura_cajonera/100 + + espesor + espaciado_vert + balda_caj"},{"name":"cajoneras","type":"Module","subsystem":"cajonera","parameters":[{"name":"largo","default":"largo_modulo_cajones - espesor - espaciado_hor*2"},{"name":"alto","default":"(alto - 2*espesor)*altura_cajonera/100"},{"name":"profundidad","default":"profundidad - espesor"},{"name":"espaciado","default":"espaciado_vert"},{"name":"espesor","default":"espesor_cajon"},{"name":"cajones","default":"cajones"},{"name":"tiempo","default":"tiempo"}],"material_1":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1+array_i*(largo_modulo_cajones)+espaciado_hor","y":"0","z":"espesor"},{"name":"puerta","type":"Module","subsystem":"marco","parameters":[{"name":"largo","default":"largo_m1"},{"name":"alto","default":"alto-espesor"},{"name":"profundidad","default":"espesor"},{"name":"espesor","default":"espesor*3"}],"material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"ramp(0,50,100,150,tiempo)*120","x":"0","y":"profundidad","z":"0"},{"name":"barra","type":"Cylinder","rt":"espesor/2","rb":"espesor/2","lz":"largo_m1 + largo_modulo_cajones * modulos","material_1":"envmap","sx":"1","sy":"1","sz":"1","rx":"90","ry":"90","rz":"0","x":"(largo_m1 + largo_modulo_cajones * modulos)/2","y":"profundidad","z":"alto-espesor/2"}]}}}
 </textarea>
 <br>
 <button onclick="exportCollection()">Show JSON</button><a href='https://codebeautify.org/jsonviewer'>See JSON beautify</a><button onclick="loadJSON()">Load JSON</button>
@@ -310,6 +231,9 @@ function ramp(a,b,c,d,t) {
         axes: true,
         UV: false,
     };
+    var materialGui;
+    var materialData;
+
     var geometry;
     var material_UV;
     var materialArray;
@@ -319,6 +243,7 @@ function ramp(a,b,c,d,t) {
 
     /*
     */
+    var defaultMaterial = new THREE.MeshPhysicalMaterial( { color: 0xffffff } );
     init();
     showForm();
     
@@ -383,6 +308,7 @@ function ramp(a,b,c,d,t) {
         //const helper = new THREE.DirectionalLightHelper( light4, 5 );
         //scene.add( helper );
         
+        var meshMaterial;
         for (var i =0; i< materialArr.length; i++) {
             console.log("Material: " + materialArr[i].name);
             if (materialArr[i].type == "single") {
@@ -400,7 +326,7 @@ function ramp(a,b,c,d,t) {
             } else if (materialArr[i].type == "glass1") {
                   const meshMaterial = new THREE.MeshPhysicalMaterial( {
 					map: null,
-					color: 0xffffff,
+					color: 0xfffffa,
 					metalness: 0,
 					roughness: 0,
 					opacity: 0.25,
@@ -441,7 +367,7 @@ function ramp(a,b,c,d,t) {
 				var sphereMaterial = new THREE.MeshLambertMaterial( { envMap: textureCube } );
           
                 materialArr[i].material = sphereMaterial;
-            } else if (materialArr[i].type == "array") {
+            } else if (materialArr[i].type == "None array") {
                 materialArray = [];
                 texture = loadTexture(materialArr[i].texture1);
                 texture = loadTexture(materialArr[i].texture2);
@@ -450,16 +376,17 @@ function ramp(a,b,c,d,t) {
                 texture = loadTexture(materialArr[i].texture5);
                 texture = loadTexture(materialArr[i].texture6);
                 materialArr[i].material = materialArray;
-            } else if (materialArr[i].type == "arrayEnvmap") {
+            } else if (materialArr[i].type == "arrayEnvmap" || materialArr[i].type == "array") {
                 materialArray = [];
                 texture = loadTexture(materialArr[i].texture1);
+                /*
                 texture = loadTexture(materialArr[i].texture2);
                 texture = loadTexture(materialArr[i].texture3);
                 texture = loadTexture(materialArr[i].texture4);
                 texture = loadTexture(materialArr[i].texture5);
                 texture = loadTexture(materialArr[i].texture6);
-                
-                var meshMaterial = new THREE.MeshPhysicalMaterial({
+                */
+                    meshMaterial = new THREE.MeshPhysicalMaterial({
                     metalness: .3,
                     roughness: .95,
                     envMapIntensity: 0.9,
@@ -475,15 +402,19 @@ function ramp(a,b,c,d,t) {
                     })
                     
                 materialArr[i].material = meshMaterial;
+                // load material from model 
+                //copyMaterialPropertiesFromModelToEditor(materialArr[i].material, materialGui);
+                //updatePhysicalMaterial();
+                
             } else {  // array
                 console.log("Material type not defined: " + materialArr[i].type);
             }
             if (materialArr[i].name == "UV_6map") {
-                material_UV = materialArray;
+                material_UV = meshMaterial;
             }
         }
 
-//        addDesign(scene, designObj);
+        //        addDesign(scene, designObj);
         
         axesHelper = new THREE.AxesHelper( 4 );
         axes();
@@ -494,8 +425,18 @@ function ramp(a,b,c,d,t) {
         updateMeasures();  // comment to improve speed while working in html forms
         updateUvTransform();
         
+
         //printModelTable("model", designObj);
         showForm();
+
+        for (var i =0; i< materialArr.length; i++) {
+            if (materialArr[i].type == "arrayEnvmap") {
+
+                copyMaterialPropertiesFromModelToEditor(materialArr[i], materialGui);
+                materialEdit = materialArr[i].material
+                updatePhysicalMaterial();
+            }
+        }
 
         render();
 
@@ -536,18 +477,19 @@ function ramp(a,b,c,d,t) {
     */
     function loadTexture(file) {
     
-    
+        console.log("loadTexture: " + file);
         var texture = new THREE.TextureLoader().load( file,function (º) {
             //meshMaterial.needsUpdate = true;
             render();
         } )
         //var meshMaterial = new THREE.MeshBasicMaterial( { map: texture });
         //var meshMaterial = new THREE.MeshStandardMaterial( { map: texture });
-        var meshMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, map: texture } );
+        
+        //var meshMaterial = new THREE.MeshStandardMaterial( { color: 0xffffff, map: texture } );
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
         texture.matrixAutoUpdate = false;
-        materialArray.push(meshMaterial);
+        //materialArray.push(meshMaterial);
         return texture;
     }
 
@@ -585,9 +527,7 @@ function ramp(a,b,c,d,t) {
             }
             //API.price = Math.round(eval('alto*largo*200'));
 
-                for (var j = 0; j < gui.controllers.length; j++ ) {
-                    gui.controllers[j].updateDisplay();
-                }
+            uptadeControllers(gui);
 /*
             for (var i = 0; i < Object.keys(gui.folders).length; i++) {
                 var key = Object.keys(gui.folders)[i];
@@ -598,6 +538,196 @@ function ramp(a,b,c,d,t) {
             }
 */
         }
+    }
+    
+    function uptadeControllers(guiFolder) {
+        for (var j = 0; j < guiFolder.controllers.length; j++ ) {
+            guiFolder.controllers[j].updateDisplay();
+        }
+    }
+    
+    function getMaterialasFolder(folders) {
+        var result = folders.filter(obj => {
+            return obj._title === "Material properties";
+        })
+        return result? result[0] : null;
+    }
+    
+    var currentMateralName = null;
+    var previousMaterialName = null;
+    var materialEdit;
+    var textureEdit;
+    function setMaterial(){
+        var materialName = API["Materials"];
+        previousMaterialName = currentMateralName;
+        currentMateralName = materialName;
+        console.log("updateMaterial API['Materials']: " + materialName);
+        var mat = getMaterial(materialName);
+        //if (mat.type == "single" || mat.type == "arrayEnvmap") {
+            materialEdit = mat.material;
+            textureEdit = mat.material.map;
+        /*
+        } else if (mat.type == "array") {
+            materialEdit = mat.material[0];
+            textureEdit = mat.material[0].map;
+        }
+        */
+        if (previousMaterialName != null) {
+            copyMaterialPropertiesFromEditorToModel(materialGui, getMaterial(previousMaterialName));
+        }
+        copyMaterialPropertiesFromModelToEditor(mat, materialGui);
+        var materialColor = materialGui.color.getHex();
+        if (materialColor != null) {
+            materialData.color = materialGui.color.getHex()
+        }
+        var materialsFolder = getMaterialasFolder(gui.folders);
+        uptadeControllers(materialsFolder);
+        updatePhysicalMaterial();
+    }
+    function copyMaterialPropertiesFromEditorToModel(materialSource, materialTarget) {
+        materialTarget.color_r = materialSource.color.r;
+        materialTarget.color_g = materialSource.color.g;
+        materialTarget.color_b = materialSource.color.b;
+        materialTarget.emissive_r = materialSource.emissive.r;
+        materialTarget.emissive_g = materialSource.emissive.g;
+        materialTarget.emissive_b = materialSource.emissive.b;
+        materialTarget.roughness = materialSource.roughness;
+        materialTarget.metalness = materialSource.metalness;
+        materialTarget.reflectivity = materialSource.reflectivity;
+        materialTarget.clearcoat = materialSource.clearcoat;
+        materialTarget.clearcoatRoughness = materialSource.clearcoatRoughness;
+        materialTarget.transparent = materialSource.transparent;
+        materialTarget.opacity = materialSource.opacity;
+        materialTarget.ior = materialSource.ior;
+        materialTarget.wireframe = materialSource.wireframe;
+    }
+    function copyMaterialPropertiesFromModelToEditor(materialSource, materialTarget) {
+        materialTarget.color.r = materialSource.color_r || defaultMaterial.color.r;
+        materialTarget.color.g = materialSource.color_g || defaultMaterial.color.g;
+        materialTarget.color.b = materialSource.color_b || defaultMaterial.color.b;
+        materialTarget.emissive.r = materialSource.emissive_r || defaultMaterial.emissive.r;
+        materialTarget.emissive.g = materialSource.emissive_g || defaultMaterial.emissive.g;
+        materialTarget.emissive.b = materialSource.emissive_b || defaultMaterial.emissive.b;
+        materialTarget.roughness = materialSource.roughness || defaultMaterial.roughness;
+        materialTarget.metalness = materialSource.metalness || defaultMaterial.metalness;
+        materialTarget.reflectivity = materialSource.reflectivity || defaultMaterial.reflectivity;
+        materialTarget.clearcoat = materialSource.clearcoat || defaultMaterial.clearcoat;
+        materialTarget.clearcoatRoughness = materialSource.clearcoatRoughness || defaultMaterial.clearcoatRoughness;
+        materialTarget.transparent = materialSource.transparent || defaultMaterial.transparent;
+        materialTarget.opacity = materialSource.opacity || defaultMaterial.opacity;
+        materialTarget.ior = materialSource.ior || defaultMaterial.ior;
+        materialTarget.wireframe = materialSource.wireframe || defaultMaterial.wireframe;
+    }
+
+    function updatePhysicalMaterial() {
+        materialEdit.color.r = materialGui.color.r;
+        materialEdit.color.g = materialGui.color.g;
+        materialEdit.color.b = materialGui.color.b;
+        materialEdit.emissive.r = materialGui.emissive.r;
+        materialEdit.emissive.g = materialGui.emissive.g;
+        materialEdit.emissive.b = materialGui.emissive.b;
+        materialEdit.roughness = materialGui.roughness;
+        materialEdit.metalness = materialGui.metalness;
+        materialEdit.reflectivity = materialGui.reflectivity;
+        materialEdit.clearcoat = materialGui.clearcoat;
+        materialEdit.clearcoatRoughness = materialGui.clearcoatRoughness;
+        materialEdit.transparent = materialGui.transparent;
+        materialEdit.opacity = materialGui.opacity;
+        materialEdit.ior = materialGui.ior;
+        materialEdit.wireframe = materialGui.wireframe;
+        materialEdit.needsUpdate = true ;
+        render();
+    }
+    function updateUvTransform(arg) {
+            if (textureEdit == null) return;
+            var texture = textureEdit;
+            if ( texture.matrixAutoUpdate === true ) {
+
+                texture.offset.set( API.offsetX, API.offsetY );
+                texture.repeat.set( API.repeatX, API.repeatY );
+                texture.center.set( API.centerX, API.centerY );
+                texture.rotation = API.rotation; // rotation is around [ 0.5, 0.5 ]
+
+            } else {
+
+                // one way...
+                //texture.matrix.setUvTransform( API.offsetX, API.offsetY, API.repeatX, API.repeatY, API.rotation, API.centerX, API.centerY );
+
+                // another way...
+                texture.matrix
+                    .identity()
+                    .translate( - API.centerX,- API.centerY, 0 )
+                    .rotate( API.rotation )					// I don't understand how rotation can preceed scale, but it seems to be required...
+                    .scale( API.repeatX, API.repeatY, API.repeatZ )
+                //    .translate( API.centerX, API.centerY )
+                    .translate( API.offsetX, API.offsetY, 0 )
+                    ;
+
+            }
+            render();
+    }
+
+/*
+    const envMapKeys = getObjectsKeys( envMaps );
+    const envMapKeysPBR = envMapKeys.slice( 0, 2 );
+    const diffuseMapKeys = getObjectsKeys( diffuseMaps );
+    const roughnessMapKeys = getObjectsKeys( roughnessMaps );
+    const matcapKeys = getObjectsKeys( matcaps );
+    const alphaMapKeys = getObjectsKeys( alphaMaps );
+    const gradientMapKeys = getObjectsKeys( gradientMaps );
+*/
+
+    function handleColorChange( color, converSRGBToLinear = false ) {
+
+        return function ( value ) {
+
+            if ( typeof value === 'string' ) {
+
+                value = value.replace( '#', '0x' );
+
+            }
+
+            color.setHex( value );
+
+            if ( converSRGBToLinear === true ) color.convertSRGBToLinear();
+            updatePhysicalMaterial();
+        };
+
+    }
+    function guiMeshPhysicalMaterial( gui, material) { //, geometry ) {
+
+        materialData = {
+            color: material.color.getHex(),
+            emissive: material.emissive.getHex()
+            //envMaps: envMapKeys[ 0 ],
+            //map: diffuseMapKeys[ 0 ],
+            //roughnessMap: roughnessMapKeys[ 0 ],
+            //alphaMap: alphaMapKeys[ 0 ]
+        };
+        const folder = gui.addFolder( 'Material properties' );
+
+        folder.addColor( materialData, 'color' ).onChange( handleColorChange( material.color, true ) );
+        folder.addColor( materialData, 'emissive' ).onChange( handleColorChange( material.emissive, true ) );
+
+        folder.add( material, 'roughness', 0, 1 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'metalness', 0, 1 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'reflectivity', 0, 1 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'clearcoat', 0, 1 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'clearcoatRoughness', 0, 1 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        // geometry //folder.add( material, 'flatShading' ).onChange( needsUpdate( material, geometry ) );
+        folder.add( material, 'transparent' ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'opacity', 0, 1 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'ior', 0, 3 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'wireframe' ).onChange( updatePhysicalMaterial );
+        // geometry //folder.add( material, 'vertexColors' ).onChange( needsUpdate( material, geometry ) );
+        // geometry //folder.add( material, 'fog' ).onChange( needsUpdate( material, geometry ) );
+        //folder.add( materialData, 'envMaps', envMapKeysPBR ).onChange( updateTexture( material, 'envMap', envMaps ) );
+        //folder.add( materialData, 'map', diffuseMapKeys ).onChange( updateTexture( material, 'map', diffuseMaps ) );
+        //folder.add( materialData, 'roughnessMap', roughnessMapKeys ).onChange( updateTexture( material, 'roughnessMap', roughnessMaps ) );
+        //folder.add( materialData, 'alphaMap', alphaMapKeys ).onChange( updateTexture( material, 'alphaMap', alphaMaps ) );
+
+        // TODO metalnessMap
+
     }
 
     function updateMaterial(){
@@ -719,7 +849,15 @@ function ramp(a,b,c,d,t) {
         gui.add(API, 'renders').name( 'Renders:' );
 
         const textureFolder = gui.addFolder( 'texture properties' );
-        textureFolder.close();
+        //textureFolder.close();
+
+        var materialsAPI = [];
+        for (var i =0; i< materialArr.length; i++) {
+            materialsAPI.push(materialArr[i].name);
+        }
+        API["Materials"] = materialArr[0].name;
+        textureFolder.add( API, "Materials", materialsAPI).onChange( setMaterial);
+        
         textureFolder.add( API, 'offsetX', 0.0, 1.0 ).name( 'offset.x' ).onChange( updateUvTransform );
         textureFolder.add( API, 'offsetY', 0.0, 1.0 ).name( 'offset.y' ).onChange( updateUvTransform );
         textureFolder.add( API, 'repeatX', 0.25, 2.0 ).name( 'repeat.x' ).onChange( updateUvTransform );
@@ -733,6 +871,9 @@ function ramp(a,b,c,d,t) {
         settingsFolder.add( settings, 'debug' ).onChange( debug );
         settingsFolder.add( settings, 'axes' ).onChange( axes );
         settingsFolder.add( settings, 'UV' ).onChange( setUV );
+        
+        materialGui = new THREE.MeshPhysicalMaterial( { color: 0x049EF4 } );
+        guiMeshPhysicalMaterial(gui, materialGui);
 
         //addGuiPiece(API, designObj, piecesFolder,"");  only when "reload GUI" pressed
             
@@ -790,12 +931,12 @@ function ramp(a,b,c,d,t) {
 
     var parameterProperties = ["name", "type", "options", "min","max", "step", "default"];
     var pieceProperties1 = ["name", "type"];
-    var pieceProperties3 = ["material", "array_size", "sx", "sy", "sz", "rx", "ry", "rz", "x", "y", "z"];
+    var pieceProperties3 = ["array_size", "sx", "sy", "sz", "rx", "ry", "rz", "x", "y", "z"];
     var typeProperties = {};
-    typeProperties["Box"] = ["lx","ly", "lz"];
-    typeProperties["Cylinder"] = ["rt","rb", "lz"];
-    typeProperties["Triangle"] = ["b","h", "d", "lz"];
-    typeProperties["Extrude"] = ["shape_array", "lz"];
+    typeProperties["Box"] = ["lx","ly", "lz", "material_1", "material_2", "material_3", "material_4", "material_5", "material_6" ];
+    typeProperties["Cylinder"] = ["rt","rb", "lz", "material_1", "material_2", "material_3"];
+    typeProperties["Triangle"] = ["b","h", "d", "lz", "material_1", "material_2"];
+    typeProperties["Extrude"] = ["shape_array", "lz", "material_1", "material_2"];
     /*
     <-->d
        /\      |h
@@ -817,6 +958,8 @@ function ramp(a,b,c,d,t) {
     pieceProperties["Module"]   = pieceProperties1.concat(typeProperties["Module"],   pieceProperties3);
 
     materialProperties = ["name","type","texture","texture1","texture2","texture3","texture4","texture5","texture6"];
+    materialProperties = ["name","type","texture","texture1","texture2","texture3","texture4","texture5","texture6", 
+        "color_r", "color_g", "color_b", "emissive_r", "emissive_g", "emissive_b", "roughness", "metalness", "reflectivity", "clearcoat", "clearcoatRoughness", "transparent", "opacity", "ior", "wireframe"]
 
     var subsystemParameterProperties = ["name", "default"];
 
@@ -1528,7 +1671,8 @@ function ramp(a,b,c,d,t) {
                                 geometry = new THREE.CylinderGeometry( 1., 1., 1., 32 );
 
                                 //geometry.translate( 0.5, 0.5, 0.5 ) ;
-                                mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 3);
+                                mesh = new THREE.Mesh( geometry, meshMaterialArray );
                                 mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                 
                                 updateDesign.pieces[i].array[array_i].mesh=mesh;
@@ -1559,7 +1703,8 @@ function ramp(a,b,c,d,t) {
 
                                 const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-                                mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 2);
+                                mesh = new THREE.Mesh( geometry, meshMaterialArray );
                                 mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                 
                                 updateDesign.pieces[i].array[array_i].mesh=mesh;
@@ -1592,7 +1737,9 @@ function ramp(a,b,c,d,t) {
 
                                 const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-                                mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 2);
+                                mesh = new THREE.Mesh( geometry, meshMaterialArray );
+
                                 mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                 
                                 updateDesign.pieces[i].array[array_i].mesh=mesh;
@@ -1625,7 +1772,8 @@ function ramp(a,b,c,d,t) {
                                 geometry = new THREE.BoxGeometry( 1., 1., 1. );
 
                                 geometry.translate( 0.5, 0.5, 0.5 ) ;
-                                mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 6);
+                                mesh = new THREE.Mesh( geometry, meshMaterialArray );
                                 mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                 
                                 updateDesign.pieces[i].array[array_i].mesh=mesh;
@@ -1802,8 +1950,8 @@ function ramp(a,b,c,d,t) {
 
                                         updateDesign.pieces[i].array[array_i].mesh.geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-                                        mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
-                                        mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                        //mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                        //mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                         
                                         updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
                                     }
@@ -1861,8 +2009,8 @@ function ramp(a,b,c,d,t) {
 
                                         updateDesign.pieces[i].array[array_i].mesh.geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
 
-                                        mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
-                                        mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                        //mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                        //mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                         
                                         updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
                                     }
@@ -1899,6 +2047,58 @@ function ramp(a,b,c,d,t) {
                     }
                 }
             }
+
+            function createMaterialArray(piece, n_materials) {
+                meshMaterialArray = [];
+                material_1Mat = getMaterial(piece.material_1).material;
+                meshMaterialArray.push(material_1Mat);
+                if (n_materials >= 2) {
+                    if (piece.material_2 != null &&
+                        piece.material_2 != "") {
+                            material_2Mat = getMaterial(piece.material_2).material;
+                    } else {
+                            material_2Mat = getMaterial(piece.material_1).material;
+                    }
+                    meshMaterialArray.push(material_2Mat);
+                }
+                if (n_materials >= 3) {
+                    if (piece.material_3 != null &&
+                        piece.material_3 != "") {
+                            material_3Mat = getMaterial(piece.material_3).material;
+                    } else {
+                            material_3Mat = getMaterial(piece.material_1).material;
+                    }
+                    meshMaterialArray.push(material_3Mat);
+                }
+                if (n_materials >= 4) {
+                    if (piece.material_4 != null &&
+                        piece.material_4 != "") {
+                            material_4Mat = getMaterial(piece.material_4).material;
+                    } else {
+                            material_4Mat = getMaterial(piece.material_1).material;
+                    }
+                    meshMaterialArray.push(material_4Mat);
+                }
+                if (n_materials >= 5) {
+                    if (piece.material_5 != null &&
+                        piece.material_5 != "") {
+                            material_5Mat = getMaterial(piece.material_5).material;
+                    } else {
+                            material_5Mat = getMaterial(piece.material_1).material;
+                    }
+                    meshMaterialArray.push(material_5Mat);
+                }
+                if (n_materials >= 6) {
+                    if (piece.material_6 != null &&
+                        piece.material_6 != "") {
+                            material_6Mat = getMaterial(piece.material_6).material;
+                    } else {
+                            material_6Mat = getMaterial(piece.material_1).material;
+                    }
+                    meshMaterialArray.push(material_6Mat);
+                }
+                return meshMaterialArray;
+            }
             function setDefaultValues(pieceObj) {
                 if (!('sx' in pieceObj)) pieceObj.sx=1;
                 if (!('sy' in pieceObj)) pieceObj.sy=1;
@@ -1927,75 +2127,6 @@ function ramp(a,b,c,d,t) {
 */
                 var dot = new THREE.Group();
                 return dot;
-            }
-
-            function updateUvTransform(arg) {
-                return;
-                //if (!settings.UV) return;
-                for (var i =0; i< designObj.pieces.length; i++) {
-                    var texture;
-                    materialObj = getMaterial(designObj.pieces[i].material);
-                    if (materialObj.type == "single") { 
-                        texture = designObj.pieces[i].mesh.material.map;
-                        texture.matrix.identity().scale( updateDesign.eval(designObj.pieces[i].sx), updateDesign.eval(designObj.pieces[i].sy), updateDesign.eval(designObj.pieces[i].sz) )
-                    } else {
-//                        for (var j =0; j< 6; j++) {
-/*                            texture = designObj.pieces[i].mesh.material[0].map;
-                            texture.matrix.identity().scale( eval(designObj.pieces[i].sz), eval(designObj.pieces[i].sy))
-                            texture = designObj.pieces[i].mesh.material[1].map;
-                            texture.matrix.identity().scale( eval(designObj.pieces[i].sz), eval(designObj.pieces[i].sy))
-                            texture = designObj.pieces[i].mesh.material[2].map;
-                            texture.matrix.identity().scale( eval(designObj.pieces[i].sx), eval(designObj.pieces[i].sz))
-                            texture = designObj.pieces[i].mesh.material[3].map;
-                            texture.matrix.identity().scale( eval(designObj.pieces[i].sx), eval(designObj.pieces[i].sz))
-                            texture = designObj.pieces[i].mesh.material[4].map;
-                            texture.matrix.identity().scale( eval(designObj.pieces[i].sx), eval(designObj.pieces[i].sy))
-                            texture = designObj.pieces[i].mesh.material[5].map;
-                            texture.matrix.identity().scale( eval(designObj.pieces[i].sx), eval(designObj.pieces[i].sy))
-*/
-//                        }
-                    }
-                }
-
-
-/*
-                    if (settings.UV) {
-                        texture = designObj.pieces[0].mesh.material.map;
-                    } else {
-                        texture = designObj.pieces[0].mesh.material[4].map;
-                    }
-*/
-/*
-                    if ( texture.matrixAutoUpdate === true ) {
-
-                        texture.offset.set( API.offsetX, API.offsetY );
-                        texture.repeat.set( API.repeatX, API.repeatY );
-                        texture.center.set( API.centerX, API.centerY );
-                        texture.rotation = API.rotation; // rotation is around [ 0.5, 0.5 ]
-
-                    } else {
-
-                        // one way...
-                        //texture.matrix.setUvTransform( API.offsetX, API.offsetY, API.repeatX, API.repeatY, API.rotation, API.centerX, API.centerY );
-
-                        // another way...
-                        texture.matrix
-                            .identity()
-                            //.translate( - API.centerX,- API.centerY, 0 )
-                            //.rotate( API.rotation )					// I don't understand how rotation can preceed scale, but it seems to be required...
-                            //.scale( API.repeatX, API.repeatY, API.repeatZ )
-    //                   designObj.pieces[i].mesh.scale.set( eval(designObj.pieces[i].sx), eval(designObj.pieces[i].sy), eval(designObj.pieces[i].sz));
-
-                            .scale( eval(designObj.pieces[i].sx), eval(designObj.pieces[i].sy), eval(designObj.pieces[i].sz) )
-                        //    .translate( API.centerX, API.centerY )
-                            //.translate( API.offsetX, 0, 0 )
-                            ;
-
-                    }
-                }
-*/
-
-
             }
 
 </script>
@@ -2075,7 +2206,7 @@ td+td {
 </style>
 
 
-<h3>Version 38.a</h3>
+<h3>Version 40.a</h3>
 <h3>Previous versions</h3>
 <br><a href=escene10.html>v 10</a> Include Subsystems
 <br><a href=escene11.html>v 11</a> Subsystems with evalText for each subsystem
@@ -2105,7 +2236,9 @@ td+td {
 <br><a href=escene35.html>v 35</a> Extrusión
 <br><a href=escene36.html>v 36</a> Parámetros calculados e internos. Precio.
 <br><a href=escene37.html>v 37</a> Formulario de materiales
-<br><a href=escene38.html>v 38</a> Environment mapping
+<br><a href=escene38.html>v 38</a> Pruebas de Environment mapping
+<br><a href=escene39.html>v 39</a> Select de options
+<br><a href=escene40.html>v 40</a> Opción de mostrar entre varios
 
   <script>
 document.write("parameters: " + designObj.parameters.length);
@@ -2147,23 +2280,35 @@ V- Formuario para editar materiales
 v38
 V- navegación
 V-material con MeshPhysicalMaterial
-- Guardar materiales
+V- Guardar materiales
 v39
 V- en GUI select de varias opciones: ejemplo anchura de madera
 v40
-- en GUI select de varias opciones: mostrar una opción u otra (condición)
-
+V- Lista de materiales en GUI
+V- Incluir editor de materiales para material seleccionado (y textura)
+   ejemplos de editores de materiales: 
+        https://threejs.org/examples/#webgl_materials_displacementmap
+        https://threejs.org/examples/#webgl_materials_physical_transmission
+        https://threejs.org/examples/#webgl_materials_subsurface_scattering
+        https://threejs.org/docs/#api/en/materials/MeshStandardMaterial
+        https://marmoset.co/posts/physically-based-rendering-and-you-can-too/
+- salvar y recuperar parámetros de editor en parámetros de materiales del JSON
 - environment mapping
 - materiales con brillos
 - materiales con normales
 - otros materiales: metalico, blanco
-- editor de materiales: 
-    https://threejs.org/examples/#webgl_materials_displacementmap
-    https://threejs.org/examples/#webgl_materials_physical_transmission
-    https://threejs.org/examples/#webgl_materials_subsurface_scattering
-    https://threejs.org/docs/#api/en/materials/MeshStandardMaterial
-- bevels
+
+- pasar materiales a parametros del tipo de pieza (ej: box tiene 6 materiales, Gltf ninguno)
+- parámetros para definir materiales (tipo texto)
+- valores por defecto de parámetros (y el actual default ver si tiene que ser value)
 - decidir interface para seleccionar materiales de piezas
+
+- definir entorno e iluminación
+https://threejs.org/examples/#webgl_lights_spotlight
+
+- en GUI select de varias opciones: mostrar una opción u otra (condición)
+
+- bevels
 - crear un objeto a partir de otro: armario con decoración -> desde armario
 
 - boton New para tipo de pieza (Box, Cylinder, Module, Gltf)
@@ -2179,6 +2324,10 @@ References and examples of three.js
 - lil-gui: https://lil-gui.georgealways.com/
 
 - mirar libro de arquitectura de three.js
+
+Ejemplos configuradores:
+    https://www.tikimob.fr/configurateur
+    https://configurator.damen.com/ste1905/
 
     
 -->
