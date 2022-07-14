@@ -103,7 +103,9 @@ function loadJSON() {
   {
     "name": "plywood6",
     "type": "arrayEnvmap",
-    "texture": "textures/plywood_diff_1k.jpg"
+    "texture": "textures/plywood_diff_1k.jpg",
+    "normalMap": "textures/plywood_nor_gl_1k.jpg",
+    "normalFactor": 1
   },
   {
     "name": "plywood",
@@ -242,7 +244,6 @@ function ramp(a,b,c,d,t) {
 
     var geometry;
     var material_UV;
-    var materialArray;
     var axesHelper;
     var evalText;
     var guiPieces = null;
@@ -378,23 +379,18 @@ function ramp(a,b,c,d,t) {
           
                 materialArr[i].material = sphereMaterial;
             } else if (materialArr[i].type == "None array_***") {
-            /* to delete
-                materialArray = [];
-                texture = loadTexture(materialArr[i].texture1);
-                texture = loadTexture(materialArr[i].texture2);
-                texture = loadTexture(materialArr[i].texture3);
-                texture = loadTexture(materialArr[i].texture4);
-                texture = loadTexture(materialArr[i].texture5);
-                texture = loadTexture(materialArr[i].texture6);
-                materialArr[i].material = materialArray;
-                */
             //} else if (materialArr[i].type == "arrayEnvmap" || materialArr[i].type == "array" || true) {
             } else if (true) {
-                materialArray = [];
                 if (materialArr[i].texture != null && materialArr[i].texture != "") {
                     texture = loadTexture(materialArr[i].texture);
                 } else {
                     texture = null;
+                }
+                var normalMap;
+                if (materialArr[i].normalMap != null && materialArr[i].normalMap != "") {
+                    normalMap = loadTexture(materialArr[i].normalMap);
+                } else {
+                    normalMap = null;
                 }
                 var side;
                 if (materialArr[i].side == 1) {
@@ -402,6 +398,7 @@ function ramp(a,b,c,d,t) {
                 } else {
                     side = THREE.FrontSide;
                 }
+                var vector2D = new THREE.Vector2( 4, 4 );
                 meshMaterial = new THREE.MeshPhysicalMaterial({
                     metalness: .3,
                     roughness: .95,
@@ -417,6 +414,8 @@ function ramp(a,b,c,d,t) {
                     //side: THREE.BackSide,
                     side: side,
                     envMap: textureCube,
+                    normalMap: normalMap,
+                    normalScale: vector2D,
                     })
                     
                 materialArr[i].material = meshMaterial;
@@ -497,7 +496,7 @@ function ramp(a,b,c,d,t) {
     function loadTexture(file) {
     
         console.log("loadTexture: " + file);
-        var texture = new THREE.TextureLoader().load( file,function (º) {
+        var texture = new THREE.TextureLoader().load( file,function (texture) {
             //meshMaterial.needsUpdate = true;
             render();
         } )
@@ -508,7 +507,6 @@ function ramp(a,b,c,d,t) {
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
         texture.matrixAutoUpdate = false;
-        //materialArray.push(meshMaterial);
         return texture;
     }
 
@@ -625,6 +623,7 @@ function ramp(a,b,c,d,t) {
         materialTarget.clearcoatRoughness = materialSource.clearcoatRoughness;
         materialTarget.transparent = materialSource.transparent;
         materialTarget.opacity = materialSource.opacity;
+        materialTarget.normalFactor = materialSource.normalFactor;
         materialTarget.envMapIntensity = materialSource.envMapIntensity;
         materialTarget.ior = materialSource.ior;
         materialTarget.wireframe = materialSource.wireframe;
@@ -643,6 +642,7 @@ function ramp(a,b,c,d,t) {
         materialTarget.clearcoatRoughness = materialSource.clearcoatRoughness || defaultMaterial.clearcoatRoughness;
         materialTarget.transparent = materialSource.transparent || defaultMaterial.transparent;
         materialTarget.opacity = materialSource.opacity || defaultMaterial.opacity;
+        materialTarget.normalFactor = materialSource.normalFactor || defaultMaterial.normalFactor;
         materialTarget.envMapIntensity = materialSource.envMapIntensity || defaultMaterial.envMapIntensity;
         materialTarget.ior = materialSource.ior || defaultMaterial.ior;
         materialTarget.wireframe = materialSource.wireframe || defaultMaterial.wireframe;
@@ -672,6 +672,8 @@ function ramp(a,b,c,d,t) {
         materialEdit.clearcoatRoughness = materialGui.clearcoatRoughness;
         materialEdit.transparent = materialGui.transparent;
         materialEdit.opacity = materialGui.opacity;
+        materialEdit.normalScale.x = materialGui.normalFactor;
+        materialEdit.normalScale.y = materialGui.normalFactor;
         materialEdit.envMapIntensity = materialGui.envMapIntensity;
         materialEdit.ior = materialGui.ior;
         materialEdit.wireframe = materialGui.wireframe;
@@ -756,6 +758,7 @@ function ramp(a,b,c,d,t) {
         // geometry //folder.add( material, 'flatShading' ).onChange( needsUpdate( material, geometry ) );
         folder.add( material, 'transparent' ).onChange( updatePhysicalMaterial );
         folder.add( material, 'opacity', 0, 1 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'normalFactor', 0, 5 ).step( 0.01 ).onChange( updatePhysicalMaterial );
         folder.add( material, 'envMapIntensity', 0, 3 ).step( 0.01 ).onChange( updatePhysicalMaterial );
         folder.add( material, 'ior', 0, 3 ).step( 0.01 ).onChange( updatePhysicalMaterial );
         folder.add( material, 'wireframe' ).onChange( updatePhysicalMaterial );
@@ -844,7 +847,6 @@ function ramp(a,b,c,d,t) {
                     }
                 }
             }
-//                    designSubsystem.pieces[0].mesh.material=materialArray;
         }
     }
     
@@ -913,6 +915,7 @@ function ramp(a,b,c,d,t) {
         settingsFolder.add( settings, 'UV' ).onChange( setUV );
         
         materialGui = new THREE.MeshPhysicalMaterial( { color: 0x049EF4 } );
+        materialGui.normalFactor = 3;
         guiMeshPhysicalMaterial(gui, materialGui);
         API["SaveMaterial"] = saveMaterial;
         gui.add( API, "SaveMaterial").name( 'Save material' )
@@ -1000,8 +1003,8 @@ function ramp(a,b,c,d,t) {
     pieceProperties["Module"]   = pieceProperties1.concat(typeProperties["Module"],   pieceProperties3);
 
     //materialProperties = ["name","type","texture","texture1","texture2","texture3","texture4","texture5","texture6"];
-    materialProperties = ["name","texture", "texture_image",   
-        "color_r", "color_g", "color_b", "color", "emissive_r", "emissive_g", "emissive_b", "emissive", "roughness", "metalness", "reflectivity", "clearcoat", "clearcoatRoughness", "transparent", "opacity", "envMapIntensity", "ior", "wireframe", "side"]
+    materialProperties = ["name","texture", "texture_image", "normalMap", "normal_image",  
+        "color_r", "color_g", "color_b", "color", "emissive_r", "emissive_g", "emissive_b", "emissive", "roughness", "metalness", "reflectivity", "clearcoat", "clearcoatRoughness", "transparent", "opacity", "normalFactor", "envMapIntensity", "ior", "wireframe", "side"]
 
     var subsystemParameterProperties = ["name", "default"];
 
@@ -1231,9 +1234,14 @@ function ramp(a,b,c,d,t) {
             textNode = document.createTextNode(textContent);
             tdEl.appendChild(textNode);
         } else if (form_entity == "obj_material" && property == "texture_image") {
-            console.log("color cell");
+            console.log("texture_image cell");
             if (obj.texture != null && obj.texture != "") {
                 tdEl.setAttribute("style", "background-image: url('" + obj.texture + "'); background-size: 100%;");
+            }
+        } else if (form_entity == "obj_material" && property == "normal_image") {
+            console.log("normal_image cell");
+            if (obj.normalMap != null && obj.normalMap != "") {
+                tdEl.setAttribute("style", "background-image: url('" + obj.normalMap + "'); background-size: 100%;");
             }
         } else if (form_entity == "obj_material" && property == "color") {
             console.log("color cell");
@@ -2263,7 +2271,7 @@ td+td {
 </style>
 
 
-<h3>Version 40.a</h3>
+<h3>Version 41</h3>
 <h3>Previous versions</h3>
 <br><a href=escene10.html>v 10</a> Include Subsystems
 <br><a href=escene11.html>v 11</a> Subsystems with evalText for each subsystem
@@ -2295,7 +2303,9 @@ td+td {
 <br><a href=escene37.html>v 37</a> Formulario de materiales
 <br><a href=escene38.html>v 38</a> Pruebas de Environment mapping
 <br><a href=escene39.html>v 39</a> Select de options
-<br><a href=escene40.html>v 40</a> Opción de mostrar entre varios
+<br><a href=escene40.html>v 40</a> Editar materiales
+<br><a href=escene41.html>v 41</a> Normales en materiales
+Opción de mostrar entre varios
 
   <script>
 document.write("parameters: " + designObj.parameters.length);
@@ -2375,8 +2385,10 @@ https://threejs.org/examples/#webgl_lights_spotlight
 References and examples of three.js
 - https://threejs.org/
 - github: https://github.com/mrdoob/three.js
+- https://github.com/looeee/discoverthreejs-site
 - https://stemkoski.github.io/Three.js/
 - exporting materials from Blender to three.js: https://betterprogramming.pub/how-to-create-awesome-3d-graphics-for-your-website-using-three-js-blender-and-greensock-a834cb8a6f6e
+- https://sbcode.net/threejs/
 
 - lil-gui: https://lil-gui.georgealways.com/
 
