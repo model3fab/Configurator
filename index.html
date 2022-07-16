@@ -1283,16 +1283,18 @@ function ramp(a,b,c,d,t) {
         }
         tableEl.appendChild(trEl);
 
-        for (var i =0; i< objArray.length; i++) {
-            //setDefaultValues(objArray[i]);
-            //console.log("Piece: " + obj.pieces[i].name + " lx:" + eval(obj.pieces[i].lx).toFixed(2));
-            var trEl = document.createElement("TR");
+        if (objArray != null) {
+            for (var i =0; i< objArray.length; i++) {
+                //setDefaultValues(objArray[i]);
+                //console.log("Piece: " + obj.pieces[i].name + " lx:" + eval(obj.pieces[i].lx).toFixed(2));
+                var trEl = document.createElement("TR");
 
-            addEdit(trEl, i, modelName, form_entity, i_element);
-            for (var j =0; j< properties.length; j++) {
-                addCell(trEl, objArray[i], properties[j], i, modelName, form_entity);
+                addEdit(trEl, i, modelName, form_entity, i_element);
+                for (var j =0; j< properties.length; j++) {
+                    addCell(trEl, objArray[i], properties[j], i, modelName, form_entity);
+                }
+                tableEl.appendChild(trEl);
             }
-            tableEl.appendChild(trEl);
         }
         return tableEl;
     }
@@ -1438,7 +1440,9 @@ function ramp(a,b,c,d,t) {
         } else if (form_entity == "obj_subsystem_parameter") {
             formEl.appendChild(addHiddenField("sys_type", "sys_subsystem_parameter"));
             formEl.appendChild(addHiddenField("sys_element", i_element));
-            objectElement = designArr[modelName].pieces[i_element]["parameters"][i_array];
+            if (i_array != -1) {
+                objectElement = designArr[modelName].pieces[i_element]["parameters"][i_array];
+            }
             properties = subsystemParameterProperties;
         } else if (form_entity == "obj_material") {
             formEl.appendChild(addHiddenField("sys_type", "sys_material"));
@@ -2534,6 +2538,7 @@ V- extruxión
 V- bezier:
     http://jrlazz.eu5.org/ggk/bezcurto.html
     file:///C:/Java/appengine-java-sdk-1.9.73/applications/cloth/html/cloth/bezier/test.html
+    https://spencermortensen.com/articles/bezier-circle/
 v36
 V- parametros publicos y privados (definir precio como parametro)
 v37
@@ -2553,13 +2558,13 @@ V- Incluir editor de materiales para material seleccionado (y textura)
         https://threejs.org/examples/#webgl_materials_subsurface_scattering
         https://threejs.org/docs/#api/en/materials/MeshStandardMaterial
         https://marmoset.co/posts/physically-based-rendering-and-you-can-too/
-- salvar y recuperar parámetros de editor en parámetros de materiales del JSON
-- environment mapping
-- materiales con brillos
-- materiales con normales
-- otros materiales: metalico, blanco
+V- salvar y recuperar parámetros de editor en parámetros de materiales del JSON
+V- environment mapping
+V- materiales con brillos
+V- materiales con normales
+V- otros materiales: metalico, blanco
+V- pasar materiales a parametros del tipo de pieza (ej: box tiene 6 materiales, Gltf ninguno)
 
-- pasar materiales a parametros del tipo de pieza (ej: box tiene 6 materiales, Gltf ninguno)
 - parámetros para definir materiales (tipo texto)
 - valores por defecto de parámetros (y el actual default ver si tiene que ser value)
 - decidir interface para seleccionar materiales de piezas
