@@ -164,7 +164,7 @@ function loadJSON() {
 "designArr":{"init":{"name":"init","parameters":[],"pieces":[]},"components":{"name":"components","parameters":[{"name":"lx","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"ly","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"lz","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"rx","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"ry","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"rz","type":"m","min":"0","max":"400","step":".5","default":"0"},{"name":"x","type":"cm","min":"-300","max":"400","step":"1","default":"0"},{"name":"y","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"z","type":"cm","min":"-100","max":"400","step":".5","default":"0"},{"name":"sx","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sy","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz2","type":"formula","default":"sz+1"}, {"name":"precio","type":"formula","default":"Math.round(lx/3*ly/7*lz*300)"}],"pieces":[{"name":"cilindro","type":"Cylinder","rt":"lx/2","rb":"ly/2","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90 + rx","ry":"ry","rz":"rz","x":"x","y":"y","z":"z + lz/2"},{"name":"cubo","type":"Box","lx":"lx","ly":"ly","lz":"lz","material_1":"dice1","material_2":"dice2","material_3":"dice3","material_4":"dice4","material_5":"dice5","material_6":"dice6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x + 1","y":"y","z":"z"},{"name":"triangle","type":"Triangle","b":"lx","h":"ly","d":"0.3","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"2.4+x","y":"y","z":"z"},{"name":"prisma","type":"Extrude","shape_array":[["0","0"],["lx","0"],["0.8","ly"],[".2","1"]],"lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x-2","y":"y","z":"z"},{"name":"esfera","type":"Sphere","r":"lz/2","material_1":"golf","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x+4","y":"y","z":"z"},{"name":"esfera Carbon","type":"Sphere","r":"lz/2","material_1":"carbon","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x+4","y":"y+1.2","z":"z"},{"name":"vaso","type":"Revolution","shape_array":[["0","0"],["lx","0"],["0.8","ly"],["0","1"]],"lz":"360","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x-4","y":"y","z":"z"},{"name":"esfera cromo","type":"Sphere","r":"lz/2","material_1":"chrome","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x","y":"y+1.2","z":"z"}]},"cajon_curva":{"name":"cajon_curva","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":10,"max":120,"default":30},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"rebaje_largo","type":"cm","min":"0.5","max":"20","default":"10"},{"name":"rebaje_alto","type":"cm","min":"0.5","max":"10","step":".2","default":"2"}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo","ly":"profundidad - espesor","lz":"espesor","material_1":"kitchen_wood","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"fondo","type":"Box","lx":"largo - espesor * 2","ly":"espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"espesor"},{"name":"frente","type":"Extrude","shape_array":[["0","0"],["largo","0"],["largo","alto"],["largo-((largo-0.12-rebaje_largo)/2)","alto"],["largo-((largo-0.12-rebaje_largo)/2)-0.06","alto-rebaje_alto","largo-((largo-0.12-rebaje_largo)/2)-0.04","alto","largo-((largo-0.12-rebaje_largo)/2)-0.02","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)+0.06","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)","alto","((largo-0.12-rebaje_largo)/2)+0.02","alto-rebaje_alto","((largo-0.12-rebaje_largo)/2)+0.04","alto"],["0","alto"]],"lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"90","ry":"0","rz":"0","x":"0","y":"profundidad","z":"0"},{"name":"tirador","type":"Box","lx":"largo/10","ly":"espesor","lz":"alto/10","material_1":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo/2-largo/10/2","y":"profundidad","z":"alto/2"}]},"cajonera":{"name":"cajonera","parameters":[{"name":"largo","type":"cm","min":20,"max":400,"default":100},{"name":"alto","type":"cm","min":40,"max":250,"default":200},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"name":"cajones","type":"m","min":0,"max":20,"default":2},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","subsystem":"cajon_curva","parameters":[{"name":"largo","default":"largo"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"espesor"},{"name":"profundidad","default":"profundidad"},{"name":"rebaje_largo","default":"largo/3"},{"name":"rebaje_alto","default":"(alto-espaciado*(cajones-1))/cajones/3"}],"material_1":"dice","array_size":"cajones","sx":1,"sy":1,"sz":1,"rx":"0","ry":"0","rz":"0","x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},"marco":{"name":"marco","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":"1","max":"10","step":".2","default":"2"},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"0","y":"0","z":"0"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor","y":"0","z":"0"},{"name":"base","type":"Box","lx":"largo-espesor*2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"0"},{"name":"alto","type":"Box","lx":"largo - espesor * 2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"alto-espesor"},{"name":"panel","type":"Box","lx":"largo-espesor","ly":"profundidad/2","lz":"alto-espesor","material_1":"glass2","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor/2","y":"profundidad/2","z":"espesor/2"},{"name":"tirador","type":"Sphere","r":"espesor/4","material_1":"chrome","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor/2","y":"profundidad+espesor/4","z":"alto/2"},{"name":"base tirador","type":"Cylinder","rt":"espesor/8","rb":"espesor/8","lz":"espesor/16","material_1":"chrome","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor/2","y":"profundidad","z":"alto/2"}]},"armario":{"name":"armario","parameters":[{"name":"largo_m1","type":"cm","min":20,"max":400,"default":60},{"name":"largo_modulo_cajones","type":"cm","min":20,"max":400,"default":60},{"name":"alto","type":"cm","min":40,"max":250,"default":180},{"name":"profundidad","type":"cm","min":20,"max":120,"default":60},{"name":"espesor","type":"cm","min":1,"max":12,"default":4},{"name":"espesor_cajon","type":"cm","min":1,"max":12,"default":2},{"name":"balda1","type":"cm","min":0,"max":200,"default":30},{"name":"balda_caj","type":"cm","min":0,"max":200,"default":0},{"name":"altura_cajonera","type":"m","min":0,"max":100,"default":60},{"name":"espaciado_vert","type":"cm","min":0,"max":10,"default":1},{"name":"espaciado_hor","type":"cm","min":0,"max":10,"default":1},{"name":"modulos","type":"m","min":0,"max":10,"default":3},{"name":"cajones","type":"m","min":0,"max":20,"default":6},{"name":"tiempo","type":"m","min":0,"max":300,"default":0}],"pieces":[{"name":"objeto gltf","type":"Gltf","url":"models/legoCube/scene.gltf","material_1":"plywood6","sx":".1","sy":".1","sz":".1","rx":"90","ry":"0","rz":"0","x":"largo_m1*0.3","y":"profundidad/2","z":"balda1+espesor+0.0215"},{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material_1":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + largo_modulo_cajones * (array_i + 1)-espesor","y":0,"z":"espesor"},{"name":"centro","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"tapa","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"0","z":"alto-espesor"},{"name":"fondo","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"espesor","lz":"alto","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"-espesor","z":"0"},{"name":"balda","type":"Box","lx":"largo_m1-espesor*2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"balda1"},{"name":"balda cajones","type":"Box","lx":"largo_modulo_cajones-espesor","ly":"profundidad","lz":"espesor","material_1":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + array_i*(largo_modulo_cajones)","y":0,"z":"(alto - 2*espesor)*altura_cajonera/100 + + espesor + espaciado_vert + balda_caj"},{"name":"cajoneras","type":"Module","subsystem":"cajonera","parameters":[{"name":"largo","default":"largo_modulo_cajones - espesor - espaciado_hor*2"},{"name":"alto","default":"(alto - 2*espesor)*altura_cajonera/100"},{"name":"profundidad","default":"profundidad - espesor"},{"name":"espaciado","default":"espaciado_vert"},{"name":"espesor","default":"espesor_cajon"},{"name":"cajones","default":"cajones"},{"name":"tiempo","default":"tiempo"}],"material_1":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1+array_i*(largo_modulo_cajones)+espaciado_hor","y":"0","z":"espesor"},{"name":"puerta","type":"Module","subsystem":"marco","parameters":[{"name":"largo","default":"largo_m1"},{"name":"alto","default":"alto-espesor"},{"name":"profundidad","default":"espesor"},{"name":"espesor","default":"espesor*3"}],"material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"ramp(0,50,100,150,tiempo)*120","x":"0","y":"profundidad","z":"0"},{"name":"barra","type":"Cylinder","rt":"espesor/2","rb":"espesor/2","lz":"largo_modulo_cajones-espesor","material_1":"envmap","array_size":"modulos","sx":"1","sy":"1","sz":"1","rx":"90","ry":"90","rz":"0","x":"largo_m1 + array_i*(largo_modulo_cajones) + largo_modulo_cajones/2 - espesor/2","y":"profundidad/2","z":"alto-espesor*3"}]}}}
 </textarea>
 <br>
-<button onclick="exportCollection()">Show JSON</button><a href='https://codebeautify.org/jsonviewer'>See JSON beautify</a><button onclick="loadJSON()">Load JSON</button>
+<button onclick="exportCollection(), setTextAreaSize()">Show JSON</button><a href='https://codebeautify.org/jsonviewer'>See JSON beautify</a><button onclick="loadJSON()">Load JSON</button>
 <br><a href='bezier.html'>Bezier curves</a>
 
 
@@ -1063,6 +1063,7 @@ function ramp(a,b,c,d,t) {
 <script>
 
     var parameterProperties = ["name", "type", "options", "min","max", "step", "default"];
+    var pieceTypes = ["Box", "Cylinder", "Sphere", "Triangle", "Extrude", "Revolution", "Gltf", "Module"];
     var pieceProperties1 = ["name", "type"];
     var pieceProperties3 = ["array_size", "sx", "sy", "sz", "rx", "ry", "rz", "x", "y", "z"];
     var typeProperties = {};
@@ -1104,6 +1105,12 @@ function ramp(a,b,c,d,t) {
         return eval(expr);
     }
 
+    function setTextAreaSize() {
+        if (document.getElementById("jsonObj").style.width == "") {
+            document.getElementById("jsonObj").style.width = "660px";
+            document.getElementById("jsonObj").style.height = "230px";
+        }
+    }
     function exportCollection() {
         collectionExport = {};
         //collectionExport.materials = materialsObj;
@@ -1390,8 +1397,42 @@ function ramp(a,b,c,d,t) {
     function addNew(trEl, modelName, form_entity, i_piece) {
         var tdEl = document.createElement("TD");
         tdEl.setAttribute("class", "new");
-        tdEl.innerHTML = 
-          "<a onclick='createForm(" + -1 + ", \"" + modelName + "\",\"N\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>New</a>";
+        if (form_entity == "obj_piece") {  // put a SELECT for selection of type of piece
+            var text1Node = document.createTextNode("New:");
+            tdEl.appendChild(text1Node);
+            var selectPieceType = document.createElement("SELECT");
+            selectPieceType.setAttribute("class", "newSelect");
+            selectPieceType.setAttribute("onchange", "createForm(" + -1 + ", \"" + modelName + "\",\"N\", \"" + form_entity + "\", " + i_piece + ", this.value, this.options[this.selectedIndex].text)");
+            selectPieceType.setAttribute("onfocus", "this.selectedIndex = -1;");
+            var option = document.createElement("option");
+            option.text = "Select type";
+            option.value = "0";
+            option.setAttribute("style","display:none;");
+            selectPieceType.add(option);
+            for (var j =0; j< pieceTypes.length; j++) {
+                option = document.createElement("option");
+                option.text  = pieceTypes[j];
+                option.value = pieceTypes[j];
+                selectPieceType.add(option);
+            }
+             // <optgroup label="German Cars">
+            var optgroup = document.createElement("optgroup");
+            optgroup.label = "Module";
+            selectPieceType.add(optgroup);
+
+            for (var prop in designArr) {
+                if (Object.prototype.hasOwnProperty.call(designArr, prop)) {
+                    option = document.createElement("option");
+                    option.text = designArr[prop].name;
+                    option.value = "Module";
+                    optgroup.appendChild(option);
+                }
+            }
+            tdEl.appendChild(selectPieceType);
+        } else{
+            tdEl.innerHTML = 
+              "<a onclick='createForm(" + -1 + ", \"" + modelName + "\",\"N\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>New</a>";
+        }
         trEl.appendChild(tdEl);
     }
 
@@ -1419,7 +1460,7 @@ function ramp(a,b,c,d,t) {
         return formEl;
     }
 
-    function createForm(i_array, modelName, formType, form_entity, i_element) {
+    function createForm(i_array, modelName, formType, form_entity, i_element, selected_type, selected_module) {
         console.log("createForm " + i_element);
         
         var formEl = addDivForEdit(modelName);
@@ -1435,6 +1476,10 @@ function ramp(a,b,c,d,t) {
             formEl.appendChild(addHiddenField("sys_type", "sys_piece"));
             objectElement = designArr[modelName].pieces[i_array];
             if (objectElement != null) type = objectElement.type;
+            if (formType == "N") {
+                console.log("createForm type: " + selected_type);
+                type = selected_type;
+            }
             if (type == null || type == "") type = "Box";
             properties = pieceProperties[type];
         } else if (form_entity == "obj_subsystem_parameter") {
@@ -1455,14 +1500,20 @@ function ramp(a,b,c,d,t) {
         for (var j =0; j< properties.length; j++) {
             var propertyName  = properties[j];
             var propertyValue = "";
-            if (formType != "N") {
+            if (formType == "N") {
+                if (form_entity == "obj_piece" && propertyName == "type") {
+                    propertyValue = selected_type;
+                } else if (form_entity == "obj_piece" && propertyName == "subsystem") {
+                    propertyValue = selected_module;
+                }
+            } else {
                 if (objectElement[properties[j]] != null) {
                     propertyValue = objectElement[properties[j]];
                 }
             }
             if (form_entity == "obj_piece" && propertyName == "shape_array") {
                 console.log("shape_array");
-                divEl = createArrayForm(formEl, propertyValue,  "shapeForm",  "Shape points", ["X","Y"], "Point", ["x", "y", "c1x", "c1y","c2x","c2y"], ["", ""], ["", "", "", "", "", ""], "Add Curve" );
+                divEl = createArrayForm(formEl, propertyValue,  "shapeForm",  "Shape points", ["X","Y","C1X","C1Y","C2X","C2Y"], "Point", ["x", "y", "c1x", "c1y","c2x","c2y"], ["", ""], ["", "", "", "", "", ""], "Add Curve" );
 
             } else if (form_entity == "obj_parameter" && propertyName == "options"){
                 if (document.getElementById("type").value == "options") {
@@ -2450,10 +2501,13 @@ button#addArrayRow {
     text-overflow: ellipsis;
 }
 #modelDiv td.new, #modelDiv td.edit {
-    width: 7em;
+    width: 8em;
     overflow: initial;
     white-space: initial;
     text-overflow: initial;
+}
+#modelDiv td.new .newSelect{
+    width: 7em;
 }
 td+td {
   width: auto;
@@ -2467,7 +2521,7 @@ td+td {
 </style>
 
 
-<h3>Version 43</h3>
+<h3>Version 44</h3>
 <h3>Previous versions</h3>
 <br><a href=escene10.html>v 10</a> Include Subsystems
 <br><a href=escene11.html>v 11</a> Subsystems with evalText for each subsystem
@@ -2503,6 +2557,8 @@ td+td {
 <br><a href=escene41.html>v 41</a> Normales en materiales
 <br><a href=escene42.html>v 42</a> Esfera
 <br><a href=escene43.html>v 43</a> Revolution
+<br><a href=escene44.html>v 44</a> Select for type of pieces
+<br><a href=escene45.html>v 45</a> Select different options for a piece
 Opción de mostrar entre varios
 
   <script>
