@@ -1,0 +1,2783 @@
+<!DOCTYPE html>
+<html><head>
+<meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <title></title>
+  <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+  <meta name="robots" content="noindex, nofollow">
+  <meta name="googlebot" content="noindex, nofollow">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+
+<script>
+
+materialOptionsObj = {
+  "materialOptions": [
+    {
+      "name": "materials ext",
+      "materials": [
+        {"material": "plywood6"},
+        {"material": "wood_table"},
+        {"material": "kitchen_wood"},
+        {"material": "UV_6map"},
+        {"material": "dice"}
+      ]
+    }
+  ]
+}
+
+collection = {};
+
+window.onerror = function(message, url, line, col, error) {
+    alert(error.message);
+    console.log('error: ' + error.message);
+};
+
+function saveFileAs() {
+    exportCollection();
+    // https://codepen.io/mmousawy/pen/wBbrKM?editors=1010
+    var promptFilename = "collection.txt" 
+        var textBlob = new Blob([document.getElementById("jsonObj").value],
+          {type:'text/plain'});
+        var downloadLink = document.createElement("a");
+        downloadLink.download = promptFilename;
+        downloadLink.innerHTML = "Download File";
+        downloadLink.href = window.URL.createObjectURL(textBlob);
+        downloadLink.click();
+    delete downloadLink;
+    delete textBlob;
+}
+
+function readFile() {
+    //https://cssdeck.com/labs/7bx7mmcm
+    document.getElementById('readFile').innerHTML = "Reading file ...";
+    var fileToLoad = document.getElementById("loadFile").files[0];
+
+    var fileReader = new FileReader();
+    fileReader.onload = function(fileLoadedEvent) 
+    {
+        var textFromFileLoaded = fileLoadedEvent.target.result;
+        document.getElementById("jsonObj").value = textFromFileLoaded;
+        loadJSON();
+        document.getElementById('readFile').innerHTML = "File readed";
+    };
+    fileReader.readAsText(fileToLoad, "UTF-8");
+}
+
+function loadJSON() {
+    designArr = JSON.parse(document.getElementById('jsonObj').value).designArr;
+    materialArr = JSON.parse(document.getElementById('jsonObj').value).materialArr;
+    init();
+}
+
+</script>
+
+<div id='renderDiv'></div>
+<div id='modelDiv'></div>
+<div id='fileDiv'></div>
+<br>
+<button onclick="saveFileAs()">Save to file</button>
+<input id="loadFile" onInput="readFile()" type="file" value='Load file'</>
+<span id='readFile'></span>
+<br>
+<textarea ROWS=1 COLS=1 id='jsonObj'>
+{"materialArr":[
+  {
+    "name": "UV_map",
+    "type": "single",
+    "texture": "textures/uv_grid_opengl.jpg"
+  },
+  {
+  "name":"glass2","type":"arrayEnvmap","color_r":1,"color_g":1,"color_b":1,"emissive_r":0,"emissive_g":0,"emissive_b":0,
+  "roughness":0.05,"metalness":0.9,"reflectivity":0,"clearcoat":1,"clearcoatRoughness":0,"transparent":true,"opacity":0.5,"envMapIntensity":1.0,  "ior":0.9,"wireframe":false,"side":1
+  },
+  {
+    "name": "envmap",
+    "type": "envmap","roughness":0.01,"metalness":1,"reflectivity":0.91
+  },
+  {
+    "name": "UV_6map",
+    "type": "array",
+    "texture": "textures/uv_grid_opengl.jpg"
+  },
+  {
+    "name": "dice",
+    "type": "array",
+    "texture": "images/Dice-Blue-1.png"
+  },
+  {
+    "name": "dice2_old",
+    "type": "array",
+    "texture": "images/Dice-Blue-1.png"
+  },
+  {
+    "name": "plywood6",
+    "type": "arrayEnvmap",
+    "texture": "textures/plywood_diff_1k.jpg",
+    "normalMap": "textures/plywood_nor_gl_1k.jpg",
+    "diffuseMap": true,
+    "normalFactor": 1
+  },
+  {
+    "name": "plywood",
+    "type": "single",
+    "texture": "textures/plywood_diff_1k.jpg"
+  },
+  {
+    "name": "kitchen_wood",
+    "type": "single",
+    "texture": "textures/kitchen_wood_diff_1k.jpg"
+  },
+  {
+    "name": "wood_table",
+    "type": "single",
+    "texture": "textures/wood_table_001_diff_1k.jpg"
+  },
+  {
+    "name": "dice1",
+    "type": "array",
+    "texture": "images/Dice-Blue-1.png"
+  },
+  {
+    "name": "dice2",
+    "type": "array",
+    "texture": "images/Dice-Blue-2.png"
+  },
+  {
+    "name": "dice3",
+    "type": "array",
+    "texture": "images/Dice-Blue-3.png"
+  },
+  {
+    "name": "dice4",
+    "type": "array",
+    "texture": "images/Dice-Blue-4.png"
+  },
+  {
+    "name": "dice5",
+    "type": "array",
+    "texture": "images/Dice-Blue-5.png"
+  },
+  {
+    "name": "dice6",
+    "type": "array",
+    "texture": "images/Dice-Blue-6.png"
+  },
+  {"name":"golf","texture":"textures/plywood_diff_1k.jpg","normalMap":"examples/textures/golfball.jpg","color_r":1,"color_g":1,"color_b":1,"emissive_r":0,"emissive_g":0,"emissive_b":0,"roughness":0.262,"metalness":0.173,"reflectivity":0.6481481481481481,"clearcoat":0.43,"clearcoatRoughness":0.34,"transparent":false,"opacity":1,"normalFactor":"1","envMapIntensity":1.21,"ior":1.7,"wireframe":false},
+  {"name":"carbon","texture":"examples/textures/carbon/Carbon.png","normalMap":"examples/textures/carbon/Carbon_Normal.png","color_r":"1","color_g":"1","color_b":"1","emissive_r":"0","emissive_g":"0","emissive_b":"0","roughness":"0.262","metalness":"0.173","reflectivity":"0.6481481481481481","clearcoat":"0.43","clearcoatRoughness":"0.34","transparent":"false","opacity":"1","normalFactor":"1","envMapIntensity":"1.21","ior":"1.7","wireframe":"false"}
+  ,{"name":"Wood005","texture":"textures/Wood005/Wood005_1K_Color.jpg","normalMap":"textures/Wood005/Wood005_1K_NormalGL.jpg","color_r":0.8549019607843137,"color_g":0.796078431372549,"color_b":0.7254901960784313,"emissive_r":0,"emissive_g":0,"emissive_b":0,"roughness":0.657,"metalness":0.758,"reflectivity":0.6059999999999999,"clearcoat":0,"clearcoatRoughness":0,"transparent":false,"opacity":1,"diffuseMap":"true","normalFactor":"1","envMapIntensity":1,"ior":1.6399155227032733,"wireframe":false},
+  {"name":"chrome","color_r":"1","color_g":"1","color_b":"1","roughness":"0","metalness":"1"}
+],
+"designArr":{"init":{"name":"init","parameters":[],"pieces":[]},"components":{"name":"components","parameters":[{"name":"lx","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"ly","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"lz","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"rx","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"ry","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"rz","type":"m","min":"0","max":"400","step":".5","default":"0"},{"name":"x","type":"cm","min":"-300","max":"400","step":"1","default":"0"},{"name":"y","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"z","type":"cm","min":"-100","max":"400","step":".5","default":"0"},{"name":"sx","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sy","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz2","type":"formula","default":"sz+1"}, {"name":"precio","type":"formula","default":"Math.round(lx/3*ly/7*lz*300)"}],"pieces":[{"name":"cilindro","type":"Cylinder","rt":"lx/2","rb":"ly/2","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90 + rx","ry":"ry","rz":"rz","x":"x","y":"y","z":"z + lz/2"},{"name":"cubo","type":"Box","lx":"lx","ly":"ly","lz":"lz","material_1":"dice1","material_2":"dice2","material_3":"dice3","material_4":"dice4","material_5":"dice5","material_6":"dice6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x + 1","y":"y","z":"z"},{"name":"triangle","type":"Triangle","b":"lx","h":"ly","d":"0.3","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"2.4+x","y":"y","z":"z"},{"name":"prisma","type":"Extrude","shape_array":[["0","0"],["lx","0"],["0.8","ly"],[".2","1"]],"lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x-2","y":"y","z":"z"},{"name":"esfera","type":"Sphere","r":"lz/2","material_1":"golf","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x+4","y":"y","z":"z"},{"name":"esfera Carbon","type":"Sphere","r":"lz/2","material_1":"carbon","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x+4","y":"y+1.2","z":"z"},{"name":"vaso","type":"Revolution","shape_array":[["0","0"],["lx","0"],["0.8","ly"],["0","1"]],"lz":"360","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x-4","y":"y","z":"z"},{"name":"esfera cromo","type":"Sphere","r":"lz/2","material_1":"chrome","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x","y":"y+1.2","z":"z"}]},"cajon_curva":{"name":"cajon_curva","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":10,"max":120,"default":30},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"rebaje_largo","type":"cm","min":"0.5","max":"20","default":"10"},{"name":"rebaje_alto","type":"cm","min":"0.5","max":"10","step":".2","default":"2"}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo","ly":"profundidad - espesor","lz":"espesor","material_1":"kitchen_wood","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"fondo","type":"Box","lx":"largo - espesor * 2","ly":"espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"espesor"},{"name":"frente","type":"Extrude","shape_array":[["0","0"],["largo","0"],["largo","alto"],["largo-((largo-0.12-rebaje_largo)/2)","alto"],["largo-((largo-0.12-rebaje_largo)/2)-0.06","alto-rebaje_alto","largo-((largo-0.12-rebaje_largo)/2)-0.04","alto","largo-((largo-0.12-rebaje_largo)/2)-0.02","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)+0.06","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)","alto","((largo-0.12-rebaje_largo)/2)+0.02","alto-rebaje_alto","((largo-0.12-rebaje_largo)/2)+0.04","alto"],["0","alto"]],"lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"90","ry":"0","rz":"0","x":"0","y":"profundidad","z":"0"},{"name":"tirador","type":"Box","lx":"largo/10","ly":"espesor","lz":"alto/10","material_1":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo/2-largo/10/2","y":"profundidad","z":"alto/2"}]},"cajonera":{"name":"cajonera","parameters":[{"name":"largo","type":"cm","min":20,"max":400,"default":100},{"name":"alto","type":"cm","min":40,"max":250,"default":200},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"name":"cajones","type":"m","min":0,"max":20,"default":2},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","subsystem":"cajon_curva","parameters":[{"name":"largo","default":"largo"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"espesor"},{"name":"profundidad","default":"profundidad"},{"name":"rebaje_largo","default":"largo/3"},{"name":"rebaje_alto","default":"(alto-espaciado*(cajones-1))/cajones/3"}],"material_1":"dice","array_size":"cajones","sx":1,"sy":1,"sz":1,"rx":"0","ry":"0","rz":"0","x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},"marco":{"name":"marco","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":"1","max":"10","step":".2","default":"2"},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"0","y":"0","z":"0"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor","y":"0","z":"0"},{"name":"base","type":"Box","lx":"largo-espesor*2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"0"},{"name":"alto","type":"Box","lx":"largo - espesor * 2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"alto-espesor"},{"name":"panel","type":"Box","lx":"largo-espesor","ly":"profundidad/2","lz":"alto-espesor","material_1":"glass2","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor/2","y":"profundidad/2","z":"espesor/2"},{"name":"tirador","type":"Sphere","r":"espesor/4","material_1":"chrome","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor/2","y":"profundidad+espesor/4","z":"alto/2"},{"name":"base tirador","type":"Cylinder","rt":"espesor/8","rb":"espesor/8","lz":"espesor/16","material_1":"chrome","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor/2","y":"profundidad","z":"alto/2"}]},
+    "puerta madera": {
+      "name": "puerta madera",
+      "parameters": [
+        {
+          "name": "largo",
+          "type": "cm",
+          "min": 10,
+          "max": 400,
+          "default": 40
+        },
+        {
+          "name": "alto",
+          "type": "cm",
+          "min": 10,
+          "max": 100,
+          "default": 20
+        },
+        {
+          "name": "profundidad",
+          "type": "cm",
+          "min": "1",
+          "max": "10",
+          "step": ".2",
+          "default": "2"
+        },
+        {
+          "name": "espesor",
+          "type": "cm",
+          "min": 0.5,
+          "max": 12,
+          "default": 2
+        }
+      ],
+      "pieces": [
+        {
+          "name": "lado derecho",
+          "type": "Box",
+          "lx": "largo",
+          "ly": "profundidad",
+          "lz": "alto",
+          "material_1": "Wood005",
+          "sx": "1",
+          "sy": "1",
+          "sz": "1",
+          "rx": "0",
+          "ry": "0",
+          "rz": "0",
+          "x": "0",
+          "y": "0",
+          "z": "0"
+        },
+        {
+          "name": "tirador",
+          "type": "Sphere",
+          "r": "espesor/4",
+          "material_1": "Wood005",
+          "sx": "1",
+          "sy": "1",
+          "sz": "1",
+          "rx": "0",
+          "ry": "0",
+          "rz": "0",
+          "x": "largo-espesor/2",
+          "y": "profundidad+espesor/4",
+          "z": "alto*.4"
+        },
+        {
+          "name": "base tirador",
+          "type": "Cylinder",
+          "rt": "espesor/8",
+          "rb": "espesor/8",
+          "lz": "espesor/16",
+          "material_1": "Wood005",
+          "sx": "1",
+          "sy": "1",
+          "sz": "1",
+          "rx": "0",
+          "ry": "0",
+          "rz": "0",
+          "x": "largo-espesor/2",
+          "y": "profundidad",
+          "z": "alto*.4"
+        }
+      ]
+    },
+"armario":{"name":"armario","parameters":[{"name":"largo_m1","type":"cm","min":20,"max":400,"default":60},{"name":"largo_modulo_cajones","type":"cm","min":20,"max":400,"default":60},{"name":"alto","type":"cm","min":40,"max":250,"default":180},{"name":"profundidad","type":"cm","min":20,"max":120,"default":60},{"name":"espesor","type":"options","options":[["Super fina (1cm)","0.01"],["Fina (2cm)","0.02"],["Media (3cm)","0.03"],["Ancha (4 cm)","0.04"],["Super ancha (8 cm)","0.08"],["Extra ancha (12 cm)","0.12"]],"min":"0","max":"200","step":"1","default":"0.03"},{"name":"puerta","type":"options","options":[["Cristal","'marco'"],["Madera Wood005","'puerta madera'"]],"default":"'marco'"},{"name":"espesor_cajon","type":"cm","min":1,"max":12,"default":2},{"name":"balda1","type":"cm","min":0,"max":200,"default":30},{"name":"balda_caj","type":"cm","min":0,"max":200,"default":0},{"name":"altura_cajonera","type":"m","min":0,"max":100,"default":60},{"name":"espaciado_vert","type":"cm","min":0,"max":10,"default":1},{"name":"espaciado_hor","type":"cm","min":0,"max":10,"default":1},{"name":"modulos","type":"m","min":0,"max":10,"default":3},{"name":"cajones","type":"m","min":0,"max":20,"default":6},{"name":"tiempo","type":"m","min":0,"max":300,"default":0}],"pieces":[{"name":"objeto gltf","type":"Gltf","url":"models/legoCube/scene.gltf","material_1":"plywood6","sx":".1","sy":".1","sz":".1","rx":"90","ry":"0","rz":"0","x":"largo_m1*0.3","y":"profundidad/2","z":"balda1+espesor+0.0215"},{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material_1":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + largo_modulo_cajones * (array_i + 1)-espesor","y":0,"z":"espesor"},{"name":"centro","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto-espesor*2","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"tapa","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"0","z":"alto-espesor"},{"name":"fondo","type":"Box","lx":"largo_m1 + largo_modulo_cajones * modulos","ly":"espesor","lz":"alto","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":"-espesor","z":"0"},{"name":"balda","type":"Box","lx":"largo_m1-espesor*2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"balda1"},{"name":"balda cajones","type":"Box","lx":"largo_modulo_cajones-espesor","ly":"profundidad","lz":"espesor","material_1":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1 + array_i*(largo_modulo_cajones)","y":0,"z":"(alto - 2*espesor)*altura_cajonera/100 + + espesor + espaciado_vert + balda_caj"},{"name":"cajoneras","type":"Module","subsystem":"cajonera","parameters":[{"name":"largo","default":"largo_modulo_cajones - espesor - espaciado_hor*2"},{"name":"alto","default":"(alto - 2*espesor)*altura_cajonera/100"},{"name":"profundidad","default":"profundidad - espesor"},{"name":"espaciado","default":"espaciado_vert"},{"name":"espesor","default":"espesor_cajon"},{"name":"cajones","default":"cajones"},{"name":"tiempo","default":"tiempo"}],"material_1":"plywood6","array_size":"modulos","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo_m1+array_i*(largo_modulo_cajones)+espaciado_hor","y":"0","z":"espesor"},{"name":"puerta derecha","type":"Module","subsystem":"parameter:puerta","parameters":[{"name":"largo","default":"largo_m1"},{"name":"alto","default":"alto-espesor"},{"name":"profundidad","default":"espesor"},{"name":"espesor","default":"espesor*3"}],"material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"ramp(0,50,100,150,tiempo)*120","x":"0","y":"profundidad","z":"0"},{"name":"barra","type":"Cylinder","rt":"espesor/2","rb":"espesor/2","lz":"largo_modulo_cajones-espesor","material_1":"envmap","array_size":"modulos","sx":"1","sy":"1","sz":"1","rx":"90","ry":"90","rz":"0","x":"largo_m1 + array_i*(largo_modulo_cajones) + largo_modulo_cajones/2 - espesor/2","y":"profundidad/2","z":"alto-espesor*3"}]}}}
+</textarea>
+<br>
+<button onclick="exportCollection(), setTextAreaSize()">Show JSON</button><a href='https://codebeautify.org/jsonviewer'>See JSON beautify</a><button onclick="loadJSON()">Load JSON</button>
+<br><a href='bezier.html'>Bezier curves</a>
+
+
+<script>
+designArr = JSON.parse(document.getElementById('jsonObj').value).designArr;
+materialArr = JSON.parse(document.getElementById('jsonObj').value).materialArr;
+
+//const objectName = window.location.hash.substring( 1 ) || 'armario';
+const objectName = window.location.search.substring( 1 ) || 'armario';
+designObj = designArr[objectName];
+
+materialsObj = materialArr;
+var renderer;
+var camera;
+var rendererWidth;
+var rendererHeight;
+
+
+loaders = {};
+
+function ramp(a,b,c,d,t) {
+  //  1               --------
+  //                 /        \
+  //                /          \
+  //               /            \
+  //  0 -----------              -----------
+  //              a   b      c   d          
+  
+  if (t <= a) return 0;
+  else if (t <= b) return (t - a)/(b-a);
+  else if (t < c) return 1;
+  else if (t <= d) return 1 - (t - c)/(d-c);
+  else return 0;
+}
+</script>
+
+
+  <style id="compiled-css" type="text/css">
+      body {
+      margin: 0;
+}
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+    
+<script type="importmap">
+    {
+        "imports": {
+            "three": "./three/build/three.module.js"
+        }
+    }
+</script>
+
+<script type="module">//<![CDATA[
+
+
+    import * as THREE from 'three';
+
+    import { GUI } from './jsm/libs/lil-gui.module.min.js';
+    import { OrbitControls } from './jsm/controls/OrbitControls.js';
+    import { GLTFLoader } from './jsm/loaders/GLTFLoader.js';
+
+    loaders.GLTFLoader = GLTFLoader;
+
+
+    let mesh, scene;  // camera, renderer set global to change position in createForm
+
+    let gui;
+
+    var API = {
+        offsetX: 0,
+        offsetY: 0,
+        repeatX: 1.,
+        repeatY: 1.,
+        rotation: 0,  //Math.PI / 4, // positive is counter-clockwise
+        centerX: 0.0,
+        centerY: 0.0,
+        renders: 0,
+    };
+    const settings = {
+        debug: false,
+        axes: true,
+        UV: false,
+        env: false,
+    };
+    var materialGui;
+    var materialData;
+
+    var geometry;
+    var material_UV;
+    var axesHelper;
+    var evalText;
+    var guiPieces = null;
+
+    var textureEnv;
+    /*
+    */
+    var defaultMaterial = new THREE.MeshPhysicalMaterial( { color: 0xffffff } );
+    defaultMaterial.diffuseMap = true;
+    init();
+    showForm();
+    export function init() {
+
+        for (var i =0; i< designObj.parameters.length; i++) {
+            if (designObj.parameters[i].type == "options") {
+                //API[designObj.parameters[i].name] = designObj.parameters[i].options[0][1];
+                if (designObj.parameters[i].default != null) {
+                    API[designObj.parameters[i].name] = (designObj.parameters[i].default);
+                } else {
+                    API[designObj.parameters[i].name] = designObj.parameters[i].options[0][1];  // first option
+                }
+            } else {
+                API[designObj.parameters[i].name] = Number(designObj.parameters[i].default);
+            }
+        }
+
+        renderer = new THREE.WebGLRenderer();
+        renderer.setPixelRatio( window.devicePixelRatio );
+        rendererWidth = window.innerWidth;
+        rendererHeight = window.innerHeight;
+        renderer.setSize( window.innerWidth, window.innerHeight );
+
+        var divEl = document.getElementById("renderDiv");
+/*
+        if (divEl == null) {  // create node or delete content node
+            divEl = document.createElement("DIV");
+            divEl.setAttribute("id", "renderDiv");
+//            document.appendChild( divEl);
+            document.insertBefore(divEl, document.firstChild);
+        } else {
+            divEl.textContent = ''
+        }
+*/
+        if (divEl != null) {  // create node or delete content node
+            divEl.remove();
+        }
+        divEl = document.createElement("DIV");
+        divEl.setAttribute("id", "renderDiv");
+//            document.appendChild( divEl);
+        document.body.insertBefore(divEl, document.body.firstChild);
+        divEl.appendChild( renderer.domElement );
+
+        scene = new THREE.Scene();
+
+        camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, .1, 1000 );
+        camera.position.set( 4, 5, 1.6 );
+        camera.up.set(0,0,1)   // z up (https://stackoverflow.com/questions/44630265/how-can-i-set-z-up-coordinate-system-in-three-js)
+        scene.add( camera );
+
+        const controls = new OrbitControls( camera, renderer.domElement );
+        controls.addEventListener( 'change', render );
+        controls.minDistance = 1;
+        controls.maxDistance = 50;
+        controls.maxPolarAngle = Math.PI / 2 * 1.8;
+
+
+        const light = new THREE.DirectionalLight( 0xffffff, .8 );
+        light.position.x = 5;
+        light.position.y = 6;
+        light.position.z = 7;
+        scene.add( light );
+        const light2 = new THREE.DirectionalLight( 0xffffff, .8 );
+        light2.position.x = -2;
+        light2.position.y = 2;
+        light2.position.z = .5;
+        scene.add( light2 );
+        const light3 = new THREE.DirectionalLight( 0xffffff, .8 );
+        light3.position.x = .5;
+        light3.position.y = .5;
+        light3.position.z = -.5;
+        scene.add( light3 );
+        const light4 = new THREE.DirectionalLight( 0xffffff, 1.3 );
+        light4.position.x = -2;
+        light4.position.y = -2;
+        light4.position.z = .5;
+        scene.add( light4 );
+        //const helper = new THREE.DirectionalLightHelper( light4, 5 );
+        //scene.add( helper );
+        
+        // Cube
+        var textureCube;
+        const loader = new THREE.CubeTextureLoader();
+      //const ldrUrls = [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'];
+//        loader.setPath( 'textures/cube/pisa/' );
+//        loader.setPath( 'textures/cube/pisa_Y/' );
+        loader.setPath( 'textures/cube/Park2/' );
+//        loader.setPath( 'textures/cube/DallasW/' );
+      //const ldrUrls = [ 'px2.png', 'nx2.png', 'py2.png', 'ny2.png', 'pz2.png', 'nz2.png'];
+        //const ldrUrls = [ 'i_0.png', 'i_1.png', 'i_2.png', 'i_3.png', 'i_4.png', 'i_5.png'];
+        const ldrUrls = [ 'i_0.jpg', 'i_1.jpg', 'i_2.jpg', 'i_3.jpg', 'i_4.jpg', 'i_5.jpg'];
+        //const ldrUrls = [ 'Dice-Blue-1.png', 'Dice-Blue-2.png', 'Dice-Blue-3.png', 'Dice-Blue-4.png', 'Dice-Blue-5.png', 'Dice-Blue-6.png'];
+        //loader.setPath( 'images/' );
+
+        textureCube = loader.load( ldrUrls );
+        //textureCube.rotation = 1.6;
+        textureCube.encoding = THREE.sRGBEncoding;
+
+
+        //scene.nbackground = textureCube;
+        //scene.texture = textureCube;
+
+        //var sphereMaterial = new THREE.MeshPhysicalMaterial( { envMapIntensity: 3,premultipliedAlpha: true,specularIntensity: 1, envMap: textureCube } );
+        //var sphereMaterial1 = new THREE.MeshPhysicalMaterial( { envMap: textureCube } );
+        textureEnv = textureCube;
+        /*
+        */
+
+        /*
+
+        // Equirectangular
+        const textureLoader = new THREE.TextureLoader();
+        //var textureEquirec = textureLoader.load( 'examples/textures/2294472375_24a3b8ef46_o.jpg' );
+        var textureEquirec = textureLoader.load( 'textures/IndoorHDRI001_1K-TONEMAPPED.jpg' );
+        //var textureEquirec = textureLoader.load( 'examples/textures/equirectangular/venice_sunset_1k.hdr' );
+
+// Pruebas rotacion Envmap
+//        textureEquirec.matrixAutoUpdate = true 
+//        textureEquirec.rotation = Math.PI /180. * 120;					// I don't understand how rotate = Math.PI /180. * 120;
+//        textureEquirec.needsUpdate = true;
+        textureEquirec.mapping = THREE.EquirectangularReflectionMapping;
+        textureEquirec.encoding = THREE.sRGBEncoding;
+        
+        //scene.background = textureEquirec;
+        //scene.texture = textureEquirec;
+
+        //var sphereMaterial2 = new THREE.MeshPhysicalMaterial( { envMap: textureEquirec } );
+        //sphereMaterial2.envMap = textureEquirec;
+        
+        //var sphereMaterial = sphereMaterial2;
+        */
+        textureEnv = textureCube;
+
+
+        var meshMaterial;
+        for (var i =0; i< materialArr.length; i++) {
+            console.log("Material: " + materialArr[i].name);
+            if (materialArr[i].type == "single_***") {
+                var texture = new THREE.TextureLoader().load( materialArr[i].texture, function ( texture ) {
+                    render();
+                } );
+                texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+                texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+                texture.matrixAutoUpdate = false; // default true; set to false to update texture.matrix manually
+                //var meshMaterial = new THREE.MeshPhongMaterial( { color: 0xffffff, map: texture } );
+                var meshMaterial = new THREE.MeshStandardMaterial( { map: texture });
+                //var meshMaterial = new THREE.MeshBasicMaterial( { map: texture } );
+                //material_UV = material;  // tmp
+                materialArr[i].material = meshMaterial;
+            /*
+            } else if (materialArr[i].type == "glass1") {
+                  const meshMaterial = new THREE.MeshPhysicalMaterial( {
+					map: null,
+					color: 0xfffffa,
+					metalness: 0,
+					roughness: 0,
+					opacity: 0.25,
+					side: THREE.BackSide,
+					transparent: true,
+					envMapIntensity: 10,
+					premultipliedAlpha: true
+				} );
+                materialArr[i].material = meshMaterial;
+            } else if (materialArr[i].type == "glass2") {
+                var meshMaterial = new THREE.MeshPhysicalMaterial({
+                    metalness: .9,
+                    roughness: .05,
+                    envMapIntensity: 0.9,
+                    clearcoat: 1,
+                    transparent: true,
+                    // transmission: .95,
+                    opacity: .5,
+                    reflectivity: 0.2,
+                    //refractionRatio: 0.985,
+                    ior: 0.9,
+                    side: THREE.BackSide,
+                    })
+                materialArr[i].material = meshMaterial;
+            */
+            } else if (materialArr[i].type == "envmap_***") {
+          
+                materialArr[i].material = sphereMaterial;
+            } else if (materialArr[i].type == "None array_***") {
+            //} else if (materialArr[i].type == "arrayEnvmap" || materialArr[i].type == "array" || true) {
+            } else if (true) {
+                if (materialArr[i].texture != null && materialArr[i].texture != "") {
+                    texture = loadTexture(materialArr[i].texture);
+                } else {
+                    texture = null;
+                }
+                var normalMap;
+                if (materialArr[i].normalMap != null && materialArr[i].normalMap != "") {
+                    normalMap = loadTexture(materialArr[i].normalMap);
+                } else {
+                    normalMap = null;
+                }
+                var side;
+                if (materialArr[i].side == 1) {
+                    side = THREE.BackSide;
+                } else {
+                    side = THREE.FrontSide;
+                }
+                var vector2D = new THREE.Vector2( 4, 4 );
+                meshMaterial = new THREE.MeshPhysicalMaterial({
+                    metalness: .3,
+                    roughness: .95,
+                    envMapIntensity: 0,
+                    clearcoat: 1,
+                    map: texture,
+                    transparent: false,
+                    // transmission: .95,
+                    opacity: 1,
+                    reflectivity: 0.2,
+                    //refractionRatio: 0.985,
+                    ior: 0.9,
+                    //side: THREE.BackSide,
+                    side: side,
+                    envMap: textureEnv,
+                    normalMap: normalMap,
+                    normalScale: vector2D,
+                    })
+                    
+                meshMaterial.map_backup = texture;
+                materialArr[i].material = meshMaterial;
+                // load material from model 
+                //copyMaterialPropertiesFromModelToEditor(materialArr[i].material, materialGui);
+                //updatePhysicalMaterial();
+                
+            } else {  // array
+                console.log("Material type not defined: " + materialArr[i].type);
+            }
+            if (materialArr[i].name == "UV_6map") {
+                material_UV = meshMaterial;
+            }
+        }
+
+        //        addDesign(scene, designObj);
+        
+        axesHelper = new THREE.AxesHelper( 4 );
+        axes();
+        scene.add( axesHelper );
+        
+
+        initGui();
+        updateMeasures();  // comment to improve speed while working in html forms
+        updateUvTransform();
+        
+
+        //printModelTable("model", designObj);
+        showForm();
+
+        for (var i =0; i< materialArr.length; i++) {
+            //if (materialArr[i].type == "arrayEnvmap" || materialArr[i].type == "array" || true) {
+            if (true) {
+
+                copyMaterialPropertiesFromModelToEditor(materialArr[i], materialGui);
+                materialEdit = materialArr[i].material
+                updatePhysicalMaterial();
+            }
+        }
+
+        render();
+
+        window.addEventListener( 'resize', onWindowResize );
+
+    }
+
+    //import { init } from ".";
+    window.init = init;
+    window.updateMeasures = updateMeasures;
+    
+    function showForm() {
+        var modelDiv = document.getElementById('modelDiv')
+        modelDiv.textContent = ''
+        
+        printMaterialTable();
+    
+        for (var prop in designArr) {
+            if (Object.prototype.hasOwnProperty.call(designArr, prop)) {
+                printModelTable(designArr[prop].name, designArr[prop]);
+            }
+        }
+    }
+    function visibility(arg) {
+        console.log("visibility: " + arg + " " + this.property);
+        //getPiece(this.property).array[0].mesh.visible = arg;
+        API[this.property + 'array_index'].mesh.visible = arg;
+        render();
+    }
+    /*function createSimplePoint(THREE) {
+        var geometry = new THREE.BufferGeometry();
+        const vertices = [];
+        vertices.push(new THREE.Vector3( 0, 0, 0));
+        //geometry.setAttribute( 'position', new THREE.Float32BufferAttribute( vertices, 3 ) );
+        var dot = new THREE.Points(geometry, new THREE.PointsMaterial( { color: 0x888888 } ) );
+        return dot;
+    }
+    */
+    function loadTexture(file) {
+    
+        console.log("loadTexture: " + file);
+        var texture = new THREE.TextureLoader().load( file,function (texture) {
+            //meshMaterial.needsUpdate = true;
+            render();
+        } )
+        //var meshMaterial = new THREE.MeshBasicMaterial( { map: texture });
+        //var meshMaterial = new THREE.MeshStandardMaterial( { map: texture });
+        
+        //var meshMaterial = new THREE.MeshStandardMaterial( { color: 0xffffff, map: texture } );
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        texture.matrixAutoUpdate = false;
+        return texture;
+    }
+
+    function updateMeasures(){
+        evalText = "";
+        
+        // tipos: m, u, cm, internal, formula
+        for (var i =0; i< designObj.parameters.length; i++) {
+            if (designObj.parameters[i].type == "internal" || designObj.parameters[i].type == "formula") {
+                evalContext(evalText);
+                evalText = evalText + designObj.parameters[i].name + "=" + eval(designObj.parameters[i].default) + ";";
+            } else if (designObj.parameters[i].type == "cm") {
+                evalText = evalText + designObj.parameters[i].name + "=" + API[designObj.parameters[i].name]/100 + ";";
+            } else if (designObj.parameters[i].type == "m" || designObj.parameters[i].type == "u") {
+                evalText = evalText + designObj.parameters[i].name + "=" + API[designObj.parameters[i].name] + ";";
+            } else if (designObj.parameters[i].type == "options") {
+                evalText = evalText + designObj.parameters[i].name + "=" + API[designObj.parameters[i].name] + ";";
+            } else {  // like units
+                evalText = evalText + designObj.parameters[i].name + "=" + API[designObj.parameters[i].name] + ";";
+            }
+        }
+        //designObj.eval = makeEvalContext ("var context='main';" + evalText);
+        designObj.evalText = "var context='main';" + evalText;
+        updateMeasuresAPI(scene, THREE, API, designObj);
+        updateUvTransform();
+        render();
+        if (gui != null) {
+            API.renders ++;
+            for (var i =0; i< designObj.parameters.length; i++) {
+                if (designObj.parameters[i].type == "internal" || designObj.parameters[i].type == "formula") {
+                    var res = evalContext(designObj.parameters[i].default );
+                    console.log("eval formula: " + res);
+                    API[designObj.parameters[i].name] = res;
+                }
+            }
+            //API.price = Math.round(eval('alto*largo*200'));
+
+            uptadeControllers(gui);
+            var settingsFolder = getGuiFolderByName(gui.folders, "settings");
+            uptadeControllers(settingsFolder);
+/*
+            for (var i = 0; i < Object.keys(gui.folders).length; i++) {
+                var key = Object.keys(gui.folders)[i];
+                for (var j = 0; j < gui.folders[key].controllers.length; j++ )
+                {
+                    gui.folders[key].controllers[j].updateDisplay();
+                }
+            }
+*/
+        }
+    }
+    
+    function uptadeControllers(guiFolder) {
+        for (var j = 0; j < guiFolder.controllers.length; j++ ) {
+            guiFolder.controllers[j].updateDisplay();
+        }
+    }
+    
+    function getGuiFolderByName(folders, folderName) {
+        var result = folders.filter(obj => {
+            return obj._title === folderName;
+        })
+        return result? result[0] : null;
+    }
+    
+    var currentMaterialName = null;
+    var previousMaterialName = null;
+    var materialEdit;
+    var textureEdit;
+    var normalTextureEdit;
+    function setMaterial(){
+        var materialName = API["Materials"];
+        previousMaterialName = currentMaterialName;
+        currentMaterialName = materialName;
+        console.log("currentMaterialName: " + currentMaterialName);
+        console.log("previousMaterialName: " + previousMaterialName);
+        if (previousMaterialName != null) {
+            var previousMat = getMaterial(previousMaterialName);
+            materialEdit = previousMat.material;
+            textureEdit = previousMat.material.map;
+//            textureEdit_backup = previousMat.material.map_backup;
+            normalTextureEdit = previousMat.material.normalMap;
+            copyMaterialPropertiesFromModelToEditor(previousMat, materialGui);  // this restore the modifications if not saved with saveMaterial()
+            updatePhysicalMaterial();
+        }
+        var mat = getMaterial(currentMaterialName);
+        materialEdit = mat.material;
+        textureEdit = mat.material.map;
+//        textureEdit_backup = mat.material.map_backup;
+        normalTextureEdit = mat.material.normalMap;
+        copyMaterialPropertiesFromModelToEditor(mat, materialGui);
+        updatePhysicalMaterial();
+    }
+
+    function saveMaterial() {
+        copyMaterialPropertiesFromEditorToModel(materialGui, getMaterial(currentMaterialName));
+        printMaterialTable();
+    }
+    
+    function copyMaterialPropertiesFromEditorToModel(materialSource, materialTarget) {
+        materialTarget.color_r = materialSource.color.r;
+        materialTarget.color_g = materialSource.color.g;
+        materialTarget.color_b = materialSource.color.b;
+        materialTarget.emissive_r = materialSource.emissive.r;
+        materialTarget.emissive_g = materialSource.emissive.g;
+        materialTarget.emissive_b = materialSource.emissive.b;
+        materialTarget.roughness = materialSource.roughness;
+        materialTarget.metalness = materialSource.metalness;
+        materialTarget.reflectivity = materialSource.reflectivity;
+        materialTarget.clearcoat = materialSource.clearcoat;
+        materialTarget.clearcoatRoughness = materialSource.clearcoatRoughness;
+        materialTarget.transparent = materialSource.transparent;
+        materialTarget.opacity = materialSource.opacity;
+        materialTarget.diffuseMap = materialSource.diffuseMap;
+        materialTarget.normalFactor = materialSource.normalFactor;
+        materialTarget.envMapIntensity = materialSource.envMapIntensity;
+        materialTarget.ior = materialSource.ior;
+        materialTarget.wireframe = materialSource.wireframe;
+    }
+    function copyMaterialPropertiesFromModelToEditor(materialSource, materialTarget) {
+        materialTarget.color.r = materialSource.color_r || defaultMaterial.color.r;
+        materialTarget.color.g = materialSource.color_g || defaultMaterial.color.g;
+        materialTarget.color.b = materialSource.color_b || defaultMaterial.color.b;
+        materialTarget.emissive.r = materialSource.emissive_r || defaultMaterial.emissive.r;
+        materialTarget.emissive.g = materialSource.emissive_g || defaultMaterial.emissive.g;
+        materialTarget.emissive.b = materialSource.emissive_b || defaultMaterial.emissive.b;
+        materialTarget.roughness = materialSource.roughness || defaultMaterial.roughness;
+        materialTarget.metalness = materialSource.metalness || defaultMaterial.metalness;
+        materialTarget.reflectivity = materialSource.reflectivity || defaultMaterial.reflectivity;
+        materialTarget.clearcoat = materialSource.clearcoat || defaultMaterial.clearcoat;
+        materialTarget.clearcoatRoughness = materialSource.clearcoatRoughness || defaultMaterial.clearcoatRoughness;
+        materialTarget.transparent = materialSource.transparent || defaultMaterial.transparent;
+        materialTarget.opacity = materialSource.opacity || defaultMaterial.opacity;
+        materialTarget.diffuseMap = materialSource.diffuseMap || defaultMaterial.diffuseMap;
+        materialTarget.normalFactor = materialSource.normalFactor || defaultMaterial.normalFactor;
+        materialTarget.envMapIntensity = materialSource.envMapIntensity || defaultMaterial.envMapIntensity;
+        materialTarget.ior = materialSource.ior || defaultMaterial.ior;
+        materialTarget.wireframe = materialSource.wireframe || defaultMaterial.wireframe;
+        var materialColor = materialTarget.color.getHex();
+        if (materialColor != null) {
+            materialData.color = materialTarget.color.getHex()
+        }
+        var materialEmissiveColor = materialTarget.emissive.getHex();
+        if (materialEmissiveColor != null) {
+            materialData.emissive = materialTarget.emissive.getHex()
+        }
+        var materialsFolder = getGuiFolderByName(gui.folders, "Material properties");
+        uptadeControllers(materialsFolder);
+    }
+
+    function updatePhysicalMaterial() {
+        materialEdit.color.r = materialGui.color.r;
+        materialEdit.color.g = materialGui.color.g;
+        materialEdit.color.b = materialGui.color.b;
+        materialEdit.emissive.r = materialGui.emissive.r;
+        materialEdit.emissive.g = materialGui.emissive.g;
+        materialEdit.emissive.b = materialGui.emissive.b;
+        materialEdit.roughness = materialGui.roughness;
+        materialEdit.metalness = materialGui.metalness;
+        materialEdit.reflectivity = materialGui.reflectivity;
+        materialEdit.clearcoat = materialGui.clearcoat;
+        materialEdit.clearcoatRoughness = materialGui.clearcoatRoughness;
+        materialEdit.transparent = materialGui.transparent;
+        materialEdit.opacity = materialGui.opacity;
+        if (materialGui.diffuseMap) {
+            materialEdit.map = materialEdit.map_backup;
+        } else {
+            materialEdit.map = null;
+        }
+        materialEdit.normalScale.x = materialGui.normalFactor;
+        materialEdit.normalScale.y = materialGui.normalFactor;
+        materialEdit.envMapIntensity = materialGui.envMapIntensity;
+        materialEdit.ior = materialGui.ior;
+        materialEdit.wireframe = materialGui.wireframe;
+        materialEdit.needsUpdate = true ;
+        render();
+    }
+    function updateUvTransform(arg) {
+            if (textureEdit != null) {
+                var texture = textureEdit;
+                updateUvTransformTexture(texture);
+            }
+            if (normalTextureEdit != null) {
+                updateUvTransformTexture(normalTextureEdit);
+            }
+            render();
+    }
+
+    function updateUvTransformTexture(texture) {
+                if ( texture.matrixAutoUpdate === true ) {
+
+                    texture.offset.set( API.offsetX, API.offsetY );
+                    texture.repeat.set( API.repeatX, API.repeatY );
+                    texture.center.set( API.centerX, API.centerY );
+                    texture.rotation = API.rotation; // rotation is around [ 0.5, 0.5 ]
+
+                } else {
+
+                    // one way...
+                    //texture.matrix.setUvTransform( API.offsetX, API.offsetY, API.repeatX, API.repeatY, API.rotation, API.centerX, API.centerY );
+
+                    // another way...
+                    texture.matrix
+                        .identity()
+                        .translate( - API.centerX,- API.centerY, 0 )
+                        .rotate( API.rotation )					// I don't understand how rotation can preceed scale, but it seems to be required...
+                        .scale( API.repeatX, API.repeatY, API.repeatZ )
+                    //    .translate( API.centerX, API.centerY )
+                        .translate( API.offsetX, API.offsetY, 0 )
+                        ;
+
+                }
+            }
+
+/*
+    const envMapKeys = getObjectsKeys( envMaps );
+    const envMapKeysPBR = envMapKeys.slice( 0, 2 );
+    const diffuseMapKeys = getObjectsKeys( diffuseMaps );
+    const roughnessMapKeys = getObjectsKeys( roughnessMaps );
+    const matcapKeys = getObjectsKeys( matcaps );
+    const alphaMapKeys = getObjectsKeys( alphaMaps );
+    const gradientMapKeys = getObjectsKeys( gradientMaps );
+*/
+
+    function handleColorChange( color, converSRGBToLinear = false ) {
+
+        return function ( value ) {
+
+            if ( typeof value === 'string' ) {
+
+                value = value.replace( '#', '0x' );
+
+            }
+            color.setHex( value );
+
+            if ( converSRGBToLinear === true ) color.convertSRGBToLinear();
+            updatePhysicalMaterial();
+        };
+
+    }
+    function guiMeshPhysicalMaterial( gui, material) { //, geometry ) {
+
+        materialData = {
+            color: material.color.getHex(),
+            emissive: material.emissive.getHex()
+            //envMaps: envMapKeys[ 0 ],
+            //map: diffuseMapKeys[ 0 ],
+            //roughnessMap: roughnessMapKeys[ 0 ],
+            //alphaMap: alphaMapKeys[ 0 ]
+        };
+        const folder = gui.addFolder( 'Material properties' );
+
+        var materialsAPI = [];
+        for (var i =0; i< materialArr.length; i++) {
+            materialsAPI.push(materialArr[i].name);
+        }
+        API["Materials"] = materialArr[0].name;
+        folder.add( API, "Materials", materialsAPI).onChange( setMaterial);
+        
+        folder.addColor( materialData, 'color' ).onChange( handleColorChange( material.color, false ) );
+        folder.addColor( materialData, 'emissive' ).onChange( handleColorChange( material.emissive, false ) );
+
+        folder.add( material, 'roughness', 0, 1 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'metalness', 0, 1 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'reflectivity', 0, 1 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'clearcoat', 0, 1 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'clearcoatRoughness', 0, 1 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        // geometry //folder.add( material, 'flatShading' ).onChange( needsUpdate( material, geometry ) );
+        folder.add( material, 'transparent' ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'opacity', 0, 1 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'diffuseMap' ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'normalFactor', 0, 5 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'envMapIntensity', 0, 3 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'ior', 0, 3 ).step( 0.01 ).onChange( updatePhysicalMaterial );
+        folder.add( material, 'wireframe' ).onChange( updatePhysicalMaterial );
+        // geometry //folder.add( material, 'vertexColors' ).onChange( needsUpdate( material, geometry ) );
+        // geometry //folder.add( material, 'fog' ).onChange( needsUpdate( material, geometry ) );
+        //folder.add( materialData, 'envMaps', envMapKeysPBR ).onChange( updateTexture( material, 'envMap', envMaps ) );
+        //folder.add( materialData, 'map', diffuseMapKeys ).onChange( updateTexture( material, 'map', diffuseMaps ) );
+        //folder.add( materialData, 'roughnessMap', roughnessMapKeys ).onChange( updateTexture( material, 'roughnessMap', roughnessMaps ) );
+        //folder.add( materialData, 'alphaMap', alphaMapKeys ).onChange( updateTexture( material, 'alphaMap', alphaMaps ) );
+
+        // TODO metalnessMap
+        return folder;
+
+    }
+
+    function updateMaterial(){
+        updateMaterialDesign(designObj);
+        render();
+    }
+    function updateMaterialDesign(updateMaterialDesignObj){
+        console.log("updateMaterial");
+        for (var i =0; i< materialOptionsObj.materialOptions.length; i++) {
+            console.log(API[materialOptionsObj.materialOptions[i].name]);
+        }
+        for (var i = 0; i< updateMaterialDesignObj.pieces.length; i++) {
+            if ('subsystem' in updateMaterialDesignObj.pieces[i]) {
+                updateMaterialDesign(designArr[updateMaterialDesignObj.pieces[i].subsystem])
+            } else {
+                updateMaterialDesignObj.pieces[i].array[0].mesh.material=getMaterial(API[materialOptionsObj.materialOptions[0].name]).material;
+            }
+        }
+        return; 
+    }
+    
+
+
+    function render() {
+        renderer.render( scene, camera );
+    }
+
+    function onWindowResize() {
+        console.debug("Resize window: " + window.innerWidth + " " + window.innerHeight);
+
+        var divEl = document.getElementById("renderDiv");  // get renderDiv before delete formArea
+        console.log("Parent div:" + divEl.parentNode.id);
+        
+        if (divEl.parentNode.id && divEl.parentNode.id == "renderArea") {
+            var renderDivEl = divEl.parentNode; // #renderArea
+            rendererWidth  = renderDivEl.offsetWidth - 8;
+            rendererHeight = renderDivEl.offsetHeight- 8;
+        } else {
+            rendererWidth  = window.innerWidth;
+            rendererHeight = window.innerHeight;
+        }
+
+        console.debug("Resize div: " + rendererWidth + " " + rendererHeight);
+
+
+        camera.aspect = rendererWidth / rendererHeight;
+        //renderer.setPixelRatio( rendererWidth / rendererHeight);
+
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( rendererWidth, rendererHeight);
+
+        render();
+
+    }
+
+    
+
+    function debug() {
+        console.debug("debug: " + settings.debug);
+        debugger;
+    }
+    function axes(arg) {
+        console.debug("axes: " + settings.axes);
+        console.debug("axes arg: " + arg);
+        axesHelper.visible = settings.axes;
+        render();
+    }
+    function setUV() {
+        console.debug("setUV: " + settings.UV);
+        setUVSubsystem(designObj);
+        render();
+    }
+    function setEnv() {
+        console.debug("set Environment: " + settings.env);
+        if (settings.env) {
+            scene.background = textureEnv;
+        } else {
+            scene.background = null;
+        }
+        render();
+    }
+    function setUVSubsystem(designSubsystem) {
+        if (settings.UV) {
+            for (var i = 0; i< designSubsystem.pieces.length; i++) {
+                for (var array_i = 0; array_i < designSubsystem.pieces[i].array.length ; array_i++) {
+                    designSubsystem.pieces[i].array[array_i].mesh.materialOriginal = designSubsystem.pieces[i].array[array_i].mesh.material;
+                    designSubsystem.pieces[i].array[array_i].mesh.material=material_UV;
+                    if ('subsystem' in designSubsystem.pieces[i]) {
+                        setUVSubsystem(designSubsystem.pieces[i].array[array_i].subsystemDesign);
+                    }
+                }
+            }
+        } else {
+            for (var i = 0; i< designSubsystem.pieces.length; i++) {
+                for (var array_i = 0; array_i < designSubsystem.pieces[i].array.length ; array_i++) {
+                    designSubsystem.pieces[i].array[array_i].mesh.material = designSubsystem.pieces[i].array[array_i].mesh.materialOriginal;
+                    if ('subsystem' in designSubsystem.pieces[i]) {
+                        setUVSubsystem(designSubsystem.pieces[i].array[array_i].subsystemDesign);
+                    }
+                }
+            }
+        }
+    }
+    
+    function initGui() {
+
+        if (gui != null) gui.destroy();  // if previous GUI exists
+        gui = new GUI();
+        API["goTop"] = goTop;
+        gui.add( API, "goTop").name( 'Top' );
+        API["gotoMaterials"] = gotoMaterials;
+        gui.add( API, "gotoMaterials").name( 'Materials' );
+        API["gotoObject"] = gotoObject;
+        gui.add( API, "gotoObject").name( 'Object' );
+        API["gotoFile"] = gotoFile;
+        gui.add( API, "gotoFile").name( 'File' );
+
+        for (var i =0; i< designObj.parameters.length; i++) {
+            if (designObj.parameters[i].type == "m" ||
+                designObj.parameters[i].type == "cm" ||
+                designObj.parameters[i].type == "u") {
+                    gui.add( API, designObj.parameters[i].name, Number(designObj.parameters[i].min), Number(designObj.parameters[i].max)).step(Number(designObj.parameters[i].step) || 1).name( designObj.parameters[i].name ).onChange( updateMeasures);
+            } else if (designObj.parameters[i].type == "options") {
+                var optionsObject = {};
+                for (j = 0;j<designObj.parameters[i].options.length; j++) {
+                    optionsObject[designObj.parameters[i].options[j][0]] = designObj.parameters[i].options[j][1];
+                }
+                gui.add( API, designObj.parameters[i].name, optionsObject ).onChange( updateMeasures);;
+            } else if (designObj.parameters[i].type == "formula") {
+                gui.add( API, designObj.parameters[i].name).name( designObj.parameters[i].name );
+            }
+        }
+        gui.onFinishChange( e => {
+            console.log( 'gui.onFinishChange', e );
+        } );
+        
+        materialGui = new THREE.MeshPhysicalMaterial( { color: 0x049EF4 } );
+        materialGui.diffuseMap = true;
+        materialGui.normalFactor = 3;
+        var materialFolder = guiMeshPhysicalMaterial(gui, materialGui);
+        API["SaveMaterial"] = saveMaterial;
+        materialFolder.add( API, "SaveMaterial").name( 'Save material' )
+
+        const textureFolder = gui.addFolder( 'texture properties' );
+        //textureFolder.close();
+
+        textureFolder.add( API, 'offsetX', 0.0, 1.0 ).name( 'offset.x' ).onChange( updateUvTransform );
+        textureFolder.add( API, 'offsetY', 0.0, 1.0 ).name( 'offset.y' ).onChange( updateUvTransform );
+        textureFolder.add( API, 'repeatX', 0.1, 12.0 ).name( 'repeat.x' ).onChange( updateUvTransform );
+        textureFolder.add( API, 'repeatY', 0.1, 12.0 ).name( 'repeat.y' ).onChange( updateUvTransform );
+        textureFolder.add( API, 'rotation', - 2.0, 2.0 ).name( 'rotation' ).onChange( updateUvTransform );
+        textureFolder.add( API, 'centerX', 0.0, 1.0 ).name( 'center.x' ).onChange( updateUvTransform );
+        textureFolder.add( API, 'centerY', 0.0, 1.0 ).name( 'center.y' ).onChange( updateUvTransform );
+        
+        const settingsFolder = gui.addFolder( 'settings' );
+        settingsFolder.open();
+
+        API["Render"] = updateMeasures;
+        settingsFolder.add( API, "Render").name( 'Render' )
+        settingsFolder.add(API, 'renders').name( 'Renders:' );
+
+        
+        if (materialOptionsObj.materialOptions != null) {
+            for (var i =0; i< materialOptionsObj.materialOptions.length; i++) {
+                var materialOption = materialOptionsObj.materialOptions[i];
+                console.log("materialOptions: " + materialOption.name);
+                var materialOptionsArr = [];
+                for (var j =0; j< materialOption.materials.length; j++) {
+                    console.log("  material: " + materialOption.materials[j].material);
+                    materialOptionsArr.push(materialOption.materials[j].material);
+                }
+                materialOption.materialOptionsArr = materialOptionsArr;
+                API[materialOption.name] = materialOption.materials[0].material;
+                settingsFolder.add( API, materialOption.name, materialOptionsArr ).onChange( updateMaterial);
+            }
+        }
+        
+
+        settingsFolder.add( settings, 'debug' ).onChange( debug );
+        settingsFolder.add( settings, 'axes' ).onChange( axes );
+        settingsFolder.add( settings, 'UV' ).onChange( setUV );
+        settingsFolder.add( settings, 'env' ).onChange( setEnv );
+        API["reload GUI"] = reloadGuiPieces;
+        gui.add( API, "reload GUI").name( 'Load pieces GUI' )
+
+
+    }
+    
+    function goTop() {
+        document.getElementById("renderDiv").scrollIntoView()
+
+    }
+    function gotoMaterials() {
+        document.getElementById("modelDiv").scrollIntoView()
+
+    }
+    function gotoObject() {
+        const objectName = window.location.search.substring( 1 ) || 'armario';
+        document.getElementById(objectName).scrollIntoView()
+
+    }
+    function gotoFile() {
+        document.getElementById("fileDiv").scrollIntoView()
+
+    }
+    function reloadGuiPieces() {
+        if (guiPieces != null) guiPieces.destroy();
+        var piecesFolder = gui.addFolder( 'Pieces' );
+        piecesFolder.open();
+        addGuiPiece(API, designObj, piecesFolder,"");
+        guiPieces = piecesFolder;
+    }
+    
+    function addGuiPiece(API, guiPiece, folder, level) {
+        for (var i =0; i< guiPiece.pieces.length; i++) {
+            //console.log("Piece: " + guiPiece.pieces[i].name + " lx:" + eval(guiPiece.pieces[i].lx).toFixed(2) + " ly:" + eval(guiPiece.pieces[i].ly).toFixed(2) + " lx:" + eval(guiPiece.pieces[i].lz).toFixed(2));
+            //gui
+            for (var array_j = 0; array_j < guiPiece.pieces[i].array.length ; array_j++) {
+                var array_level = level + "_" + array_j; 
+                var name = guiPiece.pieces[i].name + array_level;
+                API[name] = true;
+                API[name + "array_index"] = guiPiece.pieces[i].array[array_j];
+                folder.add( API, name).onChange( visibility);
+                if ('subsystem' in guiPiece.pieces[i]) {
+                    var subFolder = folder.addFolder( name );
+                    subFolder.close();
+                    addGuiPiece(API, guiPiece.pieces[i].array[array_j].subsystemDesign, subFolder, array_level)
+                }
+            }
+        }
+
+    }
+  //]]></script>
+
+<script>
+
+    var parameterProperties = ["name", "type", "options", "min","max", "step", "default"];
+    var pieceTypes = ["Box", "Cylinder", "Sphere", "Triangle", "Extrude", "Revolution", "Gltf"]; //, "Module"];  Module is replaced by each type of object
+    var pieceProperties1 = ["name", "type"];
+    var pieceProperties3 = ["array_size", "sx", "sy", "sz", "rx", "ry", "rz", "x", "y", "z"];
+    var typeProperties = {};
+    typeProperties["Box"] = ["lx","ly", "lz", "material_1", "material_2", "material_3", "material_4", "material_5", "material_6" ];
+    typeProperties["Cylinder"] = ["rt","rb", "lz", "material_1", "material_2", "material_3"];
+    typeProperties["Sphere"] = ["r", "material_1"];
+    typeProperties["Triangle"] = ["b","h", "d", "lz", "material_1", "material_2"];
+    typeProperties["Extrude"] = ["shape_array", "lz", "material_1", "material_2"];
+    typeProperties["Revolution"] = ["shape_array", "lz", "material_1"];
+    /*
+    <-->d
+       /\      |h
+      /  \     |
+     /    \    |
+    /______\   |
+    <------>b
+
+    */
+    typeProperties["Gltf"] = ["url"];
+    typeProperties["Module"] = ["subsystem", "parameters"];
+    var pieceProperties = {};
+    piecePropertiesTable          = pieceProperties1.concat(["parameters"], pieceProperties3);
+    pieceProperties["Box"]        = pieceProperties1.concat(typeProperties["Box"],      pieceProperties3);
+    pieceProperties["Cylinder"]   = pieceProperties1.concat(typeProperties["Cylinder"], pieceProperties3);
+    pieceProperties["Sphere"]     = pieceProperties1.concat(typeProperties["Sphere"],    pieceProperties3);
+    pieceProperties["Triangle"]   = pieceProperties1.concat(typeProperties["Triangle"], pieceProperties3);
+    pieceProperties["Extrude"]    = pieceProperties1.concat(typeProperties["Extrude"],  pieceProperties3);
+    pieceProperties["Revolution"] = pieceProperties1.concat(typeProperties["Revolution"],  pieceProperties3);
+    pieceProperties["Gltf"]       = pieceProperties1.concat(typeProperties["Gltf"],     pieceProperties3);
+    pieceProperties["Module"]     = pieceProperties1.concat(typeProperties["Module"],   pieceProperties3);
+
+    //materialProperties = ["name","type","texture","texture1","texture2","texture3","texture4","texture5","texture6"];
+    materialProperties = ["name","texture", "texture_image", "normalMap", "normal_image",  
+        "color_r", "color_g", "color_b", "color", "emissive_r", "emissive_g", "emissive_b", "emissive", "roughness", "metalness", "reflectivity", "clearcoat", "clearcoatRoughness", "transparent", "opacity", "diffuseMap", "normalFactor", "envMapIntensity", "ior", "wireframe", "side"]
+
+    var subsystemParameterProperties = ["name", "default"];
+
+    function evalContext(expr){
+        return eval(expr);
+    }
+
+    function setTextAreaSize() {
+        if (document.getElementById("jsonObj").style.width == "") {
+            document.getElementById("jsonObj").style.width = "660px";
+            document.getElementById("jsonObj").style.height = "230px";
+        }
+    }
+    function exportCollection() {
+        collectionExport = {};
+        //collectionExport.materials = materialsObj;
+        //collectionExport.materialOptions = materialOptionsObj;
+        collectionExport.materialArr = [];
+        for (var i_mat = 0; i_mat < materialArr.length; i_mat++) {
+            collectionExport.materialArr[i_mat] = {};
+                    for (var j =0; j< materialProperties.length; j++) {
+                        collectionExport.materialArr[i_mat][materialProperties[j]] = materialArr[i_mat][materialProperties[j]];
+                    }
+        }
+        
+        collectionExport.designArr = {};
+        for (var prop in designArr) {
+            if (Object.prototype.hasOwnProperty.call(designArr, prop)) {
+                collectionExport.designArr[prop] = {};
+                collectionExport.designArr[prop].name = designArr[prop].name;
+                // Parameters
+                collectionExport.designArr[prop].parameters = [];
+                for (var i =0; i< designArr[prop]['parameters'].length; i++) {
+                    collectionExport.designArr[prop].parameters[i] = {};
+                    for (var j =0; j< parameterProperties.length; j++) {
+                        collectionExport.designArr[prop].parameters[i][parameterProperties[j]] = designArr[prop]['parameters'][i][parameterProperties[j]];
+                        
+                    }
+                }
+                // Pieces
+                collectionExport.designArr[prop].pieces = [];
+                for (var i =0; i< designArr[prop]['pieces'].length; i++) {
+                    collectionExport.designArr[prop].pieces[i] = {};
+                    type = designArr[prop]['pieces'][i].type;
+                    if (type == null || type == "") type = "Box";
+                    for (var j =0; j< pieceProperties[type].length; j++) {
+                        collectionExport.designArr[prop].pieces[i][pieceProperties[type][j]] = designArr[prop]['pieces'][i][pieceProperties[type][j]];
+                        
+                    }
+                }
+
+            }
+        }
+        document.getElementById('jsonObj').value = JSON.stringify(collectionExport)
+    }
+
+
+/*
+        var H1El = document.createElement("H1");
+        H1El.innerHTML  = "Materials";
+        divEl.appendChild( H1El);
+
+        H1El.innerHTML  = "Objects";
+        divEl.appendChild( H1El);
+
+*/
+    
+    function printMaterialTable() {
+        console.log("Material: " + "materialTable");
+        var modelDiv = document.getElementById('modelDiv')
+
+        var divEl = document.getElementById("materialTable");
+        if (divEl == null) {  // create node or delete content node
+            divEl = document.createElement("DIV");
+            divEl.setAttribute("id", "materialTable");
+            modelDiv.appendChild( divEl);
+        } else {
+            divEl.textContent = ''
+        }
+        var H1El = document.createElement("H1");
+        H1El.innerHTML  = "Materials";
+        H1El.setAttribute("class", "materials");
+        divEl.appendChild( H1El);
+
+
+        var tableMat = createTable("materialTable", materialArr, "obj_material", materialProperties);
+        divEl.appendChild( tableMat);
+        
+
+    }
+    function printModelTable(modelName, obj) {
+        var modelDiv = document.getElementById('modelDiv')
+
+        var divEl = document.getElementById(modelName);
+        if (divEl == null) {  // create node or delete content node
+            divEl = document.createElement("DIV");
+            divEl.setAttribute("id", modelName);
+            modelDiv.appendChild( divEl);
+        } else {
+            divEl.textContent = ''
+        }
+        var H1El = document.createElement("H1");
+                //H1El.setAttribute("onClick", "editObjectName('" + modelName + "'))");
+                H1El.setAttribute("onClick", "editObjectName('" + modelName + "')");
+        H1El.innerHTML  = modelName;
+        divEl.appendChild( H1El);
+        
+        // Load object
+        var aEl = document.createElement("A");
+        aEl.setAttribute("onClick", "loadObject('" + modelName + "')");
+        aEl.setAttribute("class", "objectLink loadLink");
+        var linkText = document.createTextNode("Load object");
+        aEl.appendChild(linkText);
+        aEl.href = "#renderDiv";  // "javascript:void(0);";
+        divEl.appendChild(aEl);        
+
+        // Go top
+        var aEl = document.createElement("A");
+        aEl.setAttribute("class", "objectLink goTop");
+        var linkText = document.createTextNode("Go top");
+        aEl.appendChild(linkText);
+        aEl.href = "#renderDiv";
+        divEl.appendChild(aEl);        
+
+        // Duplicate object
+        var dEl = document.createElement("A");
+        dEl.setAttribute("onClick", "duplicateObject('" + modelName + "')");
+        dEl.setAttribute("class", "objectLink duplicateLink");
+        var linkText = document.createTextNode("Duplicate object");
+        dEl.appendChild(linkText);
+        dEl.href = "javascript:void(0);";
+        divEl.appendChild(dEl);        
+
+        // Parameters
+        var H2parametersEl = document.createElement("H2");
+        H2parametersEl.innerHTML  = "Parameters";
+        H2parametersEl.setAttribute("class", "parameters");
+        divEl.appendChild( H2parametersEl);
+        var tableEl = createTable(modelName, obj.parameters, "obj_parameter", parameterProperties);
+        divEl.appendChild( tableEl);
+
+        // Pieces
+        var H2piecesEl = document.createElement("H2");
+        H2piecesEl.innerHTML  = "Pieces";
+        H2piecesEl.setAttribute("class", "pieces");
+        divEl.appendChild( H2piecesEl);
+        type = obj.type;
+        if (type == null || type == "") type = "Box";
+        var tableEl = createTable(modelName, obj.pieces, "obj_piece", piecePropertiesTable);
+        divEl.appendChild( tableEl);
+    }
+
+    function editObjectName(modelName) {
+        console.log("previous name: " + modelName);
+        
+        let newName = prompt("Enter the new name for " + modelName, modelName);
+        if (newName != null && newName != modelName) {
+            console.log("new name: " + newName);
+            designArr[modelName].name = newName;
+            designArr[newName] = designArr[modelName]; // on object create new key name. Assign old value to this
+            delete designArr[modelName]; 
+            init();
+        }
+    }
+
+    function loadObject(modelName) {
+        exportCollection();
+        designArr = JSON.parse(document.getElementById('jsonObj').value).designArr;
+        designObj = designArr[modelName];
+        init();
+    }
+
+    function duplicateObject(modelName) {
+        exportCollection();
+        designArr = JSON.parse(document.getElementById('jsonObj').value).designArr;
+        designObj2 = JSON.parse(JSON.stringify(designArr[modelName]));
+        newName = modelName + "_2";
+        designObj2.name = newName;
+        designArr[newName] = designObj2;
+        designObj = designArr[newName];
+        init();
+    }
+
+    function createTable(modelName, objArray, form_entity, properties, i_element) {
+        // i_element only used in obj_subsystem_parameter
+        var tableEl = document.createElement("TABLE");
+        tableEl.setAttribute("class", form_entity);
+
+        tableEl.setAttribute("border", "1");
+        var trEl = document.createElement("TR");
+        //first row (header)
+        addNew(trEl, modelName, form_entity, i_element);
+        for (var j =0; j< properties.length; j++) {
+            addHeader(trEl, properties[j]);
+        }
+        tableEl.appendChild(trEl);
+
+        if (objArray != null) {
+            for (var i =0; i< objArray.length; i++) {
+                //setDefaultValues(objArray[i]);
+                //console.log("Piece: " + obj.pieces[i].name + " lx:" + eval(obj.pieces[i].lx).toFixed(2));
+                var trEl = document.createElement("TR");
+
+                addEdit(trEl, i, modelName, form_entity, i_element);
+                for (var j =0; j< properties.length; j++) {
+                    addCell(trEl, objArray[i], properties[j], i, modelName, form_entity);
+                }
+                tableEl.appendChild(trEl);
+            }
+        }
+        return tableEl;
+    }
+
+    function addHeader(trEl, property) {
+        var tdEl = document.createElement("TH");
+        var textNode = document.createTextNode(property);
+        tdEl.appendChild(textNode);
+        trEl.appendChild(tdEl);
+    }
+    function addCell(trEl, obj, property, i_piece, modelName, form_entity) {  // obj is piece or a parameter
+        var tdEl = document.createElement("TD");
+        var textContent = "";
+        if (form_entity == "obj_piece" && property == "type") {   // this if can be deleted when the data are right
+            if (obj[property] == null || obj[property] == "") {
+                obj[property] = "Box";
+            }
+        }
+        if (form_entity == "obj_piece" && property == "parameters") {
+            val = "";
+            for (var k =0; k< typeProperties[obj.type].length; k++) {
+                if (k > 0) val += " - ";
+                typeProperty = typeProperties[obj.type][k];
+                if (typeProperty == "parameters") {
+                    tdEl.innerHTML = linkTableSusbsystemParameter(i_piece, modelName, "obj_subsystem_parameter");
+                } else {
+                    val += obj[typeProperty];
+                }
+            }
+            textContent = val;
+            textNode = document.createTextNode(textContent);
+            tdEl.appendChild(textNode);
+        } else if (form_entity == "obj_material" && property == "texture_image") {
+            if (obj.texture != null && obj.texture != "") {
+                tdEl.setAttribute("style", "background-image: url('" + obj.texture + "'); background-size: 100%;");
+            }
+        } else if (form_entity == "obj_material" && property == "normal_image") {
+            if (obj.normalMap != null && obj.normalMap != "") {
+                tdEl.setAttribute("style", "background-image: url('" + obj.normalMap + "'); background-size: 100%;");
+            }
+        } else if (form_entity == "obj_material" && property == "color") {
+            if (obj.color_r != null && obj.color_r != "") {
+                tdEl.setAttribute("style", "background-color: rgb(" + (obj.color_r * 255) + ", " +  (obj.color_g * 255) + ", " +  (obj.color_b * 255) + ")");
+            }
+        } else if (form_entity == "obj_material" && property == "emissive") {
+            if (obj.emissive_r != null && obj.emissive_r != "") {
+                tdEl.setAttribute("style", "background-color: rgb(" + (obj.emissive_r * 255) + ", " +  (obj.emissive_g * 255) + ", " +  (obj.emissive_b * 255) + ")");
+            }
+        } else if (obj[property] != null && obj[property] != "") {
+            textContent = obj[property];
+            textNode = document.createTextNode(textContent);
+            tdEl.appendChild(textNode);
+        }
+
+        
+        /*
+        if (obj[property] != null && obj[property] != "") {
+            if (property == "parameters") {
+                tdEl.innerHTML = linkTableSusbsystemParameter(i_piece, modelName, "obj_subsystem_parameter");
+            } else {
+                textContent = obj[property];
+                textNode = document.createTextNode(textContent);
+                tdEl.appendChild(textNode);
+            }
+        }
+        */
+        trEl.appendChild(tdEl);
+    }
+
+    function createTableSusbsystemParameter(i_element, modelName, form_entity) {
+        var divEl = addDivForEdit(modelName);
+        var H3El = document.createElement("H3");
+        H3El.innerHTML  = "Parameters of " + modelName 
+          + " piece " + i_element + ": " + designArr[modelName].pieces[i_element]["name"]
+          + " (" + designArr[modelName].pieces[i_element]["subsystem"] + ")";
+        divEl.appendChild( H3El);
+
+        var objArray = designArr[modelName].pieces[i_element]["parameters"];
+        var tableEl = createTable(modelName, objArray, form_entity, subsystemParameterProperties, i_element);
+        divEl.appendChild( tableEl);
+    }
+// link al form que editará los parametros desde createTableSusbsystemParameter
+    function editParameter(i_piece, modelName, form_entity) {
+          return "<a onclick='createForm(" + i_piece + ", \"" + modelName + "\",\"E\", \"" + form_entity + "\")' href='javascript:void(0);'>Edit</a>";
+    }
+
+
+    function linkTableSusbsystemParameter(i_piece, modelName, form_entity) {
+          return "<a onclick='createTableSusbsystemParameter(" + i_piece + ", \"" + modelName + "\", \"" + form_entity + "\")' href='javascript:void(0);'>Edit</a>";
+    }
+
+
+    function addNew(trEl, modelName, form_entity, i_piece) {
+        var tdEl = document.createElement("TD");
+        tdEl.setAttribute("class", "new");
+        if (form_entity == "obj_piece") {  // put a SELECT for selection of type of piece
+            var text1Node = document.createTextNode("New:");
+            tdEl.appendChild(text1Node);
+            var selectPieceType = document.createElement("SELECT");
+            selectPieceType.setAttribute("class", "newSelect");
+            selectPieceType.setAttribute("onchange", "createForm(" + -1 + ", \"" + modelName + "\",\"N\", \"" + form_entity + "\", " + i_piece + ", this.value, this.options[this.selectedIndex].text)");
+            selectPieceType.setAttribute("onfocus", "this.selectedIndex = -1;");
+            var option = document.createElement("option");
+            option.text = "Select type";
+            option.value = "0";
+            option.setAttribute("style","display:none;");
+            selectPieceType.add(option);
+            for (var j =0; j< pieceTypes.length; j++) {
+                option = document.createElement("option");
+                option.text  = pieceTypes[j];
+                option.value = pieceTypes[j];
+                selectPieceType.add(option);
+            }
+             // <optgroup label="German Cars">
+            var optgroup = document.createElement("optgroup");
+            optgroup.label = "Module";
+            selectPieceType.add(optgroup);
+
+            for (var prop in designArr) {
+                if (Object.prototype.hasOwnProperty.call(designArr, prop)) {
+                    option = document.createElement("option");
+                    option.text = designArr[prop].name;
+                    option.value = "Module";
+                    optgroup.appendChild(option);
+                }
+            }
+            tdEl.appendChild(selectPieceType);
+        } else{
+            tdEl.innerHTML = 
+              "<a onclick='createForm(" + -1 + ", \"" + modelName + "\",\"N\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>New</a>";
+        }
+        trEl.appendChild(tdEl);
+    }
+
+    function addEdit(trEl, i_row, modelName, form_entity, i_piece) {
+        var tdEl = document.createElement("TD");
+        tdEl.setAttribute("class", "edit");
+        tdEl.innerHTML = 
+          "<a onclick='createForm(" + i_row + ", \"" + modelName + "\",\"E\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>Edit</a>" + "&nbsp;&nbsp;" + 
+          "<a onclick='createForm(" + i_row + ", \"" + modelName + "\",\"D\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>Duplicate</a>";
+        trEl.appendChild(tdEl);
+    }
+
+
+    function addDivForEdit(modelName) {
+        var formEl = document.getElementById("editObject");
+        if (formEl != null) {
+            formEl.remove();
+        }
+
+        formEl = document.createElement("DIV");  //Changed from FORM to DIV to prevent send
+        formEl.setAttribute("id", "editObject");
+//        formEl.setAttribute("method", "GET");
+//        formEl.setAttribute("action", "javascript:void(0);");
+        document.getElementById(modelName).appendChild(formEl);
+        return formEl;
+    }
+
+    function createForm(i_array, modelName, formType, form_entity, i_element, selected_type, selected_module) {
+        console.log("createForm " + i_element);
+        
+        var divEl = document.getElementById("renderDiv");  // get renderDiv before delete formArea
+        var formDivMain = addDivForEdit(modelName);
+        
+        formEl = document.createElement("DIV");  //Changed from FORM to DIV to prevent send
+        formEl.setAttribute("id", "formArea");
+        formDivMain.appendChild(formEl);
+
+        if (divEl != null) {
+            renderArea = document.createElement("DIV");  //Changed from FORM to DIV to prevent send
+            renderArea.setAttribute("id", "renderArea");
+            formDivMain.appendChild(renderArea);
+            rendererWidth  = renderArea.offsetWidth - 8;
+            rendererHeight = renderArea.offsetHeight- 8;
+            // move the renderDiv node here2
+            renderArea.appendChild(divEl);
+    //        renderer.setPixelRatio( rendererWidth / rendererHeight);
+            camera.aspect = rendererWidth / rendererHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize( rendererWidth, rendererHeight);
+            updateMeasures();
+            //onWindowResize();
+        }
+
+        formEl.appendChild(addHiddenField("sys_object", modelName));
+        formEl.appendChild(addHiddenField("sys_formType", formType));
+        formEl.appendChild(addHiddenField("sys_array", i_array));
+        var objectElement;
+        if (form_entity == "obj_parameter") {
+            formEl.appendChild(addHiddenField("sys_type", "sys_parameter"));
+            objectElement = designArr[modelName].parameters[i_array];
+            properties = parameterProperties;
+        } else if (form_entity == "obj_piece") {
+            formEl.appendChild(addHiddenField("sys_type", "sys_piece"));
+            objectElement = designArr[modelName].pieces[i_array];
+            if (objectElement != null) type = objectElement.type;
+            if (formType == "N") {
+                console.log("createForm type: " + selected_type);
+                type = selected_type;
+            }
+            if (type == null || type == "") type = "Box";
+            properties = pieceProperties[type];
+        } else if (form_entity == "obj_subsystem_parameter") {
+            formEl.appendChild(addHiddenField("sys_type", "sys_subsystem_parameter"));
+            formEl.appendChild(addHiddenField("sys_element", i_element));
+            if (i_array != -1) {
+                objectElement = designArr[modelName].pieces[i_element]["parameters"][i_array];
+            }
+            properties = subsystemParameterProperties;
+        } else if (form_entity == "obj_material") {
+            formEl.appendChild(addHiddenField("sys_type", "sys_material"));
+            objectElement = materialArr[i_array];
+            properties = materialProperties;
+        } else {
+            console.log("form_entity: " + form_entity + " not defined *********");
+        }
+
+        for (var j =0; j< properties.length; j++) {
+            var propertyName  = properties[j];
+            var propertyValue = "";
+            if (formType == "N") {
+                if (form_entity == "obj_piece" && propertyName == "type") {
+                    propertyValue = selected_type;
+                } else if (form_entity == "obj_piece" && propertyName == "subsystem") {
+                    propertyValue = selected_module;
+                }
+            } else {
+                if (objectElement[properties[j]] != null) {
+                    propertyValue = objectElement[properties[j]];
+                }
+            }
+            if (form_entity == "obj_piece" && propertyName == "shape_array") {
+                console.log("shape_array");
+                divEl = createArrayForm(formEl, propertyValue,  "shapeForm",  "Shape points", ["X","Y","C1X","C1Y","C2X","C2Y"], "Point", ["x", "y", "c1x", "c1y","c2x","c2y"], ["", ""], ["", "", "", "", "", ""], "Add Curve" );
+
+            } else if (form_entity == "obj_parameter" && propertyName == "options"){
+                if (document.getElementById("type").value == "options") {
+                    console.log("options");
+                    divEl = createArrayForm(formEl, propertyValue,  "optionsForm",  "Options", ["name","value"], "Option", ["op_name", "op_value"], ["", ""]);
+                }
+            } else {
+                var divEl = document.createElement("DIV");
+                var span1El = document.createElement("SPAN");
+                var text1Node = document.createTextNode(propertyName);
+                divEl.appendChild(span1El);
+                span1El.appendChild(text1Node);
+                var span2El = document.createElement("INPUT");
+                span2El.setAttribute("id", propertyName);
+                span2El.value = propertyValue;
+                divEl.appendChild(span2El);
+                formEl.appendChild(divEl);
+            }
+        }
+        var buttonSaveEl = document.createElement("BUTTON");
+        buttonSaveEl.setAttribute("onClick", "updateObject()");
+        var tSave = document.createTextNode("Save");
+        buttonSaveEl.appendChild(tSave);
+        formEl.appendChild(buttonSaveEl);
+        var buttonSaveCloseEl = document.createElement("BUTTON");
+        buttonSaveCloseEl.setAttribute("onClick", "updateObjectClose()");
+        var tSaveClose = document.createTextNode("Save and Close");
+        buttonSaveCloseEl.appendChild(tSaveClose);
+        formEl.appendChild(buttonSaveCloseEl);
+        var buttonCancelEl = document.createElement("BUTTON");
+        buttonCancelEl.setAttribute("onClick", "cancelEdit()");
+        var tCancel = document.createTextNode("Cancel");
+        buttonCancelEl.appendChild(tCancel);
+        formEl.appendChild(buttonCancelEl);
+    }
+    
+    var arrayFormRows;    
+    
+    function createArrayForm(parentDiv, arrayValue, divId, headerCell, headerArray, rowTitle, inputNames, voidArray, voidLenghtArray, lengthName ) {
+        console.log("createArrayForm");
+        arrayFormRows = 0;
+        var divEl = document.createElement("DIV");
+        divEl.setAttribute("id", divId);
+        parentDiv.appendChild(divEl);
+        divEl.appendChild(createArrayHeader(headerCell, headerArray));
+        if (arrayValue == null || arrayValue == "") {
+            createRowOfArrayForm(divId, inputNames, voidArray, rowTitle);
+            createRowOfArrayForm(divId, inputNames, voidArray, rowTitle);
+            createRowOfArrayForm(divId, inputNames, voidArray, rowTitle);
+        } else {
+            for (var k =0; k< arrayValue.length; k++) {
+                createRowOfArrayForm(divId, inputNames, arrayValue[k], rowTitle);
+            }
+        }
+        var buttonLineEl = document.createElement("BUTTON");   //  <-***
+        buttonLineEl.setAttribute("id", "addArrayRow");
+        buttonLineEl.setAttribute("onClick", "createRowOfArrayForm('" + divId + "', " + JSON.stringify(inputNames) + ", "
+          +  JSON.stringify(voidArray) + ", '" + rowTitle + "')");
+        var t = document.createTextNode("Add Row");
+        buttonLineEl.appendChild(t);
+        divEl.appendChild(buttonLineEl);
+        if (voidLenghtArray != null) {  // second button of "Add curve" for Bezier curves
+            var buttonCurveEl = document.createElement("BUTTON");
+            buttonCurveEl.setAttribute("id", "addArrayRow2");
+            buttonCurveEl.setAttribute("onClick", "createRowOfArrayForm('" + divId + "', " + JSON.stringify(inputNames) + ", "
+              +  JSON.stringify(voidLenghtArray) + ", '" + rowTitle + "')");
+            var t = document.createTextNode(lengthName);
+            buttonCurveEl.appendChild(t);
+            divEl.appendChild(buttonCurveEl);
+        }
+        
+        return divEl
+    }
+
+    function createRowOfArrayForm(divId, rowName, rowValue, rowTitle) {
+        arrayFormRows++;
+        var divEl = document.createElement("DIV");
+        var span1El = document.createElement("SPAN");
+        var text1Node = document.createTextNode(rowTitle + " " + arrayFormRows);
+        span1El.appendChild(text1Node);
+        divEl.appendChild(span1El);
+        
+        for (i_point = 0; i_point < rowValue.length; i_point++) {
+            var spanXEl = document.createElement("INPUT");
+            point_id = rowName[i_point] + "_" + arrayFormRows;
+            spanXEl.setAttribute("id", point_id);
+            spanXEl.setAttribute("class", "point");
+            spanXEl.value = rowValue[i_point];
+            divEl.appendChild(spanXEl);
+        }
+              
+        document.getElementById(divId).appendChild(divEl);
+        buttonAdd = document.getElementById("addArrayRow");
+        if (buttonAdd != null) {
+            document.getElementById(divId).appendChild(buttonAdd); // move to the end of the points
+        }
+        buttonAdd = document.getElementById("addArrayRow2");
+        if (buttonAdd != null) {
+            document.getElementById(divId).appendChild(buttonAdd); // move to the end of the points
+        }
+        return divEl
+    }
+    
+    function createArrayHeader(headerCell, headerArray) {
+        var divEl = document.createElement("DIV");
+        var span1El = document.createElement("SPAN");
+        var text1Node = document.createTextNode(headerCell);
+        span1El.appendChild(text1Node);
+        divEl.appendChild(span1El);
+        for (var i_header = 0; i_header < headerArray.length; i_header++) {
+            var span1El = document.createElement("SPAN");
+            var text1Node = document.createTextNode(headerArray[i_header]);
+            span1El.setAttribute("class", "arrayHeader");
+            span1El.appendChild(text1Node);
+            divEl.appendChild(span1El);
+        }
+        return divEl
+    }
+    
+    function addHiddenField(name, value) {
+        var hiddenEl = document.createElement("INPUT");
+        hiddenEl.setAttribute("id", name);
+        hiddenEl.setAttribute("type", "text");  // text for debugger, hidden for profuction
+        hiddenEl.value = value;
+        return hiddenEl;
+    }
+    function updateObject() {
+        console.log("editObject");
+        var formEl = document.getElementById("editObject");
+        
+        var sys_type = document.getElementById("sys_type").value;
+        var sys_object = document.getElementById("sys_object").value;
+        var objectArray;
+        if (sys_type == "sys_parameter") {
+            objectArray = designArr[sys_object].parameters;
+            properties = parameterProperties;
+        } else if (sys_type == "sys_piece") {
+            objectArray = designArr[sys_object].pieces;
+            type = document.querySelector("div#editObject #type").value;
+            if (type == null || type == "") type = "Box";
+            properties = pieceProperties[type];
+        } else if (sys_type == "sys_subsystem_parameter") {
+            var sys_element = document.getElementById("sys_element").value;
+            if (!Array.isArray(designArr[sys_object].pieces[sys_element]["parameters"])) {  // create the array for the parameters
+                designArr[sys_object].pieces[sys_element]["parameters"] = [];
+            }
+            objectArray = designArr[sys_object].pieces[sys_element]["parameters"];
+            properties = subsystemParameterProperties;
+        } else if (sys_type == "sys_material") {
+            objectArray = materialArr;
+            properties = materialProperties;
+        } else {
+            console.log("sys_type: " + sys_type + " not defined *********");
+        }
+
+        pieceObj = {}
+        var sys_formType = document.getElementById("sys_formType").value;
+        var sys_array = document.getElementById("sys_array").value;
+
+        for (var j =0; j< properties.length; j++) {
+            var propertyName  = properties[j];
+            if (sys_type == "sys_piece" && propertyName == "shape_array") {
+                console.log("updateObject shape_array");
+                shapeArray = readShapeArray();
+                pieceObj[propertyName] = shapeArray;
+            } else if (sys_type == "sys_parameter" && propertyName == "options") {
+                console.log("updateObject shape_array");
+                optionsArray = readOptionsArray();
+                pieceObj[propertyName] = optionsArray;
+            } else {
+                field = document.querySelector("div#editObject #" + propertyName);
+                var propertyValue = null;
+                if (field != null) {
+                    propertyValue  = 
+                    field.value;
+                }
+                if (propertyValue != "") {  // not set void properties
+                    if (propertyName == "parameters") {  // not update parameters 
+                        if (sys_formType != "N") {
+                            pieceObj[propertyName] = objectArray[sys_array]["parameters"];  // get the parameters from the original
+                        }
+                    } else {
+                        pieceObj[propertyName] = propertyValue;
+                    }
+                }
+            }
+        }
+        console.log("object created");
+        if (sys_formType == "E") {
+            pieceObj.array = objectArray[sys_array].array;
+            objectArray[sys_array] = pieceObj;
+        } else if (sys_formType == "D" || sys_formType == "N"){
+            objectArray.push(pieceObj);
+        } else {
+            console.log("sys_formType: " + sys_formType + " not defined *********");
+        }
+        updateMeasures();
+    }
+    function updateObjectClose() {
+        updateObject();
+        var sys_type = document.getElementById("sys_type").value;
+        var sys_object = document.getElementById("sys_object").value;
+        if (sys_type == "sys_subsystem_parameter") {
+            createTableSusbsystemParameter(document.getElementById("sys_element").value, sys_object, "obj_subsystem_parameter");
+        } else if (sys_type == "sys_material") {
+            printMaterialTable();
+        } else {
+            printModelTable(sys_object, designArr[sys_object]);
+        }
+    }
+    function readShapeArray() {
+        shapeArray = [];
+        for (var k =1; k<= arrayFormRows; k++) {
+            point = [];
+            xValue = document.getElementById("x_" + k);
+            yValue = document.getElementById("y_" + k);
+            if (xValue != null && yValue != null && xValue.value != "" && yValue.value != "") {
+                point[0] = xValue.value;
+                point[1] = yValue.value;
+                // "c1x", "c1y","c2x","c2y"
+                c1xValue = document.getElementById("c1x_" + k);
+                if (c1xValue != null && c1xValue.value != "") point[2] = c1xValue.value;
+                c1yValue = document.getElementById("c1y_" + k);
+                if (c1yValue != null && c1yValue.value != "") point[3] = c1yValue.value;
+                c2xValue = document.getElementById("c2x_" + k);
+                if (c2xValue != null && c2xValue.value != "") point[4] = c2xValue.value;
+                c2yValue = document.getElementById("c2y_" + k);
+                if (c2yValue != null && c2yValue.value != "") point[5] = c2yValue.value;
+
+                shapeArray.push(point);
+            }
+        }
+        return shapeArray;
+    }
+    function readOptionsArray() {
+        optionsArray = [];
+        for (var k =1; k<= arrayFormRows; k++) {
+            option = [];
+            nameValue  = document.getElementById("op_name_" + k);
+            valueValue = document.getElementById("op_value_" + k);
+            if (nameValue != null && valueValue != null && nameValue.value != "" && valueValue.value != "") {
+                option[0] = nameValue.value;
+                option[1] = valueValue.value;
+                optionsArray.push(option);
+            }
+        }
+        return optionsArray;
+    }
+    function cancelEdit() {
+        var formEl = document.getElementById("editObject");
+        if (formEl != null) {
+            formEl.remove();
+        }
+    }
+</script>
+<script>
+            function getMaterial(name) {
+                for (var i =0; i< materialArr.length; i++) {
+                    if (name == materialArr[i].name) {
+                        return materialArr[i];
+                    }
+                }
+                return null;  // name not found 
+            }
+            function getPiece(name) {
+                for (var i =0; i< designObj.pieces.length; i++) {
+                    if (name == designObj.pieces[i].name) {
+                        return designObj.pieces[i];
+                    }
+                }
+                return null;  // name not found 
+            }
+            
+            function isObject(obj) {
+                return obj != null && obj.constructor.name === "Object"
+            }
+            function isMesh(obj) {
+                return obj != null && obj.constructor.name === "Mesh"
+            }
+            function isGroup(obj) {
+                return obj != null && obj.constructor.name === "Group"
+            }
+            function updateMeasuresAPI(node, THREE, API, updateDesign){
+//                updateDesign.eval = makeEvalContext ();
+//                updateDesign.eval(evalText);
+                eval(updateDesign.evalText);    // initial evalText
+                console.log("eval " + updateDesign.name + " " + updateDesign.evalText);
+                for (var i =0; i< updateDesign.pieces.length; i++) {
+
+                    // we define the parameters of the subsystem with the values of the updateDesign, but will apply them to the subsystem (before the call to updateMeasuresAPI.
+                    var subsetEvalText = "";
+                    if ('subsystem' in updateDesign.pieces[i]) {
+                        for (var j =0; j< updateDesign.pieces[i].parameters.length; j++) {
+                                subsetEvalText = subsetEvalText + updateDesign.pieces[i].parameters[j].name + "=" + Number(eval(updateDesign.pieces[i].parameters[j].default)) + ";";
+                        }
+                    }
+
+                    var array_length;
+                    if ('array_size' in updateDesign.pieces[i]) {
+                        array_length = Math.round(eval(updateDesign.pieces[i].array_size));
+                    } else {
+                        array_length = 1;
+                    }
+                    if (updateDesign.pieces[i].array == null) {
+                        console.log("Create array for piece " + i + " array_length: " + array_length + " " + updateDesign.name);
+                        updateDesign.pieces[i].array = [];
+                    }
+                  //for (var array_i = 0; array_i < updateDesign.pieces[i].array.length ; array_i++) {
+                    for (var array_j = array_length; array_j < updateDesign.pieces[i].array.length ; array_j++) {
+                        console.log("Change visibilit of " + i + " array: " + array_j);
+                        updateDesign.pieces[i].array[array_j].mesh.visible = false;
+                    }
+                    for (var array_i = 0; array_i < array_length ; array_i++) {
+                        if (!isObject(updateDesign.pieces[i].array[array_i])) {
+                            console.log("Create object " + array_i);
+                            updateDesign.pieces[i].array[array_i] = {}
+                        }
+                        updateDesign.pieces[i].array[array_i].evalText = updateDesign.evalText + "array_i = " + array_i + ";" + "array_n = " + array_length + ";";
+                        console.log("eval piece " + i + " "  + updateDesign.name + " evalText: " + updateDesign.pieces[i].array[array_i].evalText);
+                        eval(updateDesign.pieces[i].array[array_i].evalText);
+                        if ('subsystem' in updateDesign.pieces[i]) {
+                            var dot;
+
+                            var currentSubsystem;
+                            if (updateDesign.pieces[i].subsystem.startsWith("parameter:")) {
+                                currentSubsystem = eval(updateDesign.pieces[i].subsystem.substring(10));  // remove "parameter:"
+                                console.log("currentSubsystem: " + currentSubsystem);
+                                if (updateDesign.pieces[i].previousSubsystemValue != null &&
+                                    updateDesign.pieces[i].previousSubsystemValue != currentSubsystem) {
+                                    
+                                    // remove dot and mesh
+                                    if (updateDesign.pieces[i].array[array_i].mesh != null) {
+                                        node.remove(updateDesign.pieces[i].array[array_i].mesh);
+                                        updateDesign.pieces[i].array[array_i].mesh = null;
+                                    }
+                                }
+                            } else {
+                                currentSubsystem = updateDesign.pieces[i].subsystem;
+                            }
+                            updateDesign.pieces[i].previousSubsystemValue = currentSubsystem;
+
+                            if (!isGroup(updateDesign.pieces[i].array[array_i].mesh)) {
+                                console.log("Create mesh dot");
+                                dot = createGroup(THREE);
+                                updateDesign.pieces[i].array[array_i].mesh=dot;
+                                if (node == null) debugger;
+                                node.add( dot );
+                                var clonedDesign = JSON.parse(JSON.stringify(designArr[currentSubsystem]));
+                                updateDesign.pieces[i].array[array_i].subsystemDesign = clonedDesign;
+                            } else {
+                                dot = updateDesign.pieces[i].array[array_i].mesh;
+                            }
+                          //addDesign(dot, updateDesign.pieces[i].array[array_i].subsystemDesign);
+                            updateDesign.pieces[i].array[array_i].mesh.position.set(
+                                   Number(eval(updateDesign.pieces[i].x)),
+                                   Number(eval(updateDesign.pieces[i].y)), 
+                                   Number(eval(updateDesign.pieces[i].z)));
+
+                            updateDesign.pieces[i].array[array_i].subsystemDesign.evalText = "context='" +  
+                              updateDesign.pieces[i].name +"';" + subsetEvalText;  // only their parameters, not array_i
+                            console.log("eval piece " + i + " array_i: " + array_i 
+                              + " subsystem: " + updateDesign.pieces[i].subsystem
+                              + " evalText: " + updateDesign.pieces[i].array[array_i].subsystemDesign.evalText);
+                            updateMeasuresAPI(dot, THREE, API, updateDesign.pieces[i].array[array_i].subsystemDesign);
+                            eval(updateDesign.evalText);    // restore evalText
+                        //} else if ('gltf' in updateDesign.pieces[i]) {
+                        } else if (updateDesign.pieces[i].type == 'Gltf') {
+                            if (!isGroup(updateDesign.pieces[i].array[array_i].mesh)) {
+                                console.log("Objecto GLTF");
+                                const loader = new loaders.GLTFLoader();
+                                dot = createGroup(THREE);
+                                dot.name = "gltf object"
+                                updateDesign.pieces[i].array[array_i].mesh=dot;
+                                if (node == null) debugger;
+                                node.add( dot );
+                                dot.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                    
+                                const addSceneCallback = prepareACallbackFunctionForLoader(dot);
+                                loader.load(updateDesign.pieces[i].url,   addSceneCallback, undefined, function ( error ) {
+                                    console.error( error );
+
+                                } )
+                            }
+                            // Position
+                            updateDesign.pieces[i].array[array_i].mesh.position.set(
+                                   Number(eval(updateDesign.pieces[i].x)),
+                                   Number(eval(updateDesign.pieces[i].y)), 
+                                   Number(eval(updateDesign.pieces[i].z)));
+
+// Cylinder 
+                        } else if (updateDesign.pieces[i].type == 'Cylinder') {
+                            if (!isMesh(updateDesign.pieces[i].array[array_i].mesh)) {
+                                console.log("Create mesh geometry");
+                                geometry = new THREE.CylinderGeometry( 1., 1., 1., 32 );
+
+                                //geometry.translate( 0.5, 0.5, 0.5 ) ;
+                                meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 3);
+                                mesh = new THREE.Mesh( geometry, meshMaterialArray );
+                                mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                
+                                updateDesign.pieces[i].array[array_i].mesh=mesh;
+                                updateDesign.pieces[i].array[array_i].mesh.rt = 1.;
+                                updateDesign.pieces[i].array[array_i].mesh.rb = 1.;
+                                updateDesign.pieces[i].array[array_i].mesh.lz = 1.;
+                                node.add( mesh );
+                            }
+                            // Position
+                            updateDesign.pieces[i].array[array_i].mesh.position.set(
+                                   Number(eval(updateDesign.pieces[i].x)),
+                                   Number(eval(updateDesign.pieces[i].y)), 
+                                   Number(eval(updateDesign.pieces[i].z)));
+// Sphere 
+                        } else if (updateDesign.pieces[i].type == 'Sphere') {
+                            if (!isMesh(updateDesign.pieces[i].array[array_i].mesh)) {
+                                console.log("Create mesh geometry");
+                                geometry = new THREE.SphereGeometry( 1., 32, 32 );
+
+                                //geometry.translate( 0.5, 0.5, 0.5 ) ;
+                                meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 1);
+                                mesh = new THREE.Mesh( geometry, meshMaterialArray );
+                                mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                
+                                updateDesign.pieces[i].array[array_i].mesh=mesh;
+                                updateDesign.pieces[i].array[array_i].mesh.r = 0.67;
+                                node.add( mesh );
+                            }
+                            // Position
+                            updateDesign.pieces[i].array[array_i].mesh.position.set(
+                                   Number(eval(updateDesign.pieces[i].x)),
+                                   Number(eval(updateDesign.pieces[i].y)), 
+                                   Number(eval(updateDesign.pieces[i].z)));
+// Triangle 
+                        } else if (updateDesign.pieces[i].type == 'Triangle') {
+                            if (!isMesh(updateDesign.pieces[i].array[array_i].mesh)) {
+                                console.log("Create Triangle geometry");
+                                
+                                const shape = new THREE.Shape();
+                                shape.moveTo( 0,0 );
+                                shape.lineTo( 0, 1 );
+                                shape.lineTo( 1, 0.5 );
+                                shape.lineTo( 0, 0 );
+
+                                const extrudeSettings = {
+                                    bevelEnabled: false
+                                };
+
+                                const geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+                                meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 2);
+                                mesh = new THREE.Mesh( geometry, meshMaterialArray );
+                                mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                
+                                updateDesign.pieces[i].array[array_i].mesh=mesh;
+                                updateDesign.pieces[i].array[array_i].mesh.b = 1.;
+                                updateDesign.pieces[i].array[array_i].mesh.h = 1.;
+                                updateDesign.pieces[i].array[array_i].mesh.d = 0.5;
+                                updateDesign.pieces[i].array[array_i].mesh.lz = 1.;
+                                node.add( mesh );
+                            }
+                            // Position
+                            updateDesign.pieces[i].array[array_i].mesh.position.set(
+                                   Number(eval(updateDesign.pieces[i].x)),
+                                   Number(eval(updateDesign.pieces[i].y)), 
+                                   Number(eval(updateDesign.pieces[i].z)));
+
+// Extrude or Revolution
+                        } else if (updateDesign.pieces[i].type == 'Extrude' ||
+                                   updateDesign.pieces[i].type == 'Revolution') {
+                            if (!isMesh(updateDesign.pieces[i].array[array_i].mesh)) {
+                                console.log("Create Extrude/Revolution geometry");
+                                
+
+
+                                var geometry;
+                                if (updateDesign.pieces[i].type == 'Extrude') {
+                                    const shape = new THREE.Shape();
+                                    shape.moveTo( 0,0 );
+                                    shape.lineTo( 0, 1 );
+                                    shape.lineTo( 1, 0.5 );
+                                    shape.lineTo( 0, 0 );
+                                    const extrudeSettings = {
+                                        bevelEnabled: false
+                                    };
+                                    geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+                                    meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 2);
+                                } else if (updateDesign.pieces[i].type == 'Revolution') {
+                                    const shape = [];
+                                    shape.push( new THREE.Vector2(0,0));
+                                    shape.push( new THREE.Vector2(0, 1));
+                                    shape.push( new THREE.Vector2(1, 0.5));
+                                    shape.push( new THREE.Vector2(0, 0));
+                                    geometry = new THREE.LatheGeometry( shape, 32 );
+                                    meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 1);
+                                }
+
+                                mesh = new THREE.Mesh( geometry, meshMaterialArray );
+
+                                mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                
+                                updateDesign.pieces[i].array[array_i].mesh=mesh;
+                                //updateDesign.pieces[i].array[array_i].mesh.b = 1.;
+                                updateDesign.pieces[i].array[array_i].mesh.shape_array = [];
+                                shape_array = updateDesign.pieces[i].shape_array;
+                                for (var k =0; k< shape_array.length; k++) {
+                                    updateDesign.pieces[i].array[array_i].mesh.shape_array[k] = [];
+                                    updateDesign.pieces[i].array[array_i].mesh.shape_array[k][0] = 0;
+                                    updateDesign.pieces[i].array[array_i].mesh.shape_array[k][1] = 0;
+                                }
+
+                                updateDesign.pieces[i].array[array_i].mesh.lz = 0.076;  // random number, only for extrude
+                                node.add( mesh );
+                            }
+                            // Position
+                            updateDesign.pieces[i].array[array_i].mesh.position.set(
+                                   Number(eval(updateDesign.pieces[i].x)),
+                                   Number(eval(updateDesign.pieces[i].y)), 
+                                   Number(eval(updateDesign.pieces[i].z)));
+
+// Box
+                        } else {
+                            if (updateDesign.pieces[i].type != 'Box') {
+                                console.warn("type not defined for piece :" + i + " type: " + updateDesign.pieces[i].type);
+                                updateDesign.pieces[i].type = "Box";
+                            }
+                            if (!isMesh(updateDesign.pieces[i].array[array_i].mesh)) {
+                                console.log("Create mesh geometry");
+                                geometry = new THREE.BoxGeometry( 1., 1., 1. );
+
+                                geometry.translate( 0.5, 0.5, 0.5 ) ;
+                                meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 6);
+                                mesh = new THREE.Mesh( geometry, meshMaterialArray );
+                                mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                
+                                updateDesign.pieces[i].array[array_i].mesh=mesh;
+                                updateDesign.pieces[i].array[array_i].mesh.lx = 1.;
+                                updateDesign.pieces[i].array[array_i].mesh.ly = 1.;
+                                updateDesign.pieces[i].array[array_i].mesh.lz = 1.;
+                                node.add( mesh );
+                            }
+// Position
+                            updateDesign.pieces[i].array[array_i].mesh.position.set(
+                                   Number(eval(updateDesign.pieces[i].x)),
+                                   Number(eval(updateDesign.pieces[i].y)), 
+                                   Number(eval(updateDesign.pieces[i].z)));
+
+                        }
+                        // Set default values if non exist
+                        setDefaultValues(updateDesign.pieces[i]);
+                        if (updateDesign.pieces[i].array[array_i].mesh != undefined) {
+                            updateDesign.pieces[i].array[array_i].mesh.visible = true;
+
+
+                            // Box
+                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
+                                updateDesign.pieces[i].type == "Box") {  // geometry.type == "BoxGeometry" We compare with pieces.type because different types can share same geometry.type
+
+                                    lx = eval(updateDesign.pieces[i].lx);
+                                    ly = eval(updateDesign.pieces[i].ly);
+                                    lz = eval(updateDesign.pieces[i].lz);
+                                    if (updateDesign.pieces[i].array[array_i].mesh.lx != lx ||
+                                        updateDesign.pieces[i].array[array_i].mesh.ly != ly ||
+                                        updateDesign.pieces[i].array[array_i].mesh.lz != lz) {  // only create if theres is a change
+
+                                        updateDesign.pieces[i].array[array_i].mesh.lx = lx;
+                                        updateDesign.pieces[i].array[array_i].mesh.ly = ly;
+                                        updateDesign.pieces[i].array[array_i].mesh.lz = lz;
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.dispose();
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry =  new THREE.BoxGeometry(lx, ly, lz); 
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.translate(lx/2, ly/2, lz/2);
+                                    }
+                                    
+                                //scale texture
+                                //we change the uv coordinates of the geometry, so the same texture can be applied to different faces and different pieces
+                                //Float32Array(48) [0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,0,1,1,1,0,0,1,0,
+                                //                 000102030405060708091011121314151617181920212223242526272829303132333435363738394041424344454647
+                                uva= updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").array;
+                                // face 1 (X=1) (1,1,1) 0, 1, 1, 1, 0, 0, 1, 0,
+                                //Face 1
+                                var ini = 0;
+                                uva[ini + 1] = eval(updateDesign.pieces[i].ly);
+                                uva[ini + 2] = eval(updateDesign.pieces[i].lz);
+                                uva[ini + 3] = eval(updateDesign.pieces[i].ly);
+                                uva[ini + 6] = eval(updateDesign.pieces[i].lz);
+                                //Face 2
+                                var ini = ini + 8;
+                                uva[ini + 1] = eval(updateDesign.pieces[i].ly);
+                                uva[ini + 2] = eval(updateDesign.pieces[i].lz);
+                                uva[ini + 3] = eval(updateDesign.pieces[i].ly);
+                                uva[ini + 6] = eval(updateDesign.pieces[i].lz);
+                                //Face 3
+                                var ini = ini + 8;
+                                uva[ini + 1] = eval(updateDesign.pieces[i].lz);
+                                uva[ini + 2] = eval(updateDesign.pieces[i].lx);
+                                uva[ini + 3] = eval(updateDesign.pieces[i].lz);
+                                uva[ini + 6] = eval(updateDesign.pieces[i].lx);
+                                //Face 4
+                                var ini = ini + 8;
+                                uva[ini + 1] = eval(updateDesign.pieces[i].lz);
+                                uva[ini + 2] = eval(updateDesign.pieces[i].lx);
+                                uva[ini + 3] = eval(updateDesign.pieces[i].lz);
+                                uva[ini + 6] = eval(updateDesign.pieces[i].lx);
+                                //Face 5
+                                var ini = ini + 8;
+                                uva[ini + 1] = eval(updateDesign.pieces[i].ly);
+                                uva[ini + 2] = eval(updateDesign.pieces[i].lx);
+                                uva[ini + 3] = eval(updateDesign.pieces[i].ly);
+                                uva[ini + 6] = eval(updateDesign.pieces[i].lx);
+                                //Face 6
+                                var ini = ini + 8;
+                                uva[ini + 1] = eval(updateDesign.pieces[i].ly);
+                                uva[ini + 2] = eval(updateDesign.pieces[i].lx);
+                                uva[ini + 3] = eval(updateDesign.pieces[i].ly);
+                                uva[ini + 6] = eval(updateDesign.pieces[i].lx);
+                                updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
+                                    
+                            }
+                                   
+                            // Cylinder
+                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
+                                updateDesign.pieces[i].type == "Cylinder") {  // geometry.type == "CylinderGeometry"
+                                    rt = eval(updateDesign.pieces[i].rt);
+                                    rb = eval(updateDesign.pieces[i].rb);
+                                    lz = eval(updateDesign.pieces[i].lz);
+
+                                    if (updateDesign.pieces[i].array[array_i].mesh.rt != rt ||
+                                        updateDesign.pieces[i].array[array_i].mesh.rb != rb ||
+                                        updateDesign.pieces[i].array[array_i].mesh.lz != lz) {  // only create if theres is a change
+
+                                        updateDesign.pieces[i].array[array_i].mesh.rt = rt;
+                                        updateDesign.pieces[i].array[array_i].mesh.rb = rb;
+                                        updateDesign.pieces[i].array[array_i].mesh.lz = lz;
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.dispose();
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry =  new THREE.CylinderGeometry(rt, rb, lz, 32); 
+                                        //updateDesign.pieces[i].array[array_i].mesh.geometry.translate(rt/2, rb/2, lz/2);
+
+                                        //scale texture
+                                        //we change the uv coordinates of the geometry, so the same texture can be applied to different faces and different pieces
+                                        //Float32Array(392) [0, 1, 0.03125, 1, ... 
+                                        uva= updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").array;
+                                        
+                                        /*
+                                        33     lateral v = 1
+                                        33  66 lateral v = 0
+                                        32 132 centro top
+                                        33 196 circulo
+                                        32 262 centro botttom
+                                        33 326 circulo
+                                           392
+                                        */
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[iuv]     *= rt * 2 * Math.PI;
+                                            uva[iuv + 1] *= lz;
+                                        }
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[66 + iuv]     *= rb * 2 * Math.PI;
+                                            //uva[66 + iuv + 1] *= lz;  // os 0
+                                        }
+                                        // circle top
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[196 + iuv]     = (uva[196 + iuv]-0.5)*rt*2+0.5;
+                                            uva[196 + iuv + 1] = (uva[196 + iuv + 1]-0.5)*rt*2+0.5;  // os 0
+                                        }
+                                        // circle bottom
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[326 + iuv]     = (uva[326 + iuv]-0.5)*rb*2+0.5;
+                                            uva[326 + iuv + 1] = (uva[326 + iuv + 1]-0.5)*rb*2+0.5;  // os 0
+                                        }
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
+                                    }
+                            }
+                            // Sphere
+                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
+                                updateDesign.pieces[i].type == "Sphere") {  // geometry.type == "SphereGeometry"  check
+                                    r = eval(updateDesign.pieces[i].r);
+
+                                    if (updateDesign.pieces[i].array[array_i].mesh.rt != r) {  // only create if theres is a change
+
+                                        updateDesign.pieces[i].array[array_i].mesh.r = r;
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.dispose();
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry =  new THREE.SphereGeometry(r, 32, 32);
+                                        //updateDesign.pieces[i].array[array_i].mesh.geometry.translate(rt/2, rb/2, lz/2);
+
+                                        //scale texture
+                                        //we change the uv coordinates of the geometry, so the same texture can be applied to different faces and different pieces
+                                        //Float32Array(392) [0, 1, 0.03125, 1, ... 
+                                        uva= updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").array;
+                                        
+                                        // Pending change uv of Sphere
+                                        /*
+                                        33     lateral v = 1
+                                        33  66 lateral v = 0
+                                        32 132 centro top
+                                        33 196 circulo
+                                        32 262 centro botttom
+                                        33 326 circulo
+                                           392
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[iuv]     *= rt * 2 * Math.PI;
+                                            uva[iuv + 1] *= lz;
+                                        }
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[66 + iuv]     *= rb * 2 * Math.PI;
+                                            //uva[66 + iuv + 1] *= lz;  // os 0
+                                        }
+                                        // circle top
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[196 + iuv]     = (uva[196 + iuv]-0.5)*rt*2+0.5;
+                                            uva[196 + iuv + 1] = (uva[196 + iuv + 1]-0.5)*rt*2+0.5;  // os 0
+                                        }
+                                        // circle bottom
+                                        for (var iuv =0; iuv< 65; iuv = iuv + 2) {
+                                            uva[326 + iuv]     = (uva[326 + iuv]-0.5)*rb*2+0.5;
+                                            uva[326 + iuv + 1] = (uva[326 + iuv + 1]-0.5)*rb*2+0.5;  // os 0
+                                        }
+                                        */
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
+                                    }
+                            }
+                            // Triangle
+                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
+                                updateDesign.pieces[i].type == "Triangle") {  // geometry.type == "ExtrudeGeometry"
+                                    b = eval(updateDesign.pieces[i].b);
+                                    h = eval(updateDesign.pieces[i].h);
+                                    d = eval(updateDesign.pieces[i].d);
+                                    lz = eval(updateDesign.pieces[i].lz);
+
+                                    if (updateDesign.pieces[i].array[array_i].mesh.b != b ||
+                                        updateDesign.pieces[i].array[array_i].mesh.h != h ||
+                                        updateDesign.pieces[i].array[array_i].mesh.d != d ||
+                                        updateDesign.pieces[i].array[array_i].mesh.lz != lz) {  // only create if theres is a change
+
+                                        updateDesign.pieces[i].array[array_i].mesh.b = b;
+                                        updateDesign.pieces[i].array[array_i].mesh.h = h;
+                                        updateDesign.pieces[i].array[array_i].mesh.d = d;
+                                        updateDesign.pieces[i].array[array_i].mesh.lz = lz;
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.dispose();
+                                        const shape = new THREE.Shape();
+                                        shape.moveTo( 0,0 );
+                                        shape.lineTo( b, 0);   
+                                        shape.lineTo( d, h );
+                                        shape.lineTo( 0, 0 );
+
+                                        const extrudeSettings = {
+                                            steps: 1,
+                                            depth: lz,
+                                            bevelEnabled: false
+                                        };
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+
+                                        //mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                        //mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                        
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
+                                    }
+                            }
+                            // Extrude or Revolution
+                            if (updateDesign.pieces[i].array[array_i].mesh.geometry != null &&
+                               (updateDesign.pieces[i].type == "Extrude" || 
+                                updateDesign.pieces[i].type == 'Revolution')) {  // geometry.type == "ExtrudeGeometry"
+                                    //b = eval(updateDesign.pieces[i].b);
+                                    shape_array = updateDesign.pieces[i].shape_array;
+                                    lz = eval(updateDesign.pieces[i].lz);
+
+                                    var changeArray = false;
+                                    for (var k =0; k< shape_array.length; k++) {
+                                        if (updateDesign.pieces[i].array[array_i].mesh.shape_array[k][0] != 
+                                           eval(shape_array[k][0])) changeArray = true;
+                                        if (updateDesign.pieces[i].array[array_i].mesh.shape_array[k][1] != 
+                                           eval(shape_array[k][1])) changeArray = true;
+                                    }
+                                    if (//updateDesign.pieces[i].array[array_i].mesh.b != b ||
+                                        shape_array != null && 
+                                        (updateDesign.pieces[i].array[array_i].mesh.lz != lz
+                                        || changeArray)) {  // only create if theres is a change
+
+                                        //updateDesign.pieces[i].array[array_i].mesh.b = b;
+                                        updateDesign.pieces[i].array[array_i].mesh.lz = lz;
+                                        for (var k =0; k< shape_array.length; k++) {
+                                            updateDesign.pieces[i].array[array_i].mesh.shape_array[k] = [];
+                                            updateDesign.pieces[i].array[array_i].mesh.shape_array[k][0] = 
+                                               eval(shape_array[k][0]);
+                                            updateDesign.pieces[i].array[array_i].mesh.shape_array[k][1] = 
+                                               eval(shape_array[k][1]);
+                                        }
+
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.dispose();
+
+
+                                        if (updateDesign.pieces[i].type == "Extrude") {
+                                            const shape = new THREE.Shape();
+                                            shape.moveTo( eval(shape_array[0][0]), eval(shape_array[0][1]));
+                                            for (var k =1; k< shape_array.length; k++) {
+                                                if (shape_array[k].length == 2) {
+                                                    shape.lineTo( eval(shape_array[k][0]), eval(shape_array[k][1]));   
+                                                } else {
+                                                    shape.bezierCurveTo(
+                                                        eval(shape_array[k][2]), eval(shape_array[k][3]),
+                                                        eval(shape_array[k][4]), eval(shape_array[k][5]),
+                                                        eval(shape_array[k][0]), eval(shape_array[k][1])
+                                                    )
+                                                }
+                                            }
+                                            shape.lineTo( eval(shape_array[0][0]), eval(shape_array[0][1]));
+                                            const extrudeSettings = {
+                                                steps: 1,
+                                                depth: lz,
+                                                bevelEnabled: false
+                                            };
+                                            updateDesign.pieces[i].array[array_i].mesh.geometry = new THREE.ExtrudeGeometry( shape, extrudeSettings );
+                                        } else if (updateDesign.pieces[i].type == "Revolution") {
+                                            const shape = [];
+                                            for (var k =0; k< shape_array.length; k++) {
+                                                shape.push( new THREE.Vector2(eval(shape_array[k][0]), eval(shape_array[k][1]) ));    
+                                            }
+                                            updateDesign.pieces[i].array[array_i].mesh.geometry = new THREE.LatheGeometry( shape, 32 );
+                                        }
+
+                                        //mesh = new THREE.Mesh( geometry, getMaterial(updateDesign.pieces[i].material).material );
+                                        //mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+                                        
+                                        updateDesign.pieces[i].array[array_i].mesh.geometry.getAttribute("uv").needsUpdate = true;
+                                    }
+                            }
+
+                                   
+/*
+ replace scale by update of BoxGeometry
+*/
+
+                            updateDesign.pieces[i].array[array_i].mesh.scale.set(
+                                eval(updateDesign.pieces[i].sx), 
+                                eval(updateDesign.pieces[i].sy), 
+                                eval(updateDesign.pieces[i].sz));
+
+                            updateDesign.pieces[i].array[array_i].mesh.rotation.z = 
+                                eval(updateDesign.pieces[i].rz) * Math.PI / 180.;
+                            updateDesign.pieces[i].array[array_i].mesh.rotation.y = 
+                                eval(updateDesign.pieces[i].ry) * Math.PI / 180.;
+                            updateDesign.pieces[i].array[array_i].mesh.rotation.x = 
+                                eval(updateDesign.pieces[i].rx) * Math.PI / 180.;
+
+                            
+/*
+                            updateDesign.pieces[i].array[array_i].mesh.position.x = 
+                                   Number(eval(updateDesign.pieces[i].x));
+                            updateDesign.pieces[i].array[array_i].mesh.position.y = 
+                                   Number(eval(updateDesign.pieces[i].y));
+                            updateDesign.pieces[i].array[array_i].mesh.position.z = 
+                                   Number(eval(updateDesign.pieces[i].z));                            
+*/
+                        }
+                            
+                    }
+                }
+            }
+
+            function createMaterialArray(piece, n_materials) {
+                material_1Mat = getMaterial(piece.material_1).material;
+                if (n_materials == 1) {
+                    return material_1Mat;  // in this case there is not array
+                }
+                meshMaterialArray = [];
+                meshMaterialArray.push(material_1Mat);
+                if (n_materials >= 2) {
+                    if (piece.material_2 != null &&
+                        piece.material_2 != "") {
+                            material_2Mat = getMaterial(piece.material_2).material;
+                    } else {
+                            material_2Mat = getMaterial(piece.material_1).material;
+                    }
+                    meshMaterialArray.push(material_2Mat);
+                }
+                if (n_materials >= 3) {
+                    if (piece.material_3 != null &&
+                        piece.material_3 != "") {
+                            material_3Mat = getMaterial(piece.material_3).material;
+                    } else {
+                            material_3Mat = getMaterial(piece.material_1).material;
+                    }
+                    meshMaterialArray.push(material_3Mat);
+                }
+                if (n_materials >= 4) {
+                    if (piece.material_4 != null &&
+                        piece.material_4 != "") {
+                            material_4Mat = getMaterial(piece.material_4).material;
+                    } else {
+                            material_4Mat = getMaterial(piece.material_1).material;
+                    }
+                    meshMaterialArray.push(material_4Mat);
+                }
+                if (n_materials >= 5) {
+                    if (piece.material_5 != null &&
+                        piece.material_5 != "") {
+                            material_5Mat = getMaterial(piece.material_5).material;
+                    } else {
+                            material_5Mat = getMaterial(piece.material_1).material;
+                    }
+                    meshMaterialArray.push(material_5Mat);
+                }
+                if (n_materials >= 6) {
+                    if (piece.material_6 != null &&
+                        piece.material_6 != "") {
+                            material_6Mat = getMaterial(piece.material_6).material;
+                    } else {
+                            material_6Mat = getMaterial(piece.material_1).material;
+                    }
+                    meshMaterialArray.push(material_6Mat);
+                }
+                return meshMaterialArray;
+            }
+            function setDefaultValues(pieceObj) {
+                if (!('sx' in pieceObj)) pieceObj.sx=1;
+                if (!('sy' in pieceObj)) pieceObj.sy=1;
+                if (!('sz' in pieceObj)) pieceObj.sz=1;
+                if (!('rx' in pieceObj)) pieceObj.rx=0;
+                if (!('ry' in pieceObj)) pieceObj.ry=0;
+                if (!('rz' in pieceObj)) pieceObj.rz=0;
+            }
+            function prepareACallbackFunctionForLoader(myScene) {
+              return function( {scene} ) {
+                const object = scene.children[0]
+                //object.scale.set(0.2, 0.2, 0.2); 
+                //object.visible = false
+                  myScene.add(object);
+                  updateMeasures();
+              } 
+              
+            }
+            function createGroup(THREE) {
+/*
+                var geometry = new THREE.BufferGeometry();
+                const vertices = [];
+                vertices.push(new THREE.Vector3( 0, 0, 0));
+                var dot = new THREE.Points(geometry, new THREE.PointsMaterial( { color: 0x888888 } ) );
+
+*/
+                var dot = new THREE.Group();
+                return dot;
+            }
+
+</script>
+
+  <script>
+    // tell the embed parent frame the height of the content
+    if (window.parent && window.parent.parent){
+      window.parent.parent.postMessage(["resultsFrame", {
+        height: document.body.getBoundingClientRect().height,
+        slug: "7u84j6kp"
+      }], "*")
+    }
+
+    // always overwrite window.name, in case users try to set it manually
+    window.name = "result"
+  </script>
+
+
+
+<style>
+#modelDiv {
+  margin-left: 2em;
+}
+
+#modelDiv h1 a {
+    font-size: large;
+    margin-left: 1em;
+}
+
+#modelDiv .objectLink {
+  margin-right: 1em;
+}
+
+#modelDiv div#editObject span {
+    display: inline-block;
+    width: 7em;
+    background-color: #bfdfe9;
+    margin-right: 1em;
+}
+
+#modelDiv div#editObject span+input {
+    width: 25em;
+}
+
+#modelDiv div#editObject span.arrayHeader {
+    width: 4.6em;
+    margin-right: 1em;
+}
+#modelDiv .point {
+    width: 5em;
+    margin-right: 1em;
+}
+button#addArrayRow {
+    margin-left: 9.6em;
+}
+#modelDiv table {
+    table-layout: fixed;
+    width: 100%;
+}
+#modelDiv table.obj_parameter {
+    table-layout: fixed;
+    width: 48%;
+}
+
+#modelDiv div#editObject table {
+    width: initial;
+    margin-left: 4em;
+}
+
+#modelDiv td, #modelDiv th {
+    /* border: 1px solid blue; */
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+#modelDiv td.new, #modelDiv td.edit {
+    width: 8em;
+    overflow: initial;
+    white-space: initial;
+    text-overflow: initial;
+}
+#modelDiv td.new .newSelect{
+    width: 7em;
+}
+td+td {
+  width: auto;
+}
+
+#modelDiv div#formArea {
+    width: 42%;
+    float: left;
+}
+#modelDiv div#renderArea {
+    width: 57%;
+    min-width: 625px;
+    border: 1px blue solid;
+    height: 500px;
+    float: left;
+}
+h1 {
+    clear: left;
+}
+    
+.controller.function:nth-of-type(1), .controller.function:nth-of-type(2), .controller.function:nth-of-type(3), .controller.function:nth-of-type(4) {
+    width: 24%;
+    display: inline-block;
+}
+
+</style>
+
+
+<h3>Version 46</h3>
+<h3>Previous versions</h3>
+<br><a href=escene10.html>v 10</a> Include Subsystems
+<br><a href=escene11.html>v 11</a> Subsystems with evalText for each subsystem
+<br><a href=escene12.html>v 12</a> Arrays
+<br><a href=escene13.html>v 13</a> Arrays con limites variables
+<br><a href=escene15.html>v 15</a> Remove addDesign and create objects and arrays in updateMeasuresAPI
+<br><a href=escene16.html>v 16</a> Change sx, xy, sz to lx, ly, lz
+<br><a href=escene17.html>v 17</a> Corregir error de parametro en subsistema - Demo con cajoneras y cajones
+<br><a href=escene18.html>v 18</a> Corregir error de parametro en subsistema - Ejemplo armario y 5 cajoneras
+<br><a href=escene19.html>v 19</a> Ejemplo armario, para comprobar subsystem
+<br><a href=escene19b.html>v 19b</a> Ejemplo armario, para comprobar sin subsystem
+<br><a href=escene20b.html>v 20b</a> Corregir evalText para que solo haya un contexto y las variables del nivel (que no se repitan variables)
+<br><a href=escene21.html>v 21</a> Pruebas armario
+<br><a href=escene22.html>v 22</a> Ejemplo armario
+<br><a href=escene23.html>v 23</a> Ejemplo armario con cajon con frontal y fondo
+<br><a href=escene24.html>v 24</a> GUI for all objects
+<br><a href=escene25.html>v 25</a> Load GLTF objects, forms to edit objects
+<br><a href=escene26.html>v 26</a> Forms to edit parameters. Save file
+<br><a href=escene27.html>v 27</a> Rotaciones desde el origen. Crear nuevo objeto y cambio de nombre
+<br><a href=escene28.html>v 28</a> Rotation ZYX. Glass materials: glass1, glass2
+<br><a href=escene29.html>v 29</a> Edición de materiales. BoxGeometry with lx, ly, lz
+<br><a href=escene30.html>v 30</a> GLTF objects position. Puerta con rotación
+<br><a href=escene31.html>v 31</a> Versión de ejemplo.
+<br><a href=escene32.html>v 32</a> Campo type
+<br><a href=escene33.html>v 33</a> Textura de cilindros proporcional
+<br><a href=escene34.html>v 34</a> Triángulos
+<br><a href=escene35.html>v 35</a> Extrusión
+<br><a href=escene36.html>v 36</a> Parámetros calculados e internos. Precio.
+<br><a href=escene37.html>v 37</a> Formulario de materiales
+<br><a href=escene38.html>v 38</a> Pruebas de Environment mapping
+<br><a href=escene39.html>v 39</a> Select de options
+<br><a href=escene40.html>v 40</a> Editar materiales
+<br><a href=escene41.html>v 41</a> Normales en materiales
+<br><a href=escene42.html>v 42</a> Esfera
+<br><a href=escene43.html>v 43</a> Revolution
+<br><a href=escene44.html>v 44</a> Select for type of pieces
+<br><a href=escene45.html>v 45</a> Select different options for a piece
+<br><a href=escene46.html>v 46</a> 
+<br><a href=escene47.html>v 47</a> Convert Select in a function
+Opción de mostrar entre varios
+
+  <script>
+document.write("parameters: " + designObj.parameters.length);
+document.write("pieces: " + designObj.pieces.length);
+  </script>
+</body></html>
+<!-- Tareas
+    
+  
+-->
