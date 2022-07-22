@@ -1334,6 +1334,7 @@ function ramp(a,b,c,d,t) {
     function createPanel(typePanel, elementName) {
         // LI to allow hide the element
         var liEl = document.createElement("LI");
+        liEl.setAttribute("class", "prepanel");
         var liText = document.createTextNode(typePanel + ": " + elementName);
         liEl.appendChild(liText);
         liEl.setAttribute("id", elementName);
@@ -2689,7 +2690,7 @@ i.fa.fa-caret-down, i.fa.fa-caret-up {
 }
 
 
-#modelDiv .panel {
+#modelDiv .panel, #panel_version.panel {
   padding: 0 18px;
   background-color: white;
   max-height: 0;
@@ -2697,7 +2698,7 @@ i.fa.fa-caret-down, i.fa.fa-caret-up {
   transition: max-height 0.2s ease-out;
 }
 
-#modelDiv li {
+li.prepanel {
     list-style-type: none;
 }
 
@@ -2710,8 +2711,9 @@ i.fa.fa-caret-down, i.fa.fa-caret-up {
 
 
 <script>
+var selectorQuery = "#modelDiv LI.prepanel";
 function createExpandPanels() {
-    var acc = document.querySelectorAll("#modelDiv LI");
+    var acc = document.querySelectorAll(selectorQuery);
     var i;
 
     for (i = 0; i < acc.length; i++) {
@@ -2745,7 +2747,7 @@ function expandPanel(elem, finalState) {
 var expandedAll = false;
 function expandAll() {
     expandedAll = !expandedAll;
-    var acc = document.querySelectorAll("#temas LI");
+    var acc = document.querySelectorAll(selectorQuery);
     var i;
 
     for (i = 0; i < acc.length; i++) {
@@ -2893,7 +2895,10 @@ h1 {
 </style>
 
 
-<h3>Version 48</h3>
+<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 48
+<i class="accIcon fa fa-caret-down"></i>
+</li>
+<div class="panel" id="panel_version">
 <h3>Previous versions</h3>
 <br><a href=escene10.html>v 10</a> Include Subsystems
 <br><a href=escene11.html>v 11</a> Subsystems with evalText for each subsystem
@@ -2936,11 +2941,12 @@ h1 {
 <br><a href=escene48.html>v 48</a> Hide objects and materials
 <br><a href=escene49.html>v 49</a> Convert Select in a function
 Opción de mostrar entre varios
-
   <script>
 document.write("parameters: " + designObj.parameters.length);
 document.write("pieces: " + designObj.pieces.length);
   </script>
+</div>
+
 </body></html>
 <!-- Tareas
     
