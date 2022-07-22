@@ -26,9 +26,12 @@ materialOptionsObj = {
 
 collection = {};
 
+/*
+*/
 window.onerror = function(message, url, line, col, error) {
     alert(error.message);
     console.log('error: ' + error.message);
+    return false;
 };
 
 function saveFileAs() {
@@ -166,7 +169,7 @@ function loadJSON() {
   ,{"name":"Wood005","texture":"textures/Wood005/Wood005_1K_Color.jpg","normalMap":"textures/Wood005/Wood005_1K_NormalGL.jpg","color_r":0.8549019607843137,"color_g":0.796078431372549,"color_b":0.7254901960784313,"emissive_r":0,"emissive_g":0,"emissive_b":0,"roughness":0.657,"metalness":0.758,"reflectivity":0.6059999999999999,"clearcoat":0,"clearcoatRoughness":0,"transparent":false,"opacity":1,"diffuseMap":"true","normalFactor":"1","envMapIntensity":1,"ior":1.6399155227032733,"wireframe":false},
   {"name":"chrome","color_r":"1","color_g":"1","color_b":"1","roughness":"0","metalness":"1"}
 ],
-"designArr":{"init":{"name":"init","parameters":[],"pieces":[]},"components":{"name":"components","parameters":[{"name":"lx","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"ly","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"lz","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"rx","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"ry","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"rz","type":"m","min":"0","max":"400","step":".5","default":"0"},{"name":"x","type":"cm","min":"-300","max":"400","step":"1","default":"0"},{"name":"y","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"z","type":"cm","min":"-100","max":"400","step":".5","default":"0"},{"name":"sx","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sy","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz2","type":"formula","default":"sz+1"}, {"name":"precio","type":"formula","default":"Math.round(lx/3*ly/7*lz*300)"}],"pieces":[{"name":"cilindro","type":"Cylinder","rt":"lx/2","rb":"ly/2","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90 + rx","ry":"ry","rz":"rz","x":"x","y":"y","z":"z + lz/2"},{"name":"cubo","type":"Box","lx":"lx","ly":"ly","lz":"lz","material_1":"dice1","material_2":"dice2","material_3":"dice3","material_4":"dice4","material_5":"dice5","material_6":"dice6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x + 1","y":"y","z":"z"},{"name":"triangle","type":"Triangle","b":"lx","h":"ly","d":"0.3","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"2.4+x","y":"y","z":"z"},{"name":"prisma","type":"Extrude","shape_array":[["0","0"],["lx","0"],["0.8","ly"],[".2","1"]],"lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x-2","y":"y","z":"z"},{"name":"esfera","type":"Sphere","r":"lz/2","material_1":"golf","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x+4","y":"y","z":"z"},{"name":"esfera Carbon","type":"Sphere","r":"lz/2","material_1":"carbon","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x+4","y":"y+1.2","z":"z"},{"name":"vaso","type":"Revolution","shape_array":[["0","0"],["lx","0"],["0.8","ly"],["0","1"]],"lz":"360","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x-4","y":"y","z":"z"},{"name":"esfera cromo","type":"Sphere","r":"lz/2","material_1":"chrome","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x","y":"y+1.2","z":"z"}]},"cajon_curva":{"name":"cajon_curva","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":10,"max":120,"default":30},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"rebaje_largo","type":"cm","min":"0.5","max":"20","default":"10"},{"name":"rebaje_alto","type":"cm","min":"0.5","max":"10","step":".2","default":"2"}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo","ly":"profundidad - espesor","lz":"espesor","material_1":"kitchen_wood","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"fondo","type":"Box","lx":"largo - espesor * 2","ly":"espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"espesor"},{"name":"frente","type":"Extrude","shape_array":[["0","0"],["largo","0"],["largo","alto"],["largo-((largo-0.12-rebaje_largo)/2)","alto"],["largo-((largo-0.12-rebaje_largo)/2)-0.06","alto-rebaje_alto","largo-((largo-0.12-rebaje_largo)/2)-0.04","alto","largo-((largo-0.12-rebaje_largo)/2)-0.02","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)+0.06","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)","alto","((largo-0.12-rebaje_largo)/2)+0.02","alto-rebaje_alto","((largo-0.12-rebaje_largo)/2)+0.04","alto"],["0","alto"]],"lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"90","ry":"0","rz":"0","x":"0","y":"profundidad","z":"0"},{"name":"tirador","type":"Box","lx":"largo/10","ly":"espesor","lz":"alto/10","material_1":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo/2-largo/10/2","y":"profundidad","z":"alto/2"}]},"cajonera":{"name":"cajonera","parameters":[{"name":"largo","type":"cm","min":20,"max":400,"default":100},{"name":"alto","type":"cm","min":40,"max":250,"default":200},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"name":"cajones","type":"m","min":0,"max":20,"default":2},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","subsystem":"cajon_curva","parameters":[{"name":"largo","default":"largo"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"espesor"},{"name":"profundidad","default":"profundidad"},{"name":"rebaje_largo","default":"largo/3"},{"name":"rebaje_alto","default":"(alto-espaciado*(cajones-1))/cajones/3"}],"material_1":"dice","array_size":"cajones","sx":1,"sy":1,"sz":1,"rx":"0","ry":"0","rz":"0","x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},"marco":{"name":"marco","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":"1","max":"10","step":".2","default":"2"},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"0","y":"0","z":"0"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor","y":"0","z":"0"},{"name":"base","type":"Box","lx":"largo-espesor*2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"0"},{"name":"alto","type":"Box","lx":"largo - espesor * 2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"alto-espesor"},{"name":"panel","type":"Box","lx":"largo-espesor","ly":"profundidad/2","lz":"alto-espesor","material_1":"glass2","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor/2","y":"profundidad/2","z":"espesor/2"},{"name":"tirador","type":"Sphere","r":"espesor/4","material_1":"chrome","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor/2","y":"profundidad+espesor/4","z":"alto/2"},{"name":"base tirador","type":"Cylinder","rt":"espesor/8","rb":"espesor/8","lz":"espesor/16","material_1":"chrome","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor/2","y":"profundidad","z":"alto/2"}]},
+"designArr":{"init":{"name":"init","parameters":[],"pieces":[]},"cubo":{"name":"cubo","parameters":[],"pieces":[{"name":"cubos","type":"Box","lx":"1","ly":"2","lz":"1","material_1":"dice1","material_2":"dice2","material_3":"dice3","material_4":"dice4","material_5":"dice5","material_6":"dice6","sx":"1","sy":"1","sz":"1","rx":"1","ry":"1","rz":"1","x":"0","y":"0","z":"0"}]},"components":{"name":"components","parameters":[{"name":"lx","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"ly","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"lz","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"rx","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"ry","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"rz","type":"m","min":"0","max":"400","step":".5","default":"0"},{"name":"x","type":"cm","min":"-300","max":"400","step":"1","default":"0"},{"name":"y","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"z","type":"cm","min":"-100","max":"400","step":".5","default":"0"},{"name":"sx","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sy","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz2","type":"formula","default":"sz+1"}, {"name":"precio","type":"formula","default":"Math.round(lx/3*ly/7*lz*300)"}],"pieces":[{"name":"cilindro","type":"Cylinder","rt":"lx/2","rb":"ly/2","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90 + rx","ry":"ry","rz":"rz","x":"x","y":"y","z":"z + lz/2"},{"name":"cubo","type":"Box","lx":"lx","ly":"ly","lz":"lz","material_1":"dice1","material_2":"dice2","material_3":"dice3","material_4":"dice4","material_5":"dice5","material_6":"dice6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x + 1","y":"y","z":"z"},{"name":"triangle","type":"Triangle","b":"lx","h":"ly","d":"0.3","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"2.4+x","y":"y","z":"z"},{"name":"prisma","type":"Extrude","shape_array":[["0","0"],["lx","0"],["0.8","ly"],[".2","1"]],"lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x-2","y":"y","z":"z"},{"name":"esfera","type":"Sphere","r":"lz/2","material_1":"golf","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x+4","y":"y","z":"z"},{"name":"esfera Carbon","type":"Sphere","r":"lz/2","material_1":"carbon","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x+4","y":"y+1.2","z":"z"},{"name":"vaso","type":"Revolution","shape_array":[["0","0"],["lx","0"],["0.8","ly"],["0","1"]],"lz":"360","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x-4","y":"y","z":"z"},{"name":"esfera cromo","type":"Sphere","r":"lz/2","material_1":"chrome","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x","y":"y+1.2","z":"z"}]},"cajon_curva":{"name":"cajon_curva","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":10,"max":120,"default":30},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"rebaje_largo","type":"cm","min":"0.5","max":"20","default":"10"},{"name":"rebaje_alto","type":"cm","min":"0.5","max":"10","step":".2","default":"2"}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo","ly":"profundidad - espesor","lz":"espesor","material_1":"kitchen_wood","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"fondo","type":"Box","lx":"largo - espesor * 2","ly":"espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"espesor"},{"name":"frente","type":"Extrude","shape_array":[["0","0"],["largo","0"],["largo","alto"],["largo-((largo-0.12-rebaje_largo)/2)","alto"],["largo-((largo-0.12-rebaje_largo)/2)-0.06","alto-rebaje_alto","largo-((largo-0.12-rebaje_largo)/2)-0.04","alto","largo-((largo-0.12-rebaje_largo)/2)-0.02","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)+0.06","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)","alto","((largo-0.12-rebaje_largo)/2)+0.02","alto-rebaje_alto","((largo-0.12-rebaje_largo)/2)+0.04","alto"],["0","alto"]],"lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"90","ry":"0","rz":"0","x":"0","y":"profundidad","z":"0"},{"name":"tirador","type":"Box","lx":"largo/10","ly":"espesor","lz":"alto/10","material_1":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo/2-largo/10/2","y":"profundidad","z":"alto/2"}]},"cajonera":{"name":"cajonera","parameters":[{"name":"largo","type":"cm","min":20,"max":400,"default":100},{"name":"alto","type":"cm","min":40,"max":250,"default":200},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"name":"cajones","type":"m","min":0,"max":20,"default":2},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","subsystem":"cajon_curva","parameters":[{"name":"largo","default":"largo"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"espesor"},{"name":"profundidad","default":"profundidad"},{"name":"rebaje_largo","default":"largo/3"},{"name":"rebaje_alto","default":"(alto-espaciado*(cajones-1))/cajones/3"}],"material_1":"dice","array_size":"cajones","sx":1,"sy":1,"sz":1,"rx":"0","ry":"0","rz":"0","x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},"marco":{"name":"marco","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":"1","max":"10","step":".2","default":"2"},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"0","y":"0","z":"0"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor","y":"0","z":"0"},{"name":"base","type":"Box","lx":"largo-espesor*2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"0"},{"name":"alto","type":"Box","lx":"largo - espesor * 2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"alto-espesor"},{"name":"panel","type":"Box","lx":"largo-espesor","ly":"profundidad/2","lz":"alto-espesor","material_1":"glass2","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor/2","y":"profundidad/2","z":"espesor/2"},{"name":"tirador","type":"Sphere","r":"espesor/4","material_1":"chrome","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor/2","y":"profundidad+espesor/4","z":"alto/2"},{"name":"base tirador","type":"Cylinder","rt":"espesor/8","rb":"espesor/8","lz":"espesor/16","material_1":"chrome","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor/2","y":"profundidad","z":"alto/2"}]},
     "puerta madera": {
       "name": "puerta madera",
       "parameters": [
@@ -642,6 +645,7 @@ function ramp(a,b,c,d,t) {
                 printModelTable(designArr[prop].name, designArr[prop]);
             }
         }
+        createExpandPanels();
     }
     function visibility(arg) {
         console.log("visibility: " + arg + " " + this.property);
@@ -988,6 +992,9 @@ function ramp(a,b,c,d,t) {
         console.debug("Resize window: " + window.innerWidth + " " + window.innerHeight);
 
         var divEl = document.getElementById("renderDiv");  // get renderDiv before delete formArea
+        if (divEl == null) {
+            return;
+        }
         console.log("Parent div:" + divEl.parentNode.id);
         
         if (divEl.parentNode.id && divEl.parentNode.id == "renderArea") {
@@ -1302,6 +1309,7 @@ function ramp(a,b,c,d,t) {
         console.log("Material: " + "materialTable");
         var modelDiv = document.getElementById('modelDiv')
 
+        /*
         var divEl = document.getElementById("materialTable");
         if (divEl == null) {  // create node or delete content node
             divEl = document.createElement("DIV");
@@ -1314,29 +1322,70 @@ function ramp(a,b,c,d,t) {
         H1El.innerHTML  = "Materials";
         H1El.setAttribute("class", "materials");
         divEl.appendChild( H1El);
+        */
+        var divEl = createPanel("materials", "Materials")
 
 
         var tableMat = createTable("materialTable", materialArr, "obj_material", materialProperties);
         divEl.appendChild( tableMat);
-        
-
     }
+
+
+    function createPanel(typePanel, elementName) {
+        // LI to allow hide the element
+        var liEl = document.createElement("LI");
+        var liText = document.createTextNode(typePanel + ": " + elementName);
+        liEl.appendChild(liText);
+        liEl.setAttribute("id", elementName);
+        modelDiv.appendChild( liEl);
+
+        var divEl = document.getElementById("panel_" + elementName);
+        if (divEl == null) {  // create node or delete content node
+            divEl = document.createElement("DIV");
+            divEl.setAttribute("class", "panel");
+            divEl.setAttribute("id", "panel_" + elementName);
+            modelDiv.appendChild( divEl);
+        } else {
+            divEl.textContent = ''
+        }
+
+        var H1El = document.createElement("H1");
+                //H1El.setAttribute("onClick", "editObjectName('" + modelName + "'))");
+        if (typePanel == "object") {
+            H1El.setAttribute("onClick", "editObjectName('" + elementName + "')");
+        }
+        H1El.innerHTML  = elementName;
+        divEl.appendChild( H1El);
+        return divEl;
+    }
+
     function printModelTable(modelName, obj) {
         var modelDiv = document.getElementById('modelDiv')
+
+        /*
+        // LI to allow hide the element
+        var liEl = document.createElement("LI");
+        var liText = document.createTextNode("object: " + modelName);
+        liEl.appendChild(liText);
+        modelDiv.appendChild( liEl);
 
         var divEl = document.getElementById(modelName);
         if (divEl == null) {  // create node or delete content node
             divEl = document.createElement("DIV");
             divEl.setAttribute("id", modelName);
+            divEl.setAttribute("class", "panel");
             modelDiv.appendChild( divEl);
         } else {
             divEl.textContent = ''
         }
+
         var H1El = document.createElement("H1");
                 //H1El.setAttribute("onClick", "editObjectName('" + modelName + "'))");
                 H1El.setAttribute("onClick", "editObjectName('" + modelName + "')");
         H1El.innerHTML  = modelName;
         divEl.appendChild( H1El);
+        */
+        var divEl = createPanel("object", modelName)
         
         // Load object
         var aEl = document.createElement("A");
@@ -1381,6 +1430,7 @@ function ramp(a,b,c,d,t) {
         if (type == null || type == "") type = "Box";
         var tableEl = createTable(modelName, obj.pieces, "obj_piece", piecePropertiesTable);
         divEl.appendChild( tableEl);
+        
     }
 
     function editObjectName(modelName) {
@@ -1594,35 +1644,19 @@ function ramp(a,b,c,d,t) {
         formEl.setAttribute("id", "editObject");
 //        formEl.setAttribute("method", "GET");
 //        formEl.setAttribute("action", "javascript:void(0);");
-        document.getElementById(modelName).appendChild(formEl);
+        document.getElementById("panel_" + modelName).appendChild(formEl);
         return formEl;
     }
 
     function createForm(i_array, modelName, formType, form_entity, i_element, selected_type, selected_module) {
         console.log("createForm " + i_element);
         
-        var divEl = document.getElementById("renderDiv");  // get renderDiv before delete formArea
+        var renderDiv = document.getElementById("renderDiv");  // get renderDiv before delete formArea
         var formDivMain = addDivForEdit(modelName);
         
         formEl = document.createElement("DIV");  //Changed from FORM to DIV to prevent send
         formEl.setAttribute("id", "formArea");
         formDivMain.appendChild(formEl);
-
-        if (divEl != null) {
-            renderArea = document.createElement("DIV");  //Changed from FORM to DIV to prevent send
-            renderArea.setAttribute("id", "renderArea");
-            formDivMain.appendChild(renderArea);
-            rendererWidth  = renderArea.offsetWidth - 8;
-            rendererHeight = renderArea.offsetHeight- 8;
-            // move the renderDiv node here2
-            renderArea.appendChild(divEl);
-    //        renderer.setPixelRatio( rendererWidth / rendererHeight);
-            camera.aspect = rendererWidth / rendererHeight;
-            camera.updateProjectionMatrix();
-            renderer.setSize( rendererWidth, rendererHeight);
-            updateMeasures();
-            //onWindowResize();
-        }
 
         formEl.appendChild(addHiddenField("sys_object", modelName));
         formEl.appendChild(addHiddenField("sys_formType", formType));
@@ -1708,6 +1742,30 @@ function ramp(a,b,c,d,t) {
         var tCancel = document.createTextNode("Cancel");
         buttonCancelEl.appendChild(tCancel);
         formEl.appendChild(buttonCancelEl);
+
+        // We print the 3D after the form, so if there is an error with parameters
+        // at updateMeasures() the form is printed anyway and the user can modify it
+        if (renderDiv != null) {
+            renderArea = document.createElement("DIV");  //Changed from FORM to DIV to prevent send
+            renderArea.setAttribute("id", "renderArea");
+            formDivMain.appendChild(renderArea);
+            rendererWidth  = renderArea.offsetWidth - 8;
+            rendererHeight = renderArea.offsetHeight- 8;
+            // move the renderDiv node here2
+            renderArea.appendChild(renderDiv);
+    //        renderer.setPixelRatio( rendererWidth / rendererHeight);
+            camera.aspect = rendererWidth / rendererHeight;
+            camera.updateProjectionMatrix();
+            renderer.setSize( rendererWidth, rendererHeight);
+            updateMeasures();
+            //onWindowResize();
+        }
+        
+        // final size because it was initially collapsed
+        var panelDiv = document.getElementById("panel_" + modelName);
+        panelDiv.style.maxHeight = panelDiv.scrollHeight + "px";
+        
+
     }
     
     var arrayFormRows;    
@@ -2623,18 +2681,123 @@ function ramp(a,b,c,d,t) {
 
 </script>
 
-  <script>
-    // tell the embed parent frame the height of the content
-    if (window.parent && window.parent.parent){
-      window.parent.parent.postMessage(["resultsFrame", {
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+<link rel="stylesheet" href="w3.css">
+<style>
+i.fa.fa-caret-down, i.fa.fa-caret-up {
+    float: left;
+}
+
+
+#modelDiv .panel {
+  padding: 0 18px;
+  background-color: white;
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.2s ease-out;
+}
+
+#modelDiv li {
+    list-style-type: none;
+}
+
+#modelDiv li.active, #modelDiv .panel {
+    border: 1px solid lightblue;
+}
+
+
+</style>
+
+
+<script>
+function createExpandPanels() {
+    var acc = document.querySelectorAll("#modelDiv LI");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+      elem_i = document.createElement("i");
+      elem_i.classList.add("accIcon");
+      elem_i.classList.add("fa");
+      elem_i.classList.add("fa-caret-down");
+      acc[i].appendChild(elem_i);
+      acc[i].addEventListener("click", function () {expandPanel(this);});
+    }
+}
+
+function expandPanel(elem, finalState) {
+    if (finalState != null) {
+        console.log("finalState: " + finalState);
+        if (finalState && elem.classList.contains("active")) return;
+        if (!finalState && !elem.classList.contains("active")) return;
+    }
+    elem.classList.toggle("active");
+    element_i = elem.querySelector("i.accIcon");
+    element_i.classList.toggle("fa-caret-down");
+    element_i.classList.toggle("fa-caret-up");
+    var panel = elem.nextElementSibling;
+    if (panel.style.maxHeight) {
+      panel.style.maxHeight = null;
+    } else {
+      panel.style.maxHeight = panel.scrollHeight + "px";
+    } 
+}
+
+var expandedAll = false;
+function expandAll() {
+    expandedAll = !expandedAll;
+    var acc = document.querySelectorAll("#temas LI");
+    var i;
+
+    for (i = 0; i < acc.length; i++) {
+        expandPanel(acc[i], expandedAll);
+    }
+}
+
+
+</script>
+
+<script>
+window.onload = start;
+function start() {
+    var urlSearch = window.location.search.substring(1);
+    if (urlSearch == null || urlSearch.length == 0) {
+      return;
+    }
+    ids=urlSearch.split(",");
+    var i;
+    for (i = 0; i < ids.length; i++) {
+        expandPanel(document.getElementById(ids[i]), true)
+    }
+}
+
+function expand(id) {
+  var x = document.getElementById(id);
+  if (x.className.indexOf("w3-show") == -1) {
+    x.className += " w3-show";
+    x.previousElementSibling.className = 
+    x.previousElementSibling.className.replace("w3-theme-d1", "w3-theme-d4");
+    x.previousElementSibling.className.replace("w3-theme-l4", "w3-theme-l5");
+  } else { 
+    x.className = x.className.replace(" w3-show", "");
+    x.previousElementSibling.className = 
+    x.previousElementSibling.className.replace("w3-theme-d4", "w3-theme-d1");
+    x.previousElementSibling.className.replace("w3-theme-l5", "w3-theme-l4");
+  }
+}
+</script>
+
+<script>
+// tell the embed parent frame the height of the content
+if (window.parent && window.parent.parent){
+    window.parent.parent.postMessage(["resultsFrame", {
         height: document.body.getBoundingClientRect().height,
         slug: "7u84j6kp"
-      }], "*")
-    }
+    }], "*")
+}
 
-    // always overwrite window.name, in case users try to set it manually
-    window.name = "result"
-  </script>
+// always overwrite window.name, in case users try to set it manually
+window.name = "result"
+</script>
 
 
 
@@ -2730,7 +2893,7 @@ h1 {
 </style>
 
 
-<h3>Version 46</h3>
+<h3>Version 48</h3>
 <h3>Previous versions</h3>
 <br><a href=escene10.html>v 10</a> Include Subsystems
 <br><a href=escene11.html>v 11</a> Subsystems with evalText for each subsystem
@@ -2769,7 +2932,9 @@ h1 {
 <br><a href=escene44.html>v 44</a> Select for type of pieces
 <br><a href=escene45.html>v 45</a> Select different options for a piece
 <br><a href=escene46.html>v 46</a> 
-<br><a href=escene47.html>v 47</a> Convert Select in a function
+<br><a href=escene47.html>v 47</a> 3D view with form edit, show errors in alert
+<br><a href=escene48.html>v 48</a> Hide objects and materials
+<br><a href=escene49.html>v 49</a> Convert Select in a function
 Opción de mostrar entre varios
 
   <script>
