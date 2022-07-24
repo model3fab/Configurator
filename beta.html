@@ -74,6 +74,7 @@ function loadJSON() {
 </script>
 
 <div id='renderDiv'></div>
+<button onclick="newObject()">Create new object</button>
 <div id='modelDiv'></div>
 <div id='fileDiv'></div>
 <br>
@@ -431,22 +432,22 @@ function ramp(a,b,c,d,t) {
         controls.maxPolarAngle = Math.PI / 2 * 1.8;
 
 
-        const light = new THREE.DirectionalLight( 0xffffff, .8 );
-        light.position.x = 5;
-        light.position.y = 6;
-        light.position.z = 7;
+        const light = new THREE.PointLight( 0xffffff, 1.0 );
+        light.position.x = 1;
+        light.position.y = 2;
+        light.position.z = 1.5;
         scene.add( light );
-        const light2 = new THREE.DirectionalLight( 0xffffff, .8 );
-        light2.position.x = -2;
+        const light2 = new THREE.PointLight( 0xffffff, 1.0 );
+        light2.position.x = 3;
         light2.position.y = 2;
-        light2.position.z = .5;
+        light2.position.z = 1;
         scene.add( light2 );
-        const light3 = new THREE.DirectionalLight( 0xffffff, .8 );
+        const light3 = new THREE.DirectionalLight( 0xffffff, .20 );
         light3.position.x = .5;
         light3.position.y = .5;
         light3.position.z = -.5;
         scene.add( light3 );
-        const light4 = new THREE.DirectionalLight( 0xffffff, 1.3 );
+        const light4 = new THREE.DirectionalLight( 0xffffff, .20 );
         light4.position.x = -2;
         light4.position.y = -2;
         light4.position.z = .5;
@@ -1347,10 +1348,23 @@ function ramp(a,b,c,d,t) {
         // LI to allow hide the element
         var liEl = document.createElement("LI");
         liEl.setAttribute("class", "prepanel");
+        var spanEl = document.createElement("span");
         var liText = document.createTextNode(typePanel + ": " + elementName);
-        liEl.appendChild(liText);
+        spanEl.appendChild(liText);
+        liEl.appendChild(spanEl);
         liEl.setAttribute("id", elementName);
         modelDiv.appendChild( liEl);
+
+        if (typePanel == "object") {
+            // View object
+            var aEl = document.createElement("A");
+            aEl.setAttribute("onClick", "loadObject('" + elementName + "')");
+            aEl.setAttribute("class", "objectLink loadLink");
+            var linkText = document.createTextNode("View object");
+            aEl.appendChild(linkText);
+            aEl.href = "#renderDiv";  // "javascript:void(0);";
+            liEl.appendChild(aEl);        
+        }
 
         var divEl = document.getElementById("panel_" + elementName);
         if (divEl == null) {  // create node or delete content node
@@ -1375,36 +1389,13 @@ function ramp(a,b,c,d,t) {
     function printModelTable(modelName, obj) {
         var modelDiv = document.getElementById('modelDiv')
 
-        /*
-        // LI to allow hide the element
-        var liEl = document.createElement("LI");
-        var liText = document.createTextNode("object: " + modelName);
-        liEl.appendChild(liText);
-        modelDiv.appendChild( liEl);
-
-        var divEl = document.getElementById(modelName);
-        if (divEl == null) {  // create node or delete content node
-            divEl = document.createElement("DIV");
-            divEl.setAttribute("id", modelName);
-            divEl.setAttribute("class", "panel");
-            modelDiv.appendChild( divEl);
-        } else {
-            divEl.textContent = ''
-        }
-
-        var H1El = document.createElement("H1");
-                //H1El.setAttribute("onClick", "editObjectName('" + modelName + "'))");
-                H1El.setAttribute("onClick", "editObjectName('" + modelName + "')");
-        H1El.innerHTML  = modelName;
-        divEl.appendChild( H1El);
-        */
         var divEl = createPanel("object", modelName)
         
-        // Load object
+        // View object
         var aEl = document.createElement("A");
         aEl.setAttribute("onClick", "loadObject('" + modelName + "')");
         aEl.setAttribute("class", "objectLink loadLink");
-        var linkText = document.createTextNode("Load object");
+        var linkText = document.createTextNode("View object");
         aEl.appendChild(linkText);
         aEl.href = "#renderDiv";  // "javascript:void(0);";
         divEl.appendChild(aEl);        
@@ -1474,6 +1465,16 @@ function ramp(a,b,c,d,t) {
         designObj2.name = newName;
         designArr[newName] = designObj2;
         designObj = designArr[newName];
+        init();
+    }
+
+    function newObject() {
+        designObj2 = {};
+        newName = "new object";
+        designObj2.name = newName;
+        designObj2.parameters = [];
+        designObj2.pieces = [];
+        designArr[newName] = designObj2;
         init();
     }
 
@@ -2775,6 +2776,11 @@ i.fa.fa-caret-down, i.fa.fa-caret-up {
 li.prepanel {
     list-style-type: none;
     font-size: 1.5em;
+    display: flex;
+}
+
+#modelDiv span {
+    width: 419px;
 }
 
 #modelDiv li.active, #modelDiv .panel {
@@ -2782,7 +2788,7 @@ li.prepanel {
 }
 
 #modelDiv li {
-    width: 40%;
+    width: 80%;
 }
 
 
@@ -2800,7 +2806,8 @@ function createExpandPanels() {
       elem_i.classList.add("accIcon");
       elem_i.classList.add("fa");
       elem_i.classList.add("fa-caret-down");
-      acc[i].appendChild(elem_i);
+      //acc[i].appendChild(elem_i);
+      acc[i].insertBefore(elem_i, acc[i].firstChild);
       acc[i].addEventListener("click", function () {expandPanel(this);});
     }
 }
@@ -2815,7 +2822,8 @@ function expandPanel(elem, finalState) {
     element_i = elem.querySelector("i.accIcon");
     element_i.classList.toggle("fa-caret-down");
     element_i.classList.toggle("fa-caret-up");
-    var panel = elem.nextElementSibling;
+    //var panel = elem.nextElementSibling;
+    var panel = document.getElementById("panel_" + elem.id);
     if (panel.style.maxHeight) {
       panel.style.maxHeight = null;
     } else {
@@ -2883,7 +2891,7 @@ window.name = "result"
 
 
 <style>
-#modelDiv {
+#modelDiv, button {
   margin-left: 2em;
 }
 
@@ -2974,7 +2982,7 @@ h1, h2 {
 </style>
 
 
-<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 49
+<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 50
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
@@ -3033,5 +3041,5 @@ document.write("pieces: " + designObj.pieces.length);
     
 V-Quitar Save sin cerrar en Nuevo  
 V-Quitar Save sin cerrar en Parámetros y materiales  
--Editar parámetros debajo de tabla de parámetros
+V-Editar parámetros debajo de tabla de parámetros
 -->
