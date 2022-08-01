@@ -280,6 +280,7 @@ var camera;
 var rendererWidth;
 var rendererHeight;
 
+var createdLights = false;
 
 loaders = {};
 
@@ -365,6 +366,7 @@ function ramp(a,b,c,d,t) {
     var axesHelper;
     var evalText;
     var guiPieces = null;
+    var bottomSpace = 24;  // pixels at the bottom
 
     var textureEnv;
     /*
@@ -375,6 +377,7 @@ function ramp(a,b,c,d,t) {
     showForm();
     export function init() {
 
+        createdLights = false;
         for (var i =0; i< designObj.parameters.length; i++) {
             if (designObj.parameters[i].type == "options") {
                 //API[designObj.parameters[i].name] = designObj.parameters[i].options[0][1];
@@ -395,8 +398,8 @@ function ramp(a,b,c,d,t) {
         renderer = new THREE.WebGLRenderer();
         renderer.setPixelRatio( window.devicePixelRatio );
         rendererWidth = window.innerWidth;
-        rendererHeight = window.innerHeight;
-        renderer.setSize( window.innerWidth, window.innerHeight );
+        rendererHeight = window.innerHeight - bottomSpace;
+        renderer.setSize( rendererWidth, rendererHeight );
 
         var divEl = document.getElementById("renderDiv");
 /*
@@ -420,7 +423,7 @@ function ramp(a,b,c,d,t) {
 
         scene = new THREE.Scene();
 
-        camera = new THREE.PerspectiveCamera( 40, window.innerWidth / window.innerHeight, .1, 1000 );
+        camera = new THREE.PerspectiveCamera( 40, rendererWidth / rendererHeight, .1, 1000 );
         camera.position.set( 4, 5, 1.6 );
         camera.up.set(0,0,1)   // z up (https://stackoverflow.com/questions/44630265/how-can-i-set-z-up-coordinate-system-in-three-js)
         scene.add( camera );
@@ -431,30 +434,6 @@ function ramp(a,b,c,d,t) {
         controls.maxDistance = 50;
         controls.maxPolarAngle = Math.PI / 2 * 1.8;
 
-
-        const light = new THREE.PointLight( 0xffffff, 1.0 );
-        light.position.x = 1;
-        light.position.y = 2;
-        light.position.z = 1.5;
-        scene.add( light );
-        const light2 = new THREE.PointLight( 0xffffff, 1.0 );
-        light2.position.x = 3;
-        light2.position.y = 2;
-        light2.position.z = 1;
-        scene.add( light2 );
-        const light3 = new THREE.DirectionalLight( 0xffffff, .20 );
-        light3.position.x = .5;
-        light3.position.y = .5;
-        light3.position.z = -.5;
-        scene.add( light3 );
-        const light4 = new THREE.DirectionalLight( 0xffffff, .20 );
-        light4.position.x = -2;
-        light4.position.y = -2;
-        light4.position.z = .5;
-        scene.add( light4 );
-        //const helper = new THREE.DirectionalLightHelper( light4, 5 );
-        //scene.add( helper );
-        
         // Cube
         var textureCube;
         const loader = new THREE.CubeTextureLoader();
@@ -621,6 +600,33 @@ function ramp(a,b,c,d,t) {
         initGui();
         updateMeasures();  // comment to improve speed while working in html forms
         updateUvTransform();
+        
+        // Create lights if are not created
+        if (!createdLights) {
+            console.log("Creating default lights");
+            const light = new THREE.PointLight( 0xffffff, 1.0, 10, 2 );
+            light.position.x = 1;
+            light.position.y = 2;
+            light.position.z = 1.5;
+            scene.add( light );
+            const light2 = new THREE.PointLight( 0xffffff, 1.0, 10, 2  );
+            light2.position.x = 3;
+            light2.position.y = 4;
+            light2.position.z = 1;
+            scene.add( light2 );
+            const light3 = new THREE.DirectionalLight( 0xffffff, .60 );
+            light3.position.x = .5;
+            light3.position.y = .5;
+            light3.position.z = .5;
+            scene.add( light3 );
+            const light4 = new THREE.DirectionalLight( 0xffffff, .60 );
+            light4.position.x = -2;
+            light4.position.y = 2;
+            light4.position.z = .5;
+            scene.add( light4 );
+            //const helper = new THREE.DirectionalLightHelper( light4, 5 );
+            //scene.add( helper );
+        }
         
 
         //printModelTable("model", designObj);
@@ -1015,7 +1021,7 @@ function ramp(a,b,c,d,t) {
             rendererHeight = renderDivEl.offsetHeight- 8;
         } else {
             rendererWidth  = window.innerWidth;
-            rendererHeight = window.innerHeight;
+            rendererHeight = window.innerHeight - bottomSpace;
         }
 
         console.debug("Resize div: " + rendererWidth + " " + rendererHeight);
@@ -1160,12 +1166,19 @@ function ramp(a,b,c,d,t) {
         settingsFolder.add( settings, 'axes' ).onChange( axes );
         settingsFolder.add( settings, 'UV' ).onChange( setUV );
         settingsFolder.add( settings, 'env' ).onChange( setEnv );
+        API["Full screen"] = fullScreen;
+        settingsFolder.add( API, "Full screen").name( 'Full screen' )
+
         API["reload GUI"] = reloadGuiPieces;
         gui.add( API, "reload GUI").name( 'Load pieces GUI' )
 
 
     }
     
+    function fullScreen() {
+        bottomSpace = 0;
+        document.querySelector("div.lil-gui.root").remove();
+    }
     function goTop() {
         document.getElementById("renderDiv").scrollIntoView()
 
@@ -1223,8 +1236,6 @@ function ramp(a,b,c,d,t) {
     typeProperties["Cylinder"] = ["rt","rb", "lz", "material_1", "material_2", "material_3"];
     typeProperties["Sphere"] = ["r", "material_1"];
     typeProperties["Triangle"] = ["b","h", "d", "lz", "material_1", "material_2"];
-    typeProperties["Extrude"] = ["shape_array", "lz", "material_1", "material_2"];
-    typeProperties["Revolution"] = ["shape_array", "lz", "material_1"];
     /*
     <-->d
        /\      |h
@@ -1234,6 +1245,8 @@ function ramp(a,b,c,d,t) {
     <------>b
 
     */
+    typeProperties["Extrude"] = ["shape_array", "lz", "material_1", "material_2"];
+    typeProperties["Revolution"] = ["shape_array", "lz", "material_1"];
     typeProperties["Gltf"] = ["url"];
     typeProperties["Module"] = ["subsystem", "parameters"];
     var pieceProperties = {};
@@ -1246,6 +1259,15 @@ function ramp(a,b,c,d,t) {
     pieceProperties["Revolution"] = pieceProperties1.concat(typeProperties["Revolution"],  pieceProperties3);
     pieceProperties["Gltf"]       = pieceProperties1.concat(typeProperties["Gltf"],     pieceProperties3);
     pieceProperties["Module"]     = pieceProperties1.concat(typeProperties["Module"],   pieceProperties3);
+
+//  Lights
+    var lightTypes = ["Point", "Directional", "Spot"];
+    typeProperties["Point"] = ["intensity","distance", "decay"];
+    typeProperties["Directional"] = ["intensity"];
+    typeProperties["Spot"] = ["intensity","distance", "angle", "penumbra", "decay"];
+    pieceProperties["Point"]      = pieceProperties1.concat(typeProperties["Point"], pieceProperties3);
+    pieceProperties["Directional"]= pieceProperties1.concat(typeProperties["Directional"], pieceProperties3);
+    pieceProperties["Spot"]       = pieceProperties1.concat(typeProperties["Spot"], pieceProperties3);
 
     //materialProperties = ["name","type","texture","texture1","texture2","texture3","texture4","texture5","texture6"];
     materialProperties = ["name","texture", "texture_image", "normalMap", "normal_image",  
@@ -1297,7 +1319,6 @@ function ramp(a,b,c,d,t) {
                     if (type == null || type == "") type = "Box";
                     for (var j =0; j< pieceProperties[type].length; j++) {
                         collectionExport.designArr[prop].pieces[i][pieceProperties[type][j]] = designArr[prop]['pieces'][i][pieceProperties[type][j]];
-                        
                     }
                 }
 
@@ -1597,6 +1618,9 @@ function ramp(a,b,c,d,t) {
     }
 
 
+    function createNewSelect(trEl, modelName, form_entity, i_piece) {
+    }
+    
     function addNew(trEl, modelName, form_entity, i_piece) {
         var tdEl = document.createElement("TD");
         tdEl.setAttribute("class", "new");
@@ -1618,7 +1642,6 @@ function ramp(a,b,c,d,t) {
                 option.value = pieceTypes[j];
                 selectPieceType.add(option);
             }
-             // <optgroup label="German Cars">
             var optgroup = document.createElement("optgroup");
             optgroup.label = "Module";
             selectPieceType.add(optgroup);
@@ -1631,7 +1654,19 @@ function ramp(a,b,c,d,t) {
                     optgroup.appendChild(option);
                 }
             }
+            var lightsGroup = document.createElement("optgroup");
+            lightsGroup.label = "Lights";
+            selectPieceType.add(lightsGroup);
+            for (var k =0; k< lightTypes.length; k++) {
+                    option = document.createElement("option");
+                    option.text  = lightTypes[k];
+                    option.value = lightTypes[k];
+                    lightsGroup.appendChild(option);
+            }
             tdEl.appendChild(selectPieceType);
+        } else if (form_entity == "*** vobj_parameter") {  // put a SELECT for selection of type of parameter
+
+            tdEl.appendChild(selectParameterType);
         } else{
             tdEl.innerHTML = 
               "<a onclick='createForm(" + -1 + ", \"" + modelName + "\",\"N\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>New</a>";
@@ -1732,6 +1767,25 @@ function ramp(a,b,c,d,t) {
                 console.log("shape_array");
                 divEl = createArrayForm(formEl, propertyValue,  "shapeForm",  "Shape points", ["X","Y","C1X","C1Y","C2X","C2Y"], "Point", ["x", "y", "c1x", "c1y","c2x","c2y"], ["", ""], ["", "", "", "", "", ""], "Add Curve" );
 
+            } else if (form_entity == "obj_piece" && propertyName == "parameters"){
+                if (formType == "N") {
+                    arrayProperties = designArr[selected_module].parameters;
+                    arrayPropertiesValues = null;
+                } else {
+                    var subsystem = designArr[modelName].pieces[i_array].subsystem;
+
+                    if (subsystem.startsWith("parameter:")) {
+                        var evalParameters = getEvalParameters(designArr[modelName].pieces[i_array]);
+                        eval(evalParameters);
+                        subsystem = eval(subsystem.substring(10));  // 
+                        console.log("evalParameters: " + subsystem);
+                    }
+                                
+                    arrayProperties = designArr[subsystem].parameters
+                    arrayPropertiesValues = designArr[modelName].pieces[i_array].parameters
+
+                }
+                createParametersModuleArrayForm(formEl, arrayProperties, arrayPropertiesValues); //***
             } else if (form_entity == "obj_parameter" && propertyName == "options"){
                 if (document.getElementById("type").value == "options") {
                     console.log("options");
@@ -1797,6 +1851,42 @@ function ramp(a,b,c,d,t) {
     
     var arrayFormRows;    
     
+    function createParametersModuleArrayForm(parentDiv, arrayProperties, arrayPropertiesValues) {
+        console.log("createParametersModuleArrayForm");
+
+        // properties for module
+        for (var ipar =0; ipar< arrayProperties.length; ipar++) {
+                var propertyName = arrayProperties[ipar].name;
+                var propertyValue;
+                if (arrayPropertiesValues == null) {
+                    propertyValue = ""; //***
+                } else {
+                    propertyValue = getArrayElementByName(arrayPropertiesValues, propertyName).default;
+                }
+                var divEl = document.createElement("DIV");
+                var span1El = document.createElement("SPAN");
+                var text1Node = document.createTextNode(propertyName);
+                divEl.appendChild(span1El);
+                span1El.appendChild(text1Node);
+                var span2El = document.createElement("INPUT");
+                span2El.setAttribute("id", "property_" + propertyName);
+                span2El.setAttribute("class", "property");
+                span2El.value = propertyValue;
+                divEl.appendChild(span2El);
+                parentDiv.appendChild(divEl);
+
+            
+        }
+    }
+    function getArrayElementByName(array, name) {
+        for (var i =0; i< array.length; i++) {
+            if (name == array[i].name) {
+                return array[i];
+            }
+        }
+        return null;  // name not found 
+    }
+
     function createArrayForm(parentDiv, arrayValue, divId, headerCell, headerArray, rowTitle, inputNames, voidArray, voidLenghtArray, lengthName ) {
         console.log("createArrayForm");
         arrayFormRows = 0;
@@ -1928,6 +2018,29 @@ function ramp(a,b,c,d,t) {
                 console.log("updateObject shape_array");
                 shapeArray = readShapeArray();
                 pieceObj[propertyName] = shapeArray;
+            } else if (sys_type == "sys_piece" && propertyName == "parameters") {
+                console.log("updateObject parameters"); //***
+                subsytem_value = document.getElementById("subsystem").value;
+                arrayProperties = designArr[subsytem_value].parameters;
+                pieceObj.parameters=[];
+                for (var ipar =0; ipar< arrayProperties.length; ipar++) {
+                    pieceObj.parameters[ipar] = {};
+                    property_name = arrayProperties[ipar].name;
+                    pieceObj.parameters[ipar].name    = property_name;
+                    pieceObj.parameters[ipar].default = document.getElementById("property_" + property_name).value;
+                }
+                /***
+                if (sys_formType == "N") { ***<==  seguramente N y no N se leen igual. Mirar
+                    arrayProperties = designArr[selected_module].parameters;
+                    arrayPropertiesValues = null;
+                } else {
+                    var subsystem = designArr[modelName].pieces[i_array].subsystem;
+                    arrayProperties = designArr[subsystem].parameters
+                    arrayPropertiesValues = designArr[modelName].pieces[i_array].parameters
+
+                }
+                readParametersModuleArrayForm(formEl, arrayProperties, arrayPropertiesValues); //***
+                */
             } else if (sys_type == "sys_parameter" && propertyName == "options") {
                 console.log("updateObject shape_array");
                 optionsArray = readOptionsArray();
@@ -1973,6 +2086,32 @@ function ramp(a,b,c,d,t) {
             printMaterialTable();
         } else {
             printModelTable(sys_object, designArr[sys_object]);
+        }
+    }
+    function readParametersModuleArrayForm(parentDiv, arrayProperties, arrayPropertiesValues) { // ***
+
+        // properties for module
+        for (var ipar =0; ipar< arrayProperties.length; ipar++) {
+                var propertyName = arrayProperties[ipar].name;
+                var propertyValue;
+                if (arrayPropertiesValues == null) {
+                    propertyValue = ""; //***
+                } else {
+                    propertyValue = getArrayElementByName(arrayPropertiesValues, propertyName).default;
+                }
+                var divEl = document.createElement("DIV");
+                var span1El = document.createElement("SPAN");
+                var text1Node = document.createTextNode(propertyName);
+                divEl.appendChild(span1El);
+                span1El.appendChild(text1Node);
+                var span2El = document.createElement("INPUT");
+                span2El.setAttribute("id", propertyName);
+                span2El.setAttribute("class", "property");
+                span2El.value = propertyValue;
+                divEl.appendChild(span2El);
+                parentDiv.appendChild(divEl);
+
+            
         }
     }
     function readShapeArray() {
@@ -2038,6 +2177,9 @@ function ramp(a,b,c,d,t) {
                 return null;  // name not found 
             }
             
+            function isType(obj, objectType) {   // more general check type, can replace the others
+                return obj != null && obj.constructor.name === objectType;
+            }
             function isObject(obj) {
                 return obj != null && obj.constructor.name === "Object"
             }
@@ -2046,6 +2188,13 @@ function ramp(a,b,c,d,t) {
             }
             function isGroup(obj) {
                 return obj != null && obj.constructor.name === "Group"
+            }
+            function getEvalParameters(piece){
+                var evalString = "";
+                for (var j =0; j< piece.parameters.length; j++) {
+                        evalString = evalString + piece.parameters[j].name + "=" + Number(eval(piece.parameters[j].default)) + ";";
+                }
+                return evalString;
             }
             function updateMeasuresAPI(node, THREE, API, updateDesign){
 //                updateDesign.eval = makeEvalContext ();
@@ -2057,9 +2206,12 @@ function ramp(a,b,c,d,t) {
                     // we define the parameters of the subsystem with the values of the updateDesign, but will apply them to the subsystem (before the call to updateMeasuresAPI.
                     var subsetEvalText = "";
                     if ('subsystem' in updateDesign.pieces[i]) {
+                    /* to replace by getEvalParameters
                         for (var j =0; j< updateDesign.pieces[i].parameters.length; j++) {
                                 subsetEvalText = subsetEvalText + updateDesign.pieces[i].parameters[j].name + "=" + Number(eval(updateDesign.pieces[i].parameters[j].default)) + ";";
                         }
+                    */
+                        subsetEvalText = subsetEvalText + getEvalParameters(updateDesign.pieces[i]);
                     }
 
                     var array_length;
@@ -2283,7 +2435,7 @@ function ramp(a,b,c,d,t) {
                                    Number(eval(updateDesign.pieces[i].z)));
 
 // Box
-                        } else {
+                        } else if (updateDesign.pieces[i].type == 'Box') {
                             if (updateDesign.pieces[i].type != 'Box') {
                                 console.warn("type not defined for piece :" + i + " type: " + updateDesign.pieces[i].type);
                                 updateDesign.pieces[i].type = "Box";
@@ -2303,12 +2455,43 @@ function ramp(a,b,c,d,t) {
                                 updateDesign.pieces[i].array[array_i].mesh.lz = 1.;
                                 node.add( mesh );
                             }
-// Position
+                            // Position
                             updateDesign.pieces[i].array[array_i].mesh.position.set(
                                    Number(eval(updateDesign.pieces[i].x)),
                                    Number(eval(updateDesign.pieces[i].y)), 
                                    Number(eval(updateDesign.pieces[i].z)));
+// PointLight
+                        } else if (updateDesign.pieces[i].type == 'Point') {
+                            if (!isType(updateDesign.pieces[i].array[array_i].light, "PointLight")) {
+                                console.log("Create PointLight");
+                                const light = new THREE.PointLight( 0xffffff, 1.0, 10, 2 );
+                                createdLights = true;
+//                                const helper = new THREE.PointLightHelper( light, 5 );
+//                                node.add( helper );
 
+                                light.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+
+                                updateDesign.pieces[i].array[array_i].light=light;
+                                updateDesign.pieces[i].array[array_i].light.intensity = 0.67;
+                                updateDesign.pieces[i].array[array_i].light.distance = 0.67;
+                                updateDesign.pieces[i].array[array_i].light.decay = 0.67;
+                                node.add( light );
+                            }
+// DirectionalLight
+                        } else if (updateDesign.pieces[i].type == 'Directional') {
+                            if (!isType(updateDesign.pieces[i].array[array_i].light, "DirectionalLight")) {
+                                console.log("Create DirectionalLight");
+                                const light = new THREE.DirectionalLight( 0xffffff, 1.0);
+                                createdLights = true;
+
+                                light.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
+
+                                updateDesign.pieces[i].array[array_i].light=light;
+                                updateDesign.pieces[i].array[array_i].light.intensity = 0.67;
+                                node.add( light );
+                            }
+                        } else {
+                            console.warn("type not found for piece :" + i + " type: " + updateDesign.pieces[i].type);
                         }
                         // Set default values if non exist
                         setDefaultValues(updateDesign.pieces[i]);
@@ -2643,6 +2826,46 @@ function ramp(a,b,c,d,t) {
                             updateDesign.pieces[i].array[array_i].mesh.position.z = 
                                    Number(eval(updateDesign.pieces[i].z));                            
 */
+                        }
+                        if (updateDesign.pieces[i].array[array_i].light != undefined) {
+                            // Light Sphere
+                            if (isType(updateDesign.pieces[i].array[array_i].light, "PointLight")) {
+                                intensity = eval(updateDesign.pieces[i].intensity);
+                                distance  = eval(updateDesign.pieces[i].distance);
+                                decay    = eval(updateDesign.pieces[i].decay);
+
+                                if (updateDesign.pieces[i].array[array_i].light.intensity != intensity ||
+                                    updateDesign.pieces[i].array[array_i].light.distance  != distance  ||
+                                    updateDesign.pieces[i].array[array_i].light.decay     != decay) {  // only create if theres is a change
+
+                                    updateDesign.pieces[i].array[array_i].light.intensity = intensity;
+                                    updateDesign.pieces[i].array[array_i].light.distance = distance;
+                                    updateDesign.pieces[i].array[array_i].light.decay = decay;
+
+                                    //updateDesign.pieces[i].array[array_i].light.dispose();
+                                    //updateDesign.pieces[i].array[array_i].light = new THREE.PointLight( 0xffffff, intensity, distance, decay);
+                                    updateDesign.pieces[i].array[array_i].light.intensity = intensity;
+                                    updateDesign.pieces[i].array[array_i].light.distance = distance;
+                                    updateDesign.pieces[i].array[array_i].light.decay = decay;
+                                }
+                            } else if (isType(updateDesign.pieces[i].array[array_i].light, "DirectionalLight")) {
+                                intensity = eval(updateDesign.pieces[i].intensity);
+
+                                if (updateDesign.pieces[i].array[array_i].light.intensity != intensity) {  // only create if theres is a change
+
+                                    updateDesign.pieces[i].array[array_i].light.intensity = intensity;
+
+                                    //updateDesign.pieces[i].array[array_i].light.dispose();
+                                    //updateDesign.pieces[i].array[array_i].light = new THREE.PointLight( 0xffffff, intensity, distance, decay);
+                                    updateDesign.pieces[i].array[array_i].light.intensity = intensity;
+                                }
+                            }
+                            // Position
+                            updateDesign.pieces[i].array[array_i].light.position.set(
+                                   Number(eval(updateDesign.pieces[i].x)),
+                                   Number(eval(updateDesign.pieces[i].y)), 
+                                   Number(eval(updateDesign.pieces[i].z)));
+
                         }
                             
                     }
@@ -2982,7 +3205,7 @@ h1, h2 {
 </style>
 
 
-<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 50
+<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 52
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
@@ -3027,8 +3250,10 @@ h1, h2 {
 <br><a href=escene47.html>v 47</a> 3D view with form edit, show errors in alert
 <br><a href=escene48.html>v 48</a> Hide objects and materials in design area. Include conditon function to implement if. Parameters for materials
 <br><a href=escene49.html>v 49</a> Parameter form open below table of parameters
-<br><a href=escene50.html>v 50</a> Botón de representar en fila de LI
-<br><a href=escene51.html>v 51</a> Convert Select in a function
+<br><a href=escene50.html>v 50</a> Botón de representar en fila de LI. Luces
+<br><a href=escene51.html>v 51</a> Parameters of modules as parameters of other primitives
+<br><a href=escene52.html>v 52</a> Edit modules defined with a parameter (parameter:)
+<br><a href=escene53.html>v 53</a> Convert Select in a function
 Opción de mostrar entre varios
   <script>
 document.write("parameters: " + designObj.parameters.length);
