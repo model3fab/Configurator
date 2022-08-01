@@ -1775,7 +1775,7 @@ function ramp(a,b,c,d,t) {
                     var subsystem = designArr[modelName].pieces[i_array].subsystem;
 
                     if (subsystem.startsWith("parameter:")) {
-                        var evalParameters = getEvalParameters(designArr[modelName].pieces[i_array]);
+                        var evalParameters = getEvalParameters(designArr[modelName].parameters);
                         eval(evalParameters);
                         subsystem = eval(subsystem.substring(10));  // 
                         console.log("evalParameters: " + subsystem);
@@ -1864,6 +1864,7 @@ function ramp(a,b,c,d,t) {
                     propertyValue = getArrayElementByName(arrayPropertiesValues, propertyName).default;
                 }
                 var divEl = document.createElement("DIV");
+                divEl.setAttribute("class", "module property");
                 var span1El = document.createElement("SPAN");
                 var text1Node = document.createTextNode(propertyName);
                 divEl.appendChild(span1El);
@@ -2020,8 +2021,15 @@ function ramp(a,b,c,d,t) {
                 pieceObj[propertyName] = shapeArray;
             } else if (sys_type == "sys_piece" && propertyName == "parameters") {
                 console.log("updateObject parameters"); //***
-                subsytem_value = document.getElementById("subsystem").value;
-                arrayProperties = designArr[subsytem_value].parameters;
+                var subsystem_value = document.getElementById("subsystem").value;
+
+                if (subsystem_value.startsWith("parameter:")) {
+                    var evalParameters = getEvalParameters(designArr[sys_object].parameters); // *** correct parameters?
+                    eval(evalParameters);
+                    subsystem_value = eval(subsystem_value.substring(10));  // 
+                    console.log("evalParameters: " + subsystem_value);
+                }
+                arrayProperties = designArr[subsystem_value].parameters;
                 pieceObj.parameters=[];
                 for (var ipar =0; ipar< arrayProperties.length; ipar++) {
                     pieceObj.parameters[ipar] = {};
@@ -2189,10 +2197,20 @@ function ramp(a,b,c,d,t) {
             function isGroup(obj) {
                 return obj != null && obj.constructor.name === "Group"
             }
-            function getEvalParameters(piece){
+            function getEvalParameters(parameters){
                 var evalString = "";
-                for (var j =0; j< piece.parameters.length; j++) {
-                        evalString = evalString + piece.parameters[j].name + "=" + Number(eval(piece.parameters[j].default)) + ";";
+                for (var j =0; j< parameters.length; j++) {
+                    var propertyValue;
+                    if (isNaN(parameters[j].default)) {
+                        if (parameters[j].default.startsWith("'")) {
+                            propertyValue = parameters[j].default;
+                        } else {
+                            propertyValue = eval(parameters[j].default);
+                        }
+                    } else {
+                        propertyValue = eval(parameters[j].default);
+                    }
+                    evalString = evalString + parameters[j].name + "=" + propertyValue + ";";
                 }
                 return evalString;
             }
@@ -2211,7 +2229,7 @@ function ramp(a,b,c,d,t) {
                                 subsetEvalText = subsetEvalText + updateDesign.pieces[i].parameters[j].name + "=" + Number(eval(updateDesign.pieces[i].parameters[j].default)) + ";";
                         }
                     */
-                        subsetEvalText = subsetEvalText + getEvalParameters(updateDesign.pieces[i]);
+                        subsetEvalText = subsetEvalText + getEvalParameters(updateDesign.pieces[i].parameters);
                     }
 
                     var array_length;
@@ -3008,6 +3026,11 @@ li.prepanel {
 
 #modelDiv li.active, #modelDiv .panel {
     border: 1px solid lightblue;
+}
+
+#modelDiv div.module.property span {
+    padding-left: 1em;
+    /* padding-right: 0em; */
 }
 
 #modelDiv li {
