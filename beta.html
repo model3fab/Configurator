@@ -1227,6 +1227,7 @@ function ramp(a,b,c,d,t) {
 
 <script>
 
+    var parameterTypes = ["m", "u", "cm", "options", "internal", "formula"];
     var parameterProperties = ["name", "type", "options", "min","max", "step", "default"];
     var pieceTypes = ["Box", "Cylinder", "Sphere", "Triangle", "Extrude", "Revolution", "Gltf"]; //, "Module"];  Module is replaced by each type of object
     var pieceProperties1 = ["name", "type"];
@@ -1367,24 +1368,28 @@ function ramp(a,b,c,d,t) {
 
     function createPanel(typePanel, elementName) {
         // LI to allow hide the element
-        var liEl = document.createElement("LI");
-        liEl.setAttribute("class", "prepanel");
-        var spanEl = document.createElement("span");
-        var liText = document.createTextNode(typePanel + ": " + elementName);
-        spanEl.appendChild(liText);
-        liEl.appendChild(spanEl);
-        liEl.setAttribute("id", elementName);
-        modelDiv.appendChild( liEl);
+        var liEl = document.getElementById(elementName);
+        
+        if (liEl == null) {
+            liEl = document.createElement("LI");
+            liEl.setAttribute("class", "prepanel");
+            var spanEl = document.createElement("span");
+            var liText = document.createTextNode(typePanel + ": " + elementName);
+            spanEl.appendChild(liText);
+            liEl.appendChild(spanEl);
+            liEl.setAttribute("id", elementName);
+            modelDiv.appendChild( liEl);
 
-        if (typePanel == "object") {
-            // View object
-            var aEl = document.createElement("A");
-            aEl.setAttribute("onClick", "loadObject('" + elementName + "')");
-            aEl.setAttribute("class", "objectLink loadLink");
-            var linkText = document.createTextNode("View object");
-            aEl.appendChild(linkText);
-            aEl.href = "#renderDiv";  // "javascript:void(0);";
-            liEl.appendChild(aEl);        
+            if (typePanel == "object") {
+                // View object
+                var aEl = document.createElement("A");
+                aEl.setAttribute("onClick", "loadObject('" + elementName + "')");
+                aEl.setAttribute("class", "objectLink loadLink");
+                var linkText = document.createTextNode("View object");
+                aEl.appendChild(linkText);
+                aEl.href = "#renderDiv";  // "javascript:void(0);";
+                liEl.appendChild(aEl);        
+            }
         }
 
         var divEl = document.getElementById("panel_" + elementName);
@@ -1664,7 +1669,24 @@ function ramp(a,b,c,d,t) {
                     lightsGroup.appendChild(option);
             }
             tdEl.appendChild(selectPieceType);
-        } else if (form_entity == "*** vobj_parameter") {  // put a SELECT for selection of type of parameter
+        } else if (form_entity == "obj_parameter") {  // put a SELECT for selection of type of parameter
+            var text1Node = document.createTextNode("New:");
+            tdEl.appendChild(text1Node);
+            var selectParameterType = document.createElement("SELECT");
+            selectParameterType.setAttribute("class", "newSelect");
+            selectParameterType.setAttribute("onchange", "createForm(" + -1 + ", \"" + modelName + "\",\"N\", \"" + form_entity + "\", " + i_piece + ", this.value, this.options[this.selectedIndex].text)");
+            selectParameterType.setAttribute("onfocus", "this.selectedIndex = -1;");
+            var option = document.createElement("option");
+            option.text = "Select type";
+            option.value = "0";
+            option.setAttribute("style","display:none;");
+            selectParameterType.add(option);
+            for (var j =0; j< parameterTypes.length; j++) {
+                option = document.createElement("option");
+                option.text  = parameterTypes[j];
+                option.value = parameterTypes[j];
+                selectParameterType.add(option);
+            }
 
             tdEl.appendChild(selectParameterType);
         } else{
@@ -1674,16 +1696,66 @@ function ramp(a,b,c,d,t) {
         trEl.appendChild(tdEl);
     }
 
-    function addEdit(trEl, i_row, modelName, form_entity, i_piece) {
+    var setOrderButtons = true;
+    function addEdit(trEl, i_row, modelNameString, form_entity, i_piece) {
         var tdEl = document.createElement("TD");
         tdEl.setAttribute("class", "edit");
         tdEl.innerHTML = 
-          "<a onclick='createForm(" + i_row + ", \"" + modelName + "\",\"E\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>Edit</a>" + "&nbsp;&nbsp;" + 
-          "<a onclick='createForm(" + i_row + ", \"" + modelName + "\",\"D\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>Duplicate</a>";
+          "<a onclick='createForm(" + i_row + ", \"" + modelNameString + "\",\"E\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>Edit</a>" + "&nbsp;&nbsp;" + 
+          "<a onclick='createForm(" + i_row + ", \"" + modelNameString + "\",\"D\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>Duplicate</a>";
+
         trEl.appendChild(tdEl);
+        if (setOrderButtons) {
+            elem_i = document.createElement("i");
+            elem_i.classList.add("accIcon");
+            elem_i.classList.add("fa");
+            elem_i.classList.add("fa-caret-up");
+            tdEl.appendChild(elem_i)
+            elem_i.setAttribute("onclick", "moveElement(true, " + i_row + ", '" + modelNameString + "', '" 
+              + form_entity + "', " + i_piece + ")");
+            elem_i = document.createElement("i");
+            elem_i.classList.add("accIcon");
+            elem_i.classList.add("fa");
+            elem_i.classList.add("fa-caret-down");
+            elem_i.setAttribute("onclick", "moveElement(false, " + i_row + ", '" + modelNameString + "', '" 
+              + form_entity + "', " + i_piece + ")");
+            tdEl.appendChild(elem_i)
+        }
+
     }
 
+    function moveElement(up, i_row, modelNameString, form_entity, i_piece) {
+        console.log("element: " + i_row);
+        var array;
+        if (form_entity == "obj_piece") {
+            array = designArr[modelNameString].pieces;
+        } else if (form_entity == "obj_parameter") {
+            array = designArr[modelNameString].parameters;
+        } else if (form_entity == "obj_material") {
+            array = materialArr;
+        }
+        if (up) {
+            if (i_row > 0) {
+                var tmp = array[i_row - 1];
+                array[i_row - 1] = array[i_row];
+                array[i_row] = tmp;
+            }
+        } else {  // down
+            if (i_row < array.length -1) {
+                var tmp = array[i_row + 1];
+                array[i_row + 1] = array[i_row];
+                array[i_row] = tmp;
+            }
+        }
+        
+        if (form_entity == "obj_material") {
+            printMaterialTable();
+        } else if (form_entity == "obj_piece" || form_entity == "obj_parameter") {
+            printModelTable(modelNameString, designArr[modelNameString]);
+        }
 
+    }
+    
     function addDivForEdit(modelName) {
         var formEl = document.getElementById("editObject");
         if (formEl != null) {
@@ -1754,6 +1826,8 @@ function ramp(a,b,c,d,t) {
             var propertyValue = "";
             if (formType == "N") {
                 if (form_entity == "obj_piece" && propertyName == "type") {
+                    propertyValue = selected_type;
+                } else if (form_entity == "obj_parameter" && propertyName == "type") {
                     propertyValue = selected_type;
                 } else if (form_entity == "obj_piece" && propertyName == "subsystem") {
                     propertyValue = selected_module;
@@ -3005,6 +3079,10 @@ i.fa.fa-caret-down, i.fa.fa-caret-up {
     margin-right: 0.8em;
 }
 
+table td.edit i.accIcon.fa.fa-caret-up,
+table td.edit i.accIcon.fa.fa-caret-down {
+    float: right;
+}
 
 #modelDiv .panel, #panel_version.panel {
   padding: 0 18px;
@@ -3193,7 +3271,7 @@ button#addArrayRow {
     text-overflow: ellipsis;
 }
 #modelDiv td.new, #modelDiv td.edit {
-    width: 8em;
+    width: 11em;
     overflow: initial;
     white-space: initial;
     text-overflow: initial;
