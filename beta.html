@@ -1912,6 +1912,9 @@ function ramp(a,b,c,d,t) {
                 //onWindowResize();
             }
             
+        } else {
+            moveRenderDivUp(renderDiv);
+            document.getElementById("formArea").scrollIntoView();
         }
         // final size because it was initially collapsed
         var panelDiv = document.getElementById("panel_" + modelName);
@@ -2274,13 +2277,14 @@ function ramp(a,b,c,d,t) {
         rendererWidth  = window.innerWidth;
         rendererHeight = window.innerHeight - bottomSpace;
     }
-    function cancelEdit() {
-    
+    function moveRenderDivUp(divEl) {
         // move renderDiv to beggining of body
-        var divEl = document.getElementById("renderDiv");
         document.body.insertBefore(divEl, document.body.firstChild);
         onWindowResize();
-    
+    }
+    function cancelEdit() {
+        var divEl = document.getElementById("renderDiv");
+        moveRenderDivUp(divEl);
         var formEl = document.getElementById("editObject");
         if (formEl != null) {
             formEl.remove();
