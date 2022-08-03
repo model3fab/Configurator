@@ -2163,6 +2163,10 @@ function ramp(a,b,c,d,t) {
         } else if (sys_type == "sys_material") {
             printMaterialTable();
         } else {
+        // move renderDiv to beggining of body
+            var divEl = document.getElementById("renderDiv");
+            document.body.insertBefore(divEl, document.body.firstChild);
+            onWindowResize();
             printModelTable(sys_object, designArr[sys_object]);
         }
     }
