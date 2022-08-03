@@ -1860,6 +1860,39 @@ function ramp(a,b,c,d,t) {
 
                 }
                 createParametersModuleArrayForm(formEl, arrayProperties, arrayPropertiesValues); //***
+            } else if (form_entity == "obj_piece" && propertyName.startsWith("material")) {
+                console.log("materials");
+                var divEl = document.createElement("DIV");
+                var span1El = document.createElement("SPAN");
+                var text1Node = document.createTextNode(propertyName);
+                divEl.appendChild(span1El);
+                span1El.appendChild(text1Node);
+                var selectEl = document.createElement("SELECT");
+                for (var i_mat =0; i_mat< materialArr.length; i_mat++) {
+                    var option = document.createElement("option");
+                    option.text  = materialArr[i_mat].name;
+                    option.value = materialArr[i_mat].name;
+                    selectEl.add(option);
+                }
+                
+                var parametersGroup = document.createElement("optgroup");
+                parametersGroup.label = "Parameters";
+                selectEl.add(parametersGroup);
+                for (var k =0; k< designArr[modelName].parameters.length; k++) {
+                    if (designArr[modelName].parameters[k].type == "options"
+                     || designArr[modelName].parameters[k].type == "formula") {
+                        option = document.createElement("option");
+                        option.text  = designArr[modelName].parameters[k].name;
+                        option.value = "parameter:" + designArr[modelName].parameters[k].name;
+                        parametersGroup.appendChild(option);
+                    }
+                }
+
+                selectEl.setAttribute("id", propertyName);
+                selectEl.setAttribute("class", "property");
+                selectEl.value = propertyValue;
+                divEl.appendChild(selectEl);
+                formEl.appendChild(divEl);
             } else if (form_entity == "obj_parameter" && propertyName == "options"){
                 if (document.getElementById("type").value == "options") {
                     console.log("options");
@@ -3306,7 +3339,7 @@ h1, h2 {
 </style>
 
 
-<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 52
+<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 54
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
@@ -3354,8 +3387,8 @@ h1, h2 {
 <br><a href=escene50.html>v 50</a> Botón de representar en fila de LI. Luces
 <br><a href=escene51.html>v 51</a> Parameters of modules as parameters of other primitives
 <br><a href=escene52.html>v 52</a> Edit modules defined with a parameter (parameter:)
-<br><a href=escene53.html>v 53</a> Convert Select in a function
-Opción de mostrar entre varios
+<br><a href=escene53.html>v 53</a> new with types of parameters; order the materials, pieces and parameters
+<br><a href=escene54.html>v 54</a> Select of materials. Opción de mostrar entre varios
   <script>
 document.write("parameters: " + designObj.parameters.length);
 document.write("pieces: " + designObj.pieces.length);
