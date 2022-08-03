@@ -276,7 +276,9 @@ designObj = designArr[objectName];
 
 materialsObj = materialArr;
 var renderer;
+var scene;
 var camera;
+var bottomSpace = 24;  // pixels at the bottom
 var rendererWidth;
 var rendererHeight;
 
@@ -338,7 +340,7 @@ function ramp(a,b,c,d,t) {
     loaders.GLTFLoader = GLTFLoader;
 
 
-    let mesh, scene;  // camera, renderer set global to change position in createForm
+    let mesh;  // camera, renderer set global to change position in createForm
 
     let gui;
 
@@ -366,7 +368,6 @@ function ramp(a,b,c,d,t) {
     var axesHelper;
     var evalText;
     var guiPieces = null;
-    var bottomSpace = 24;  // pixels at the bottom
 
     var textureEnv;
     /*
@@ -1000,45 +1001,6 @@ function ramp(a,b,c,d,t) {
         return; 
     }
     
-
-
-    function render() {
-        renderer.render( scene, camera );
-    }
-
-    function onWindowResize() {
-        console.debug("Resize window: " + window.innerWidth + " " + window.innerHeight);
-
-        var divEl = document.getElementById("renderDiv");  // get renderDiv before delete formArea
-        if (divEl == null) {
-            return;
-        }
-        console.log("Parent div:" + divEl.parentNode.id);
-        
-        if (divEl.parentNode.id && divEl.parentNode.id == "renderArea") {
-            var renderDivEl = divEl.parentNode; // #renderArea
-            rendererWidth  = renderDivEl.offsetWidth - 8;
-            rendererHeight = renderDivEl.offsetHeight- 8;
-        } else {
-            rendererWidth  = window.innerWidth;
-            rendererHeight = window.innerHeight - bottomSpace;
-        }
-
-        console.debug("Resize div: " + rendererWidth + " " + rendererHeight);
-
-
-        camera.aspect = rendererWidth / rendererHeight;
-        //renderer.setPixelRatio( rendererWidth / rendererHeight);
-
-
-        camera.updateProjectionMatrix();
-
-        renderer.setSize( rendererWidth, rendererHeight);
-
-        render();
-
-    }
-
     
 
     function debug() {
@@ -1367,7 +1329,7 @@ function ramp(a,b,c,d,t) {
 
 
     function createPanel(typePanel, elementName) {
-        // LI to allow hide the element
+        // it is a LI element to allow hide the element
         var liEl = document.getElementById(elementName);
         
         if (liEl == null) {
@@ -1924,6 +1886,7 @@ function ramp(a,b,c,d,t) {
         var tSaveClose = document.createTextNode("Save");
         buttonSaveCloseEl.appendChild(tSaveClose);
         formEl.appendChild(buttonSaveCloseEl);
+
         var buttonCancelEl = document.createElement("BUTTON");
         buttonCancelEl.setAttribute("onClick", "cancelEdit()");
         var tCancel = document.createTextNode("Cancel");
@@ -2267,7 +2230,53 @@ function ramp(a,b,c,d,t) {
         }
         return optionsArray;
     }
+    function render() {
+        renderer.render( scene, camera );
+    }
+
+
+    function onWindowResize() {
+        console.debug("Resize window: " + window.innerWidth + " " + window.innerHeight);
+
+        var divEl = document.getElementById("renderDiv");  // get renderDiv before delete formArea
+        if (divEl == null) {
+            return;
+        }
+        console.log("Parent div:" + divEl.parentNode.id);
+        
+        if (divEl.parentNode.id && divEl.parentNode.id == "renderArea") {
+            var renderDivEl = divEl.parentNode; // #renderArea
+            rendererWidth  = renderDivEl.offsetWidth - 8;
+            rendererHeight = renderDivEl.offsetHeight- 8;
+        } else {
+            setRendererWidthHeight();
+        }
+
+        console.debug("Resize div: " + rendererWidth + " " + rendererHeight);
+
+
+        camera.aspect = rendererWidth / rendererHeight;
+        //renderer.setPixelRatio( rendererWidth / rendererHeight);
+
+
+        camera.updateProjectionMatrix();
+
+        renderer.setSize( rendererWidth, rendererHeight);
+
+        render();
+
+    }
+    function setRendererWidthHeight() {
+        rendererWidth  = window.innerWidth;
+        rendererHeight = window.innerHeight - bottomSpace;
+    }
     function cancelEdit() {
+    
+        // move renderDiv to beggining of body
+        var divEl = document.getElementById("renderDiv");
+        document.body.insertBefore(divEl, document.body.firstChild);
+        onWindowResize();
+    
         var formEl = document.getElementById("editObject");
         if (formEl != null) {
             formEl.remove();
@@ -3339,7 +3348,7 @@ h1, h2 {
 </style>
 
 
-<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 54
+<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 55
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
@@ -3389,6 +3398,7 @@ h1, h2 {
 <br><a href=escene52.html>v 52</a> Edit modules defined with a parameter (parameter:)
 <br><a href=escene53.html>v 53</a> new with types of parameters; order the materials, pieces and parameters
 <br><a href=escene54.html>v 54</a> Select of materials. Opción de mostrar entre varios
+<br><a href=escene54.html>v 55</a> Restaurar la imagen al inicio al cerrar el editor
   <script>
 document.write("parameters: " + designObj.parameters.length);
 document.write("pieces: " + designObj.pieces.length);
