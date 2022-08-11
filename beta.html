@@ -302,6 +302,10 @@ var API = {
 };
 
 var createdLights = false;
+var defaultMaterial;
+var materialData;
+var materialGui;
+
 
 loaders = {};
 
@@ -368,8 +372,6 @@ function ramp(a,b,c,d,t) {
         UV: false,
         env: false,
     };
-    var materialGui;
-    var materialData;
 
     var geometry;
     var material_UV;
@@ -380,7 +382,7 @@ function ramp(a,b,c,d,t) {
     var textureEnv;
     /*
     */
-    var defaultMaterial = new THREE.MeshPhysicalMaterial( { color: 0xffffff } );
+    defaultMaterial = new THREE.MeshPhysicalMaterial( { color: 0xffffff } );
     defaultMaterial.diffuseMap = true;
     init();
     showForm();
@@ -708,89 +710,6 @@ function ramp(a,b,c,d,t) {
         return texture;
     }
 
-    function saveMaterial() {
-        copyMaterialPropertiesFromEditorToModel(materialGui, getMaterial(currentMaterialName));
-        printMaterialTable();
-    }
-    
-    function copyMaterialPropertiesFromEditorToModel(materialSource, materialTarget) {
-        materialTarget.color_r = materialSource.color.r;
-        materialTarget.color_g = materialSource.color.g;
-        materialTarget.color_b = materialSource.color.b;
-        materialTarget.emissive_r = materialSource.emissive.r;
-        materialTarget.emissive_g = materialSource.emissive.g;
-        materialTarget.emissive_b = materialSource.emissive.b;
-        materialTarget.roughness = materialSource.roughness;
-        materialTarget.metalness = materialSource.metalness;
-        materialTarget.reflectivity = materialSource.reflectivity;
-        materialTarget.clearcoat = materialSource.clearcoat;
-        materialTarget.clearcoatRoughness = materialSource.clearcoatRoughness;
-        materialTarget.transparent = materialSource.transparent;
-        materialTarget.opacity = materialSource.opacity;
-        materialTarget.diffuseMap = materialSource.diffuseMap;
-        materialTarget.normalFactor = materialSource.normalFactor;
-        materialTarget.envMapIntensity = materialSource.envMapIntensity;
-        materialTarget.ior = materialSource.ior;
-        materialTarget.wireframe = materialSource.wireframe;
-    }
-    function copyMaterialPropertiesFromModelToEditor(materialSource, materialTarget) {
-        materialTarget.color.r = materialSource.color_r || defaultMaterial.color.r;
-        materialTarget.color.g = materialSource.color_g || defaultMaterial.color.g;
-        materialTarget.color.b = materialSource.color_b || defaultMaterial.color.b;
-        materialTarget.emissive.r = materialSource.emissive_r || defaultMaterial.emissive.r;
-        materialTarget.emissive.g = materialSource.emissive_g || defaultMaterial.emissive.g;
-        materialTarget.emissive.b = materialSource.emissive_b || defaultMaterial.emissive.b;
-        materialTarget.roughness = materialSource.roughness || defaultMaterial.roughness;
-        materialTarget.metalness = materialSource.metalness || defaultMaterial.metalness;
-        materialTarget.reflectivity = materialSource.reflectivity || defaultMaterial.reflectivity;
-        materialTarget.clearcoat = materialSource.clearcoat || defaultMaterial.clearcoat;
-        materialTarget.clearcoatRoughness = materialSource.clearcoatRoughness || defaultMaterial.clearcoatRoughness;
-        materialTarget.transparent = materialSource.transparent || defaultMaterial.transparent;
-        materialTarget.opacity = materialSource.opacity || defaultMaterial.opacity;
-        materialTarget.diffuseMap = materialSource.diffuseMap || defaultMaterial.diffuseMap;
-        materialTarget.normalFactor = materialSource.normalFactor || defaultMaterial.normalFactor;
-        materialTarget.envMapIntensity = materialSource.envMapIntensity || defaultMaterial.envMapIntensity;
-        materialTarget.ior = materialSource.ior || defaultMaterial.ior;
-        materialTarget.wireframe = materialSource.wireframe || defaultMaterial.wireframe;
-        var materialColor = materialTarget.color.getHex();
-        if (materialColor != null) {
-            materialData.color = materialTarget.color.getHex()
-        }
-        var materialEmissiveColor = materialTarget.emissive.getHex();
-        if (materialEmissiveColor != null) {
-            materialData.emissive = materialTarget.emissive.getHex()
-        }
-        var materialsFolder = getGuiFolderByName(gui.folders, "Material properties");
-        uptadeControllers(materialsFolder);
-    }
-
-    function updatePhysicalMaterial() {
-        materialEdit.color.r = materialGui.color.r;
-        materialEdit.color.g = materialGui.color.g;
-        materialEdit.color.b = materialGui.color.b;
-        materialEdit.emissive.r = materialGui.emissive.r;
-        materialEdit.emissive.g = materialGui.emissive.g;
-        materialEdit.emissive.b = materialGui.emissive.b;
-        materialEdit.roughness = materialGui.roughness;
-        materialEdit.metalness = materialGui.metalness;
-        materialEdit.reflectivity = materialGui.reflectivity;
-        materialEdit.clearcoat = materialGui.clearcoat;
-        materialEdit.clearcoatRoughness = materialGui.clearcoatRoughness;
-        materialEdit.transparent = materialGui.transparent;
-        materialEdit.opacity = materialGui.opacity;
-        if (materialGui.diffuseMap) {
-            materialEdit.map = materialEdit.map_backup;
-        } else {
-            materialEdit.map = null;
-        }
-        materialEdit.normalScale.x = materialGui.normalFactor;
-        materialEdit.normalScale.y = materialGui.normalFactor;
-        materialEdit.envMapIntensity = materialGui.envMapIntensity;
-        materialEdit.ior = materialGui.ior;
-        materialEdit.wireframe = materialGui.wireframe;
-        materialEdit.needsUpdate = true ;
-        render();
-    }
 
 /*
     const envMapKeys = getObjectsKeys( envMaps );
@@ -1891,7 +1810,12 @@ function ramp(a,b,c,d,t) {
             console.log(parameterName);
             var parameter = currentObject[parameterName];
             var designObjParameter = currentObject[parameterName].designObjParameter;
-            var array_length = parameter.length;
+            var array_length;
+            if (parameter.array_size_value != null) {
+                array_length = parameter.array_size_value;
+            } else {
+                array_length = parameter.length;
+            }
                 /*
             if (parameter.array_size != null) {
                 var new_array_length = eval(parameter.array_size);
@@ -2310,6 +2234,91 @@ function ramp(a,b,c,d,t) {
         if (formEl != null) {
             formEl.remove();
         }
+    }
+</script>
+<script>
+    function saveMaterial() {
+        copyMaterialPropertiesFromEditorToModel(materialGui, getMaterial(currentMaterialName));
+        printMaterialTable();
+    }
+    
+    function copyMaterialPropertiesFromEditorToModel(materialSource, materialTarget) {
+        materialTarget.color_r = materialSource.color.r;
+        materialTarget.color_g = materialSource.color.g;
+        materialTarget.color_b = materialSource.color.b;
+        materialTarget.emissive_r = materialSource.emissive.r;
+        materialTarget.emissive_g = materialSource.emissive.g;
+        materialTarget.emissive_b = materialSource.emissive.b;
+        materialTarget.roughness = materialSource.roughness;
+        materialTarget.metalness = materialSource.metalness;
+        materialTarget.reflectivity = materialSource.reflectivity;
+        materialTarget.clearcoat = materialSource.clearcoat;
+        materialTarget.clearcoatRoughness = materialSource.clearcoatRoughness;
+        materialTarget.transparent = materialSource.transparent;
+        materialTarget.opacity = materialSource.opacity;
+        materialTarget.diffuseMap = materialSource.diffuseMap;
+        materialTarget.normalFactor = materialSource.normalFactor;
+        materialTarget.envMapIntensity = materialSource.envMapIntensity;
+        materialTarget.ior = materialSource.ior;
+        materialTarget.wireframe = materialSource.wireframe;
+    }
+    function copyMaterialPropertiesFromModelToEditor(materialSource, materialTarget) {
+        materialTarget.color.r = materialSource.color_r || defaultMaterial.color.r;
+        materialTarget.color.g = materialSource.color_g || defaultMaterial.color.g;
+        materialTarget.color.b = materialSource.color_b || defaultMaterial.color.b;
+        materialTarget.emissive.r = materialSource.emissive_r || defaultMaterial.emissive.r;
+        materialTarget.emissive.g = materialSource.emissive_g || defaultMaterial.emissive.g;
+        materialTarget.emissive.b = materialSource.emissive_b || defaultMaterial.emissive.b;
+        materialTarget.roughness = materialSource.roughness || defaultMaterial.roughness;
+        materialTarget.metalness = materialSource.metalness || defaultMaterial.metalness;
+        materialTarget.reflectivity = materialSource.reflectivity || defaultMaterial.reflectivity;
+        materialTarget.clearcoat = materialSource.clearcoat || defaultMaterial.clearcoat;
+        materialTarget.clearcoatRoughness = materialSource.clearcoatRoughness || defaultMaterial.clearcoatRoughness;
+        materialTarget.transparent = materialSource.transparent || defaultMaterial.transparent;
+        materialTarget.opacity = materialSource.opacity || defaultMaterial.opacity;
+        materialTarget.diffuseMap = materialSource.diffuseMap || defaultMaterial.diffuseMap;
+        materialTarget.normalFactor = materialSource.normalFactor || defaultMaterial.normalFactor;
+        materialTarget.envMapIntensity = materialSource.envMapIntensity || defaultMaterial.envMapIntensity;
+        materialTarget.ior = materialSource.ior || defaultMaterial.ior;
+        materialTarget.wireframe = materialSource.wireframe || defaultMaterial.wireframe;
+        var materialColor = materialTarget.color.getHex();
+        if (materialColor != null) {
+            materialData.color = materialTarget.color.getHex()
+        }
+        var materialEmissiveColor = materialTarget.emissive.getHex();
+        if (materialEmissiveColor != null) {
+            materialData.emissive = materialTarget.emissive.getHex()
+        }
+        var materialsFolder = getGuiFolderByName(gui.folders, "Material properties");
+        uptadeControllers(materialsFolder);
+    }
+
+    function updatePhysicalMaterial() {
+        materialEdit.color.r = materialGui.color.r;
+        materialEdit.color.g = materialGui.color.g;
+        materialEdit.color.b = materialGui.color.b;
+        materialEdit.emissive.r = materialGui.emissive.r;
+        materialEdit.emissive.g = materialGui.emissive.g;
+        materialEdit.emissive.b = materialGui.emissive.b;
+        materialEdit.roughness = materialGui.roughness;
+        materialEdit.metalness = materialGui.metalness;
+        materialEdit.reflectivity = materialGui.reflectivity;
+        materialEdit.clearcoat = materialGui.clearcoat;
+        materialEdit.clearcoatRoughness = materialGui.clearcoatRoughness;
+        materialEdit.transparent = materialGui.transparent;
+        materialEdit.opacity = materialGui.opacity;
+        if (materialGui.diffuseMap) {
+            materialEdit.map = materialEdit.map_backup;
+        } else {
+            materialEdit.map = null;
+        }
+        materialEdit.normalScale.x = materialGui.normalFactor;
+        materialEdit.normalScale.y = materialGui.normalFactor;
+        materialEdit.envMapIntensity = materialGui.envMapIntensity;
+        materialEdit.ior = materialGui.ior;
+        materialEdit.wireframe = materialGui.wireframe;
+        materialEdit.needsUpdate = true ;
+        render();
     }
 </script>
 <script>
@@ -3673,7 +3682,11 @@ V - Problema en objeto cube, con material: resuelto, cuando no hay default en un
 V - Quitar OBJ
 V - Actulizar fórmulas (en components)
 - guardar arrays y objects en evalText
-Actualizar GUI al cambiar array_size
+V - Actualizar GUI al cambiar array_size
+V - Comprobar si debe mantenerse el if de parameter.array_size en evalPOMvalues -> sí, porque uno crea un array del parámetro y el otro un valor
+V - Que al reducir un array no se muestren los controles en el gui 1895
+- error en copyMaterialPropertiesFromModelToEditor al moverlo fuera del module
+
 Comprobar precisión de condicion cond05 en components
 
 
