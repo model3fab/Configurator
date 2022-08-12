@@ -177,7 +177,7 @@ function loadJSON() {
 ],
 "designArr":{"init":{"name":"init","parameters":[],"pieces":[]},"cubo":{"name":"cubo","parameters":[{"name":"materialsA","type":"options","options":[["glass2","'glass2'"],["plywood6","'plywood6'"],["kitchen_wood","'kitchen_wood'"]]}],"pieces":[{"name":"cubos","type":"Box","lx":"1","ly":"2","lz":"1","material_1":"parameter:materialsA","material_2":"dice2","material_3":"dice3","material_4":"dice4","material_5":"dice5","material_6":"dice6","sx":"1","sy":"1","sz":"1","rx":"1","ry":"1","rz":"1","x":"0","y":"0","z":"0"}]},"components":{"name":"components","parameters":[{"name":"lx","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"ly","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"lz","type":"cm","min":"0","max":"200","step":"1","default":"100"},{"name":"rx","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"ry","type":"m","min":"0","max":"400","step":"1","default":"0"},{"name":"rz","type":"m","min":"0","max":"400","step":".5","default":"0"},{"name":"x","type":"cm","min":"-300","max":"400","step":"1","default":"0"},{"name":"y","type":"cm","min":"-100","max":"400","step":"1","default":"0"},{"name":"z","type":"cm","min":"-100","max":"400","step":".5","default":"0"},{"name":"sx","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sy","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz","type":"m","min":".1","max":"10","step":".1","default":"1"},{"name":"sz2","type":"formula","default":"sz+1"}, {"name":"precio","type":"formula","default":"Math.round(lx/3*ly/7*lz*300)"},{"name":"cond05","type":"formula","options":[],"default":"condition(lx>=.5,1,0)"}],"pieces":[{"name":"cilindro","type":"Cylinder","rt":"lx/2","rb":"ly/2","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"90 + rx","ry":"ry","rz":"rz","x":"x","y":"y","z":"z + lz/2"},{"name":"cubo","type":"Box","lx":"lx","ly":"ly","lz":"lz","material_1":"dice1","material_2":"dice2","material_3":"dice3","material_4":"dice4","material_5":"dice5","material_6":"dice6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x + 1","y":"y","z":"z"},{"name":"triangle","type":"Triangle","b":"lx","h":"ly","d":"0.3","lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"2.4+x","y":"y","z":"z"},{"name":"prisma","type":"Extrude","shape_array":[["0","0"],["lx","0"],["0.8","ly"],[".2","1"]],"lz":"lz","material_1":"plywood6","sx":"sx","sy":"sy","sz":"sz","rx":"rx","ry":"ry","rz":"rz","x":"x-2","y":"y","z":"z"},{"name":"esfera","type":"Sphere","r":"lz/2","material_1":"golf","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x+4","y":"y","z":"z"},{"name":"esfera Carbon","type":"Sphere","r":"lz/2","material_1":"carbon","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x+4","y":"y+1.2","z":"z"},{"name":"vaso","type":"Revolution","shape_array":[["0","0"],["lx","0"],["0.8","ly"],["0","1"]],"lz":"360","material_1":"plywood6","array_size":"cond05","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x-4","y":"y","z":"z"},{"name":"esfera cromo","type":"Sphere","r":"lz/2","material_1":"chrome","sx":"sx","sy":"sy","sz":"sz","rx":"90+rx","ry":"ry","rz":"rz","x":"x","y":"y+1.2","z":"z"}]},"cajon_curva":{"name":"cajon_curva","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":10,"max":120,"default":30},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"rebaje_largo","type":"cm","min":"0.5","max":"20","default":"10"},{"name":"rebaje_alto","type":"cm","min":"0.5","max":"10","step":".2","default":"2"}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":0,"y":0,"z":"espesor"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad - espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"largo-espesor","y":0,"z":"espesor"},{"name":"base","type":"Box","lx":"largo","ly":"profundidad - espesor","lz":"espesor","material_1":"kitchen_wood","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"0","y":0,"z":0},{"name":"fondo","type":"Box","lx":"largo - espesor * 2","ly":"espesor","lz":"alto-espesor","material_1":"plywood6","sx":1,"sy":1,"sz":1,"rx":0,"ry":0,"rz":0,"x":"espesor","y":0,"z":"espesor"},{"name":"frente","type":"Extrude","shape_array":[["0","0"],["largo","0"],["largo","alto"],["largo-((largo-0.12-rebaje_largo)/2)","alto"],["largo-((largo-0.12-rebaje_largo)/2)-0.06","alto-rebaje_alto","largo-((largo-0.12-rebaje_largo)/2)-0.04","alto","largo-((largo-0.12-rebaje_largo)/2)-0.02","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)+0.06","alto-rebaje_alto"],["((largo-0.12-rebaje_largo)/2)","alto","((largo-0.12-rebaje_largo)/2)+0.02","alto-rebaje_alto","((largo-0.12-rebaje_largo)/2)+0.04","alto"],["0","alto"]],"lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"90","ry":"0","rz":"0","x":"0","y":"profundidad","z":"0"},{"name":"tirador","type":"Box","lx":"largo/10","ly":"espesor","lz":"alto/10","material_1":"kitchen_wood","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo/2-largo/10/2","y":"profundidad","z":"alto/2"}]},
 "cajonera":{"name":"cajonera","parameters":[{"name":"cajones","type":"m","min":0,"max":20,"default":3},{"name":"largo","type":"cm", "min":10,"max":400,"default":90},{"name":"alto","type":"cm", "array_size":"", "min":40,"max":250,"default":200},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","subsystem":"cajon_curva","parameters":[{"name":"largo","default":"largo"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"espesor"},{"name":"profundidad","default":"profundidad"},{"name":"rebaje_largo","default":"largo/3"},{"name":"rebaje_alto","default":"(alto-espaciado*(cajones-1))/cajones/3"}],"material_1":"dice","array_size":"cajones","sx":1,"sy":1,"sz":1,"rx":"0","ry":"0","rz":"0","x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},
-"cajonera_group":{"name":"cajonera_group","parameters":[{"name":"cajones","type":"m","min":0,"max":20,"default":3},{"name":"largo","type":"cm","array_size":"cajones", "min":10,"max":400,"default":90},{"name":"alto","type":"cm", "array_size":"", "min":40,"max":250,"default":200},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor_y_espaciado","type":"group", "array_size":"2"},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"type":"ungroup"},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","subsystem":"cajon_curva","parameters":[{"name":"largo","default":"largo[array_i]"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"espesor"},{"name":"profundidad","default":"profundidad"},{"name":"rebaje_largo","default":"largo/3"},{"name":"rebaje_alto","default":"(alto-espaciado*(cajones-1))/cajones/3"}],"material_1":"dice","array_size":"cajones","sx":1,"sy":1,"sz":1,"rx":"0","ry":"0","rz":"0","x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},
+"cajonera_group":{"name":"cajonera_group","parameters":[{"name":"cajones","type":"m","min":0,"max":20,"default":3},{"name":"largo","type":"cm","array_size":"cajones", "min":10,"max":400,"default":90},{"name":"alto","type":"cm", "array_size":"", "min":40,"max":250,"default":200},{"name":"medidasCajon","type":"group", "array_size":"cajones"},{"name":"profundidad","type":"cm","min":20,"max":200,"default":100},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2},{"name":"grupoEspaciado","type":"group"},{"name":"espaciado","type":"cm","min":0,"max":10,"default":1},{"type":"ungroup"},{"type":"ungroup"},{"name":"tiempo","type":"m","min":0,"max":100,"default":0}],"pieces":[{"name":"cajon","type":"Module","subsystem":"cajon_curva","parameters":[{"name":"largo","default":"largo[array_i]"},{"name":"alto","default":"(alto-espaciado*(cajones-1))/cajones"},{"name":"espesor","default":"medidasCajon[array_i].espesor"},{"name":"profundidad","default":"medidasCajon[array_i].profundidad"},{"name":"rebaje_largo","default":"largo/3"},{"name":"rebaje_alto","default":"(alto-espaciado*(cajones-1))/cajones/3"}],"material_1":"dice","array_size":"cajones","sx":1,"sy":1,"sz":1,"rx":"0","ry":"0","rz":"0","x":"0","y":"ramp(array_i*10,array_i*10+25,100+array_i*10,100+array_i*10+25,tiempo)*profundidad*0.8","z":"array_i*(alto-espaciado*(cajones-1))/cajones+array_i*espaciado"}]},
 "marco":{"name":"marco","parameters":[{"name":"largo","type":"cm","min":10,"max":400,"default":40},{"name":"alto","type":"cm","min":10,"max":100,"default":20},{"name":"profundidad","type":"cm","min":"1","max":"10","step":".2","default":"2"},{"name":"espesor","type":"cm","min":0.5,"max":12,"default":2}],"pieces":[{"name":"lado derecho","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"0","y":"0","z":"0"},{"name":"lado izquierdo","type":"Box","lx":"espesor","ly":"profundidad","lz":"alto","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor","y":"0","z":"0"},{"name":"base","type":"Box","lx":"largo-espesor*2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"0"},{"name":"alto","type":"Box","lx":"largo - espesor * 2","ly":"profundidad","lz":"espesor","material_1":"plywood6","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor","y":"0","z":"alto-espesor"},{"name":"panel","type":"Box","lx":"largo-espesor","ly":"profundidad/2","lz":"alto-espesor","material_1":"glass2","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"espesor/2","y":"profundidad/2","z":"espesor/2"},{"name":"tirador","type":"Sphere","r":"espesor/4","material_1":"chrome","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor/2","y":"profundidad+espesor/4","z":"alto/2"},{"name":"base tirador","type":"Cylinder","rt":"espesor/8","rb":"espesor/8","lz":"espesor/16","material_1":"chrome","sx":"1","sy":"1","sz":"1","rx":"0","ry":"0","rz":"0","x":"largo-espesor/2","y":"profundidad","z":"alto/2"}]},
     "puerta madera": {
       "name": "puerta madera",
@@ -409,6 +409,7 @@ function ramp(a,b,c,d,t) {
         */
 
         renderer = new THREE.WebGLRenderer();
+        //renderer = new THREE.WebGLRenderer({ antialias: true});
         renderer.setPixelRatio( window.devicePixelRatio );
         rendererWidth = window.innerWidth;
         rendererHeight = window.innerHeight - bottomSpace;
@@ -1631,7 +1632,7 @@ function ramp(a,b,c,d,t) {
                         var evalParameters = getEvalParameters(designArr[modelName].parameters);
                         eval(evalParameters);
                         subsystem = eval(subsystem.substring(10));  // 
-                        console.log("evalParameters: " + subsystem);
+                        console.log("evalParameters subsystem: " + subsystem);
                     }
                                 
                     arrayProperties = designArr[subsystem].parameters
@@ -1790,14 +1791,20 @@ function ramp(a,b,c,d,t) {
                         currentParameter.value = currentParameter.options[0][1];  // value of the first [0] option
                     }
                 } else if (designObjParameter.type == "group") {
-                    var     parameter_init_group = parameter_index;
+                    if (designObjParameter.parameter_init_group == null) {
+                        designObjParameter.parameter_init_group = parameter_index;
+                    } else {
+                        parameter_index = designObjParameter.parameter_init_group;
+                    }
                     currentObject[designObjParameter.name][array_i] = {};
                     currentObject[designObjParameter.name][array_i].type = "group";
                     parameter_index++;
                     createParametersObjectModel(currentObject[designObjParameter.name][array_i], level + 1);
+                    /*
                     if (array_i < array_length - 1) {  // not the last one
-                        parameter_index = parameter_init_group;
+                        parameter_index = designObjParameter.parameter_init_group;
                     }
+                    */
              //   } else if (designObjParameter.type == "ungroup") {
              //       return;
                 }
@@ -2045,7 +2052,7 @@ function ramp(a,b,c,d,t) {
                     var evalParameters = getEvalParameters(designArr[sys_object].parameters); // *** correct parameters?
                     eval(evalParameters);
                     subsystem_value = eval(subsystem_value.substring(10));  // 
-                    console.log("evalParameters: " + subsystem_value);
+                    console.log("evalParameters subsystem_value: " + subsystem_value);
                 }
                 arrayProperties = designArr[subsystem_value].parameters;
                 pieceObj.parameters=[];
@@ -2383,21 +2390,27 @@ function ramp(a,b,c,d,t) {
 
             // the function getEvalParameters() eval from the definition of the object.
             // the function evalPOMvalues() eval parameters from POM Object.
-            function evalPOMvalues(currentObject, evalText, level){ 
+            function evalPOMvalues(currentObject, outputIsObject, level){ 
+                var evalPOMvaluesText = "";
+                var output;
+                if (outputIsObject) {
+                    output = {};
+                }
                 for (var parameterName in currentObject){
-                    eval(evalText);
+                    var parameterValue;
                     if (Object.prototype.hasOwnProperty.call(currentObject, parameterName)
                           && typeof currentObject[parameterName] == "object") {
                         console.log(parameterName);
                         var parameter = currentObject[parameterName];
                         var designObjParameter = currentObject[parameterName].designObjParameter;
 
-                        if (parameter.array_size != null) {
+                        if (parameter.array_size != null) {  // create array of values
                             console.log("define array for " + parameterName);
                             var array_length = parameter.array_size_value;
                             var arrayValues = [];
 
                             if (parameter.array_size != null) {
+                                eval(evalPOMvaluesText);
                                 var new_array_length = eval(parameter.array_size);
                                 if (array_length != new_array_length) {
                                     changeArray = true;
@@ -2420,40 +2433,78 @@ function ramp(a,b,c,d,t) {
                                 } else if (parameter[array_i].type == "formula" || parameter[array_i].type == "internal") {
                                     arrayValues.push(eval(parameter[array_i].value));
                                 } else if (parameter[array_i].type == "group") {
-                                    arrayValues.push(evalPOMvalues(parameter[array_i], evalText, 0));
+                                    var retPOMvalues = evalPOMvalues(parameter[array_i], true, level + 1);
+                                    //if (level == 0) {
+                                    //if (outputIsObject) {
+                                        arrayValues.push(retPOMvalues);
+                                    //} else {
+                                    //    arrayValues.push(JSON.parse(retPOMvalues));
+                                    //}
                                 } else if (parameter[array_i].type == "ungroup") {
                                     return;
                                 }
                             }
-                            evalText = evalText + parameterName + "=" + JSON.stringify(arrayValues) + ";";
+                            parameterValue = JSON.stringify(arrayValues);
+                            //evalText = evalText + parameterName + "=" + JSON.stringify(arrayValues) + ";";
                         } else {
                             var array_length = parameter.length;
-                            for (var array_i = 0; array_i < array_length ; array_i++) {
-                                var parameterName_array_i;
-                                if (array_length == 1) {
-                                    parameterName_array_i = parameterName
-                                } else {
-                                    parameterName_array_i = parameterName + "_" + (array_i + 1);
-                                }
+                            if (array_length != 1) debugger;
+                            //for (var array_i = 0; array_i < array_length ; array_i++) {
+                                var array_length = 1;
+                                var array_i = 0;
+                                var parameterName_array_i = parameterName;
+                                //var parameterName_array_i;
+                                //if (array_length == 1) {
+                                //    parameterName_array_i = parameterName
+                                //} else {
+                                //    parameterName_array_i = parameterName + "_" + (array_i + 1);
+                                //}
                                 if (parameter[array_i].type == "m" ||
                                     parameter[array_i].type == "u") {
-                                      evalText = evalText + parameterName_array_i + "=" + eval(parameter[array_i].value) + ";";
+                                      //evalText = evalText + parameterName_array_i + "=" + eval(parameter[array_i].value) + ";";
+                                      parameterValue = eval(parameter[array_i].value);
                                 } else if (parameter[array_i].type == "cm") {
-                                      evalText = evalText + parameterName_array_i + "=" + eval(parameter[array_i].value)/100 + ";";
+                                      parameterValue = eval(parameter[array_i].value)/100;
                                 } else if (parameter[array_i].type == "options") {
-                                      evalText = evalText + parameterName_array_i + "=" + parameter[array_i].value + ";";
+                                      parameterValue = parameter[array_i].value;
                                 } else if (parameter[array_i].type == "formula" || parameter[array_i].type == "internal") {
-                                    evalText = evalText + parameterName_array_i + "=" + eval(parameter[array_i].value) + ";";
+                                    parameterValue = eval(parameter[array_i].value);
                                 } else if (parameter[array_i].type == "group") {
-                                    evalText = evalPOMvalues(parameter[array_i], evalText, level + 1);
+                                    parameterValue = evalPOMvalues(parameter[array_i], true, level + 1);
                                 } else if (parameter[array_i].type == "ungroup") {
                                     return;
                                 }
-                            }
+                            //}
+                        }
+                        if (outputIsObject) {
+                            output[parameterName] = parameterValue;
+                        } else {
+                            evalPOMvaluesText = evalPOMvaluesText + parameterName + "=" + parameterValue + ";";
                         }
                     }
                 }
-                return evalText;
+                if (outputIsObject) {
+                    return output;
+                } else {
+                    evalPOMvaluesText = evalPOMvaluesText; // + JSON.stringify(output);
+                    return evalPOMvaluesText;
+                }
+                
+                /*
+                        if (outputIsObject) {
+                            output[parameterName] = parameterValue;
+                        } else {
+                            evalPOMvaluesText = evalPOMvaluesText + parameterName + "=" + parameterValue + ";";
+                        }
+                    }
+                }
+                if (outputIsObject) {
+                    evalPOMvaluesText = output;
+                } else {
+                    evalPOMvaluesText = evalPOMvaluesText + JSON.stringify(output);
+                }
+                return evalPOMvaluesText;
+                */
             }
             
             function updatePOMformulas(currentObject, level){  
@@ -2522,7 +2573,7 @@ function ramp(a,b,c,d,t) {
             function updateMeasures(){
                 updatePOMformulas(POM, 0);
                 evalText = "";
-                evalText = evalPOMvalues(POM, evalText, 0);
+                evalText = evalPOMvalues(POM, false, 0);
                 designObj.evalText = "var context='main';" + evalText;
                 updateMeasuresAPI(scene, THREE, API, designObj);
                 updateUvTransform();
@@ -2597,7 +2648,7 @@ function ramp(a,b,c,d,t) {
 //                updateDesign.eval = makeEvalContext ();
 //                updateDesign.eval(evalText);
                 eval(updateDesign.evalText);    // initial evalText
-                console.log("eval " + updateDesign.name + " " + updateDesign.evalText);
+                console.log("eval updateMeasuresAPI: " + updateDesign.name + " " + updateDesign.evalText);
                 for (var i =0; i< updateDesign.pieces.length; i++) {
 
                     // we define the parameters of the subsystem with the values of the updateDesign, but will apply them to the subsystem (before the call to updateMeasuresAPI.
@@ -2625,7 +2676,7 @@ function ramp(a,b,c,d,t) {
                             updateDesign.pieces[i].array[array_i] = {}
                         }
                         updateDesign.pieces[i].array[array_i].evalText = updateDesign.evalText + "array_i = " + array_i + ";" + "array_n = " + array_length + ";";
-                        console.log("eval piece " + i + " "  + updateDesign.name + " evalText: " + updateDesign.pieces[i].array[array_i].evalText);
+                        console.log("eval piece (a): " + i + " "  + updateDesign.name + " evalText: " + updateDesign.pieces[i].array[array_i].evalText);
                         eval(updateDesign.pieces[i].array[array_i].evalText);
                         if ('subsystem' in updateDesign.pieces[i]) {
                             var dot;
@@ -2665,14 +2716,14 @@ function ramp(a,b,c,d,t) {
                                    Number(eval(updateDesign.pieces[i].y)), 
                                    Number(eval(updateDesign.pieces[i].z)));
 
-                            var subsetEvalText = subsetEvalText + getEvalParameters(updateDesign.pieces[i].parameters,
+                            var subsetEvalText = getEvalParameters(updateDesign.pieces[i].parameters,
                             updateDesign.pieces[i].array[array_i].evalText);
                             // tried but not has the list of parameters of a piece: var subsetEvalText = evalPOMvalues(POM, "", 0);
 
                             
                             updateDesign.pieces[i].array[array_i].subsystemDesign.evalText = "context='" +  
                               updateDesign.pieces[i].name +"';" + subsetEvalText;  // only their parameters, not array_i
-                            console.log("eval piece " + i + " array_i: " + array_i 
+                            console.log("eval piece (b): " + i + " array_i: " + array_i 
                               + " subsystem: " + updateDesign.pieces[i].subsystem
                               + " evalText: " + updateDesign.pieces[i].array[array_i].subsystemDesign.evalText);
                             updateMeasuresAPI(dot, THREE, API, updateDesign.pieces[i].array[array_i].subsystemDesign);
@@ -3678,14 +3729,16 @@ V-Quitar Save sin cerrar en Nuevo
 V-Quitar Save sin cerrar en Parámetros y materiales  
 V-Editar parámetros debajo de tabla de parámetros
 
-V - Problema en objeto cube, con material: resuelto, cuando no hay default en una opción, se pone la primera
-V - Quitar OBJ
-V - Actulizar fórmulas (en components)
-- guardar arrays y objects en evalText
-V - Actualizar GUI al cambiar array_size
-V - Comprobar si debe mantenerse el if de parameter.array_size en evalPOMvalues -> sí, porque uno crea un array del parámetro y el otro un valor
-V - Que al reducir un array no se muestren los controles en el gui 1895
-- error en copyMaterialPropertiesFromModelToEditor al moverlo fuera del module
+V- Problema en objeto cube, con material: resuelto, cuando no hay default en una opción, se pone la primera
+V- Quitar OBJ
+V- Actulizar fórmulas (en components)
+V- guardar arrays y objects en evalText
+V- Actualizar GUI al cambiar array_size
+V- Comprobar si debe mantenerse el if de parameter.array_size en evalPOMvalues -> sí, porque uno crea un array del parámetro y el otro un valor
+V- Que al reducir un array no se muestren los controles en el gui 1895
+V- error en copyMaterialPropertiesFromModelToEditor al moverlo fuera del module
+
+Parámetro para antialias
 
 Comprobar precisión de condicion cond05 en components
 
