@@ -2064,7 +2064,11 @@ function ramp(a,b,c,d,t) {
                     pieceObj.parameters[ipar] = {};
                     property_name = arrayProperties[ipar].name;
                     pieceObj.parameters[ipar].name    = property_name;
-                    pieceObj.parameters[ipar].default = document.getElementById("property_" + property_name).value;
+                    var propertyFieldValue = "";
+                    if (document.getElementById("property_" + property_name) != null) {
+                        propertyFieldValue = document.getElementById("property_" + property_name).value;
+                    }
+                    pieceObj.parameters[ipar].default = propertyFieldValue;
                 }
                 /***
                 if (sys_formType == "N") { ***<==  seguramente N y no N se leen igual. Mirar
@@ -2111,6 +2115,7 @@ function ramp(a,b,c,d,t) {
         } else {
             console.log("sys_formType: " + sys_formType + " not defined *********");
         }
+        createParametersObjectModel(POM, 0);
         updateMeasures();
     }
     function updateObjectClose() {
@@ -3668,7 +3673,7 @@ h1, h2 {
 </style>
 
 
-<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 61
+<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 62
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
@@ -3725,7 +3730,8 @@ h1, h2 {
 <br><a href=escene59.html>v 59</a> Pasar array a subconjunto. Ejemplo anchura de los módulos del cajón.
 <br><a href=escene60.html>v 60</a> Parameters con arrays, inicializar como array.
 <br><a href=escene61.html>v 61</a> Utilizar groups que no sean vector en nivel 1. Ejemplo de armario_2
-<br><a href=escene62.html>v 62</a> Ver errores al introducir parámetros nuevos o no correctos
+<br><a href=escene62.html>v 62</a> Poder utilizar un parámetros nuevo sin necesidad de representar el objeto. Evitar que de error al cambiar el tipo de módulo en pieces
+<br><a href=escene63.html>v 63</a> Que al editar en pieces del tipo subsyste = parameter:, muestre los campos diferentes de todas las opciones
 
   <script>
 document.write("parameters: " + designObj.parameters.length);
