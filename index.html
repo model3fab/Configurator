@@ -144,6 +144,7 @@ var API = {
     renders: 0,
 };
 var autosaveFlag = true;
+var transparentControlFlag = false;
 var lastElement;
 var createdLights = false;
 var defaultMaterial;
@@ -233,6 +234,7 @@ function ramp(a,b,c,d,t) {
         UV: false,
         env: false,
         autosave: autosaveFlag,
+        transparentControl: transparentControlFlag,
     };
 
     var geometry;
@@ -416,20 +418,19 @@ function ramp(a,b,c,d,t) {
             } else if (materialArr[i].type == "None array_***") {
             //} else if (materialArr[i].type == "arrayEnvmap" || materialArr[i].type == "array" || true) {
             } else if (true) {
+                var texture = null;
                 if (materialArr[i].texture != null && materialArr[i].texture != "") {
-                    texture = loadTexture(materialArr[i].texture);
-                } else {
-                    texture = null;
+                    texture = loadTexture(materialArr[i], materialArr[i].texture);
                 }
                 var normalMap;
                 if (materialArr[i].normalMap != null && materialArr[i].normalMap != "") {
-                    normalMap = loadTexture(materialArr[i].normalMap);
+                    normalMap = loadTexture(materialArr[i], materialArr[i].normalMap);
                 } else {
                     normalMap = null;
                 }
                 var roughnessMap;
                 if (materialArr[i].roughnessMap != null && materialArr[i].roughnessMap != "") {
-                    roughnessMap = loadTexture(materialArr[i].roughnessMap);
+                    roughnessMap = loadTexture(materialArr[i], materialArr[i].roughnessMap);
                 } else {
                     roughnessMap = null;
                 }
@@ -579,7 +580,7 @@ function ramp(a,b,c,d,t) {
         return dot;
     }
     */
-    function loadTexture(file) {
+    function loadTexture(materialElement, file) {
     
         console.log("loadTexture: " + (new Date().toLocaleTimeString()) + " " + file);
         var texture = new THREE.TextureLoader().load( file,function (texture) {
@@ -594,6 +595,8 @@ function ramp(a,b,c,d,t) {
         texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
         texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
         texture.matrixAutoUpdate = false;
+        texture.material = materialElement;
+        updateUvTransformTexture(texture);
         return texture;
     }
 
@@ -736,6 +739,16 @@ function ramp(a,b,c,d,t) {
     function setAutosave() {
         autosaveFlag = settings.autosave;
     }
+    function setTransparentControl() {
+        transparentControlFlag = settings.transparentControl;
+        if (transparentControlFlag) {
+            document.querySelector("div.lil-gui.root").style.backgroundColor     ="rgba(55, 55, 55, 0.0)";
+            document.querySelector("div.lil-gui.root").style['--backgroundColor']="rgba(55, 55, 55, 0.0)";
+        } else {
+            document.querySelector("div.lil-gui.root").style.backgroundColor     ="rgba(55, 55, 55, 1.0)";
+            document.querySelector("div.lil-gui.root").style['--backgroundColor']="rgba(55, 55, 55, 1.0)";
+        }
+    }
     function setUVSubsystem(designSubsystem) {
         if (settings.UV) {
             for (var i = 0; i< designSubsystem.pieces.length; i++) {
@@ -844,7 +857,8 @@ function ramp(a,b,c,d,t) {
         settingsFolder.add( settings, 'ground' ).onChange( ground );
         settingsFolder.add( settings, 'UV' ).onChange( setUV );
         settingsFolder.add( settings, 'env' ).onChange( setEnv );
-        settingsFolder.add( settings, 'autosave' ).onChange( setAutosave );;
+        settingsFolder.add( settings, 'autosave' ).onChange( setAutosave );
+        settingsFolder.add( settings, 'transparentControl' ).onChange( setTransparentControl );
         API["Full screen"] = fullScreen;
         settingsFolder.add( API, "Full screen").name( 'Full screen' )
 
@@ -964,7 +978,7 @@ function ramp(a,b,c,d,t) {
     pieceProperties["Spot"]       = pieceProperties1.concat(typeProperties["Spot"], pieceProperties3);
 
     //materialProperties = ["name","type","texture","texture1","texture2","texture3","texture4","texture5","texture6"];
-    materialProperties = ["name","texture", "texture_image", "roughnessMap", "roughness_image", "normalMap", "normal_image",  
+    materialProperties = ["name","size_x","size_y","angle","texture", "texture_image", "roughnessMap", "roughness_image", "normalMap", "normal_image",  
         "color_r", "color_g", "color_b", "color", "emissive_r", "emissive_g", "emissive_b", "emissive", "roughness", "metalness", "reflectivity", "clearcoat", "clearcoatRoughness", "transparent", "opacity", "diffuseMap", "normalFactor", "envMapIntensity", "ior", "wireframe", "side"]
     materialPropertiesTable = ["name","texture_image", "normal_image", "roughness_image", 
         "color", "emissive", "opacity", "diffuseMap", "normalFactor"]
@@ -2627,6 +2641,16 @@ function ramp(a,b,c,d,t) {
             }
 
             function updateUvTransformTexture(texture) {
+                var size_x = texture.material.size_x;
+                var size_y = texture.material.size_y;
+                if (size_x == null) size_x = 1;
+                if (size_y == null) size_y = 1;
+                var angle;
+                if (texture.material.angle  != null) {
+                    angle = eval(texture.material.angle);
+                } else {
+                    angle = 0;
+                }
                 if ( texture.matrixAutoUpdate === true ) {
 
                     texture.offset.set( API.offsetX, API.offsetY );
@@ -2643,8 +2667,8 @@ function ramp(a,b,c,d,t) {
                     texture.matrix
                         .identity()
                         .translate( - API.centerX,- API.centerY, 0 )
-                        .rotate( API.rotation )					// I don't understand how rotation can preceed scale, but it seems to be required...
-                        .scale( API.repeatX, API.repeatY, API.repeatZ )
+                        .rotate( API.rotation + angle)					// I don't understand how rotation can preceed scale, but it seems to be required...
+                        .scale( API.repeatX / size_x, API.repeatY / size_y, API.repeatZ )
                     //    .translate( API.centerX, API.centerY )
                         .translate( API.offsetX, API.offsetY, 0 )
                         ;
@@ -3922,7 +3946,7 @@ h1, h2 {
 </style>
 
 
-<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 69
+<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 70
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
@@ -3987,6 +4011,7 @@ h1, h2 {
 <br><a href=escene67.html>v 67</a> Autosave en edición de pieces
 <br><a href=escene68.html>v 68</a> Split en el editor
 <br><a href=escene69.html>v 69</a> roughnessMap en materiales
+<br><a href=escene70.html>v 70</a> Introducir tamaño y angulo de la textura en parámetros de materiales y aplicar repeatX
 
   <script>
 document.write("parameters: " + designObj.parameters.length);
