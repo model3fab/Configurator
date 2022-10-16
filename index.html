@@ -280,6 +280,8 @@ function ramp(a,b,c,d,t) {
         lightHelperGroup = new THREE.Group();
         if (shadowFlag) {
             renderer.shadowMap.enabled = true;
+          //renderer.shadowMap.type = THREE.PCFShadowMap;
+            renderer.shadowMap.type = THREE.PCFSoftShadowMap;
         } else {
             renderer.shadowMap.enabled = false;
         }
@@ -993,13 +995,13 @@ function ramp(a,b,c,d,t) {
                        }
 
 //  Lights
-    var lightTypes = ["Point", "Directional", "Spot"];
+    var lightTypes = ["Point", "Directional"]; //, "Spot"];
     typeProperties["Point"] = ["intensity","distance", "decay"];
     typeProperties["Directional"] = ["intensity"];
-    typeProperties["Spot"] = ["intensity","distance", "angle", "penumbra", "decay"];
+    //typeProperties["Spot"] = ["intensity","distance", "angle", "penumbra", "decay"];
     pieceProperties["Point"]      = pieceProperties1.concat(typeProperties["Point"], pieceProperties3);
     pieceProperties["Directional"]= pieceProperties1.concat(typeProperties["Directional"], pieceProperties3);
-    pieceProperties["Spot"]       = pieceProperties1.concat(typeProperties["Spot"], pieceProperties3);
+    //pieceProperties["Spot"]       = pieceProperties1.concat(typeProperties["Spot"], pieceProperties3);
 
     //materialProperties = ["name","type","texture","texture1","texture2","texture3","texture4","texture5","texture6"];
     materialProperties = ["name","size_x","size_y","angle","texture", "texture_image", "roughnessMap", "roughness_image", "normalMap", "normal_image",  
@@ -2671,7 +2673,7 @@ function ramp(a,b,c,d,t) {
                 if (size_y == null) size_y = 1;
                 var angle;
                 if (texture.material.angle  != null) {
-                    angle = eval(texture.material.angle);
+                    angle = eval(texture.material.angle) * Math.PI / 180.  ;
                 } else {
                     angle = 0;
                 }
@@ -2892,6 +2894,13 @@ function ramp(a,b,c,d,t) {
                                 //geometry.translate( 0.5, 0.5, 0.5 ) ;
                                 meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 3);
                                 mesh = new THREE.Mesh( geometry, meshMaterialArray );
+                                if (shadowFlag) {
+                                    mesh.castShadow  = true;
+                                    mesh.receiveShadow   = true;
+                                } else {
+                                    mesh.castShadow  = false;
+                                    mesh.receiveShadow   = false;
+                                }
                                 mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                 
                                 updateDesign.pieces[i].array[array_piece].mesh=mesh;
@@ -2910,6 +2919,13 @@ function ramp(a,b,c,d,t) {
                                 //geometry.translate( 0.5, 0.5, 0.5 ) ;
                                 meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 1);
                                 mesh = new THREE.Mesh( geometry, meshMaterialArray );
+                                if (shadowFlag) {
+                                    mesh.castShadow  = true;
+                                    mesh.receiveShadow   = true;
+                                } else {
+                                    mesh.castShadow  = false;
+                                    mesh.receiveShadow   = false;
+                                }
                                 mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                 
                                 updateDesign.pieces[i].array[array_piece].mesh=mesh;
@@ -2936,6 +2952,13 @@ function ramp(a,b,c,d,t) {
 
                                 meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 2);
                                 mesh = new THREE.Mesh( geometry, meshMaterialArray );
+                                if (shadowFlag) {
+                                    mesh.castShadow  = true;
+                                    mesh.receiveShadow   = true;
+                                } else {
+                                    mesh.castShadow  = false;
+                                    mesh.receiveShadow   = false;
+                                }
                                 mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                 
                                 updateDesign.pieces[i].array[array_piece].mesh=mesh;
@@ -2975,7 +2998,13 @@ function ramp(a,b,c,d,t) {
                                 }
 
                                 mesh = new THREE.Mesh( geometry, meshMaterialArray );
-
+                                if (shadowFlag) {
+                                    mesh.castShadow  = true;
+                                    mesh.receiveShadow   = true;
+                                } else {
+                                    mesh.castShadow  = false;
+                                    mesh.receiveShadow   = false;
+                                }
                                 mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                 
                                 updateDesign.pieces[i].array[array_piece].mesh=mesh;
@@ -3440,6 +3469,9 @@ function ramp(a,b,c,d,t) {
                                 intensity = eval(updateDesign.pieces[i].intensity);
                                 distance  = eval(updateDesign.pieces[i].distance);
                                 decay    = eval(updateDesign.pieces[i].decay);
+                                if (intensity == null) intensity = 0;
+                                if (distance == null)  distance = 0;
+                                if (decay == null)     decay = 1;  // default value of decay
 
                                 if (updateDesign.pieces[i].array[array_piece].light.intensity != intensity ||
                                     updateDesign.pieces[i].array[array_piece].light.distance  != distance  ||
@@ -3999,7 +4031,7 @@ h1, h2 {
 </style>
 
 
-<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 71
+<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 72
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
@@ -4066,6 +4098,7 @@ h1, h2 {
 <br><a href=escene69.html>v 69</a> roughnessMap en materiales
 <br><a href=escene70.html>v 70</a> Introducir tamaño y angulo de la textura en parámetros de materiales y aplicar repeatX
 <br><a href=escene71.html>v 71</a> Sombras
+<br><a href=escene72.html>v 72</a> Sombras en todos los tipos. Angulo de textura en grados
 
   <script>
 document.write("parameters: " + designObj.parameters.length);
