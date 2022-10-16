@@ -82,7 +82,7 @@ function loadJSON() {
 }
 
 </script>
-<script src="js/split.min.js"></script>
+<script src="js/split.min.js"></script> <!-- https://github.com/nathancahill/split/tree/master/packages/splitjs -->
 
 <div id='renderDiv'></div>
 <button onclick="newObject()">Create New Object</button>
@@ -123,6 +123,7 @@ materialsObj = materialArr;
 var renderer;
 var scene;
 var camera;
+var lightHelperGroup;
 var bottomSpace = 24;  // pixels at the bottom
 var rendererWidth;
 var rendererHeight;
@@ -143,6 +144,7 @@ var API = {
     centerY: 0.0,
     renders: 0,
 };
+var shadowFlag = true;
 var autosaveFlag = true;
 var transparentControlFlag = false;
 var lastElement;
@@ -233,6 +235,7 @@ function ramp(a,b,c,d,t) {
         ground: true,
         UV: false,
         env: false,
+        shadow: shadowFlag,
         autosave: autosaveFlag,
         transparentControl: transparentControlFlag,
     };
@@ -274,6 +277,12 @@ function ramp(a,b,c,d,t) {
         */
 
         renderer = new THREE.WebGLRenderer();
+        lightHelperGroup = new THREE.Group();
+        if (shadowFlag) {
+            renderer.shadowMap.enabled = true;
+        } else {
+            renderer.shadowMap.enabled = false;
+        }
         //renderer = new THREE.WebGLRenderer({ antialias: true});
         renderer.setPixelRatio( window.devicePixelRatio );
         rendererWidth = window.innerWidth;
@@ -302,6 +311,7 @@ function ramp(a,b,c,d,t) {
 
         scene = new THREE.Scene();
 
+        scene.add(lightHelperGroup);
         camera = new THREE.PerspectiveCamera( 40, rendererWidth / rendererHeight, .01, 1000 );
         camera.position.set( 4, 5, 1.6 );
         camera.up.set(0,0,1)   // z up (https://stackoverflow.com/questions/44630265/how-can-i-set-z-up-coordinate-system-in-three-js)
@@ -490,7 +500,11 @@ function ramp(a,b,c,d,t) {
         groundMesh = new THREE.Mesh( new THREE.PlaneGeometry( 1000, 1000 ), materialsObj[1].material );
         //materialsObj[1].material.map_backup.repeat.set( 1000, 1000);
         groundMesh.position.z = -0.001;
-        groundMesh.receiveShadow = true;
+        if (shadowFlag) {
+            groundMesh.receiveShadow = true;
+        } else {
+            groundMesh.receiveShadow = false;
+        }
         scene.add( groundMesh );
         ground();
 
@@ -515,17 +529,22 @@ function ramp(a,b,c,d,t) {
             light2.position.z = 1;
             scene.add( light2 );
             const light3 = new THREE.DirectionalLight( 0xffffff, .60 );
-            light3.position.x = .5;
-            light3.position.y = .5;
-            light3.position.z = .5;
+            if (shadowFlag) {
+                light3.castShadow = true;
+            } else {
+                light3.castShadow = false;
+            }
+            light3.position.x = 5;
+            light3.position.y = 5;
+            light3.position.z = 5;
             scene.add( light3 );
+            //const helperLight3 = new THREE.DirectionalLightHelper( light3, 0.5 );
+            //lightHelperGroup.add( helperLight3 );
             const light4 = new THREE.DirectionalLight( 0xffffff, .60 );
             light4.position.x = -2;
             light4.position.y = 2;
             light4.position.z = .5;
             scene.add( light4 );
-            //const helper = new THREE.DirectionalLightHelper( light4, 5 );
-            //scene.add( helper );
         }
         
 
@@ -703,6 +722,7 @@ function ramp(a,b,c,d,t) {
         console.debug("axes: " + settings.axes);
         console.debug("axes arg: " + arg);
         axesHelper.visible = settings.axes;
+        lightHelperGroup.visible = settings.axes;
         render();
     }
     function ground(arg) {
@@ -735,6 +755,9 @@ function ramp(a,b,c,d,t) {
             scene.background = null;
         }
         render();
+    }
+    function setShadow() {
+        shadowFlag = settings.shadow;
     }
     function setAutosave() {
         autosaveFlag = settings.autosave;
@@ -857,6 +880,7 @@ function ramp(a,b,c,d,t) {
         settingsFolder.add( settings, 'ground' ).onChange( ground );
         settingsFolder.add( settings, 'UV' ).onChange( setUV );
         settingsFolder.add( settings, 'env' ).onChange( setEnv );
+        settingsFolder.add( settings, 'shadow' ).onChange( setShadow );
         settingsFolder.add( settings, 'autosave' ).onChange( setAutosave );
         settingsFolder.add( settings, 'transparentControl' ).onChange( setTransparentControl );
         API["Full screen"] = fullScreen;
@@ -2981,6 +3005,13 @@ function ramp(a,b,c,d,t) {
                                 geometry.translate( 0.5, 0.5, 0.5 ) ;
                                 meshMaterialArray = createMaterialArray(updateDesign.pieces[i], 6);
                                 mesh = new THREE.Mesh( geometry, meshMaterialArray );
+                                if (shadowFlag) {
+                                    mesh.castShadow  = true;
+                                    mesh.receiveShadow   = true;
+                                } else {
+                                    mesh.castShadow  = false;
+                                    mesh.receiveShadow   = false;
+                                }
                                 mesh.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
                                 
                                 updateDesign.pieces[i].array[array_piece].mesh=mesh;
@@ -2996,6 +3027,13 @@ function ramp(a,b,c,d,t) {
                                 console.log("Create PointLight");
                                 const light = new THREE.PointLight( 0xffffff, 1.0, 10, 2 );
                                 createdLights = true;
+                                const helperLight = new THREE.PointLightHelper( light, 0.5 );
+                                lightHelperGroup.add( helperLight);
+                                if (shadowFlag) {
+                                    light.castShadow = true;
+                                } else {
+                                    light.castShadow = false;
+                                }
 //                                const helper = new THREE.PointLightHelper( light, 5 );
 //                                node.add( helper );
 
@@ -3012,7 +3050,19 @@ function ramp(a,b,c,d,t) {
                             if (!isType(updateDesign.pieces[i].array[array_piece].light, "DirectionalLight")) {
                                 console.log("Create DirectionalLight");
                                 const light = new THREE.DirectionalLight( 0xffffff, 1.0);
+                                light.target.position.set(0, 0, 0);
+                                scene.add(light.target);
+                                scene.add(light);
                                 createdLights = true;
+                                const helperLight = new THREE.DirectionalLightHelper( light, 0.5 );
+                                lightHelperGroup.add( helperLight);
+                                light.helper = helperLight
+
+                                if (shadowFlag) {
+                                    light.castShadow = true;
+                                } else {
+                                    light.castShadow = false;
+                                }
 
                                 light.rotation.order='ZYX'  // so first define X rotation, after Y rotation and last Z rotation
 
@@ -3422,7 +3472,10 @@ function ramp(a,b,c,d,t) {
                                    Number(eval(updateDesign.pieces[i].x)),
                                    Number(eval(updateDesign.pieces[i].y)), 
                                    Number(eval(updateDesign.pieces[i].z)));
-
+                            if (isType(updateDesign.pieces[i].array[array_piece].light, "DirectionalLight")) {
+                                updateDesign.pieces[i].array[array_piece].light.target.updateMatrixWorld();
+                                updateDesign.pieces[i].array[array_piece].light.helper.update();
+                            }
                         }
                             
                     }
@@ -3946,7 +3999,7 @@ h1, h2 {
 </style>
 
 
-<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 70
+<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 71
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
@@ -4012,6 +4065,7 @@ h1, h2 {
 <br><a href=escene68.html>v 68</a> Split en el editor
 <br><a href=escene69.html>v 69</a> roughnessMap en materiales
 <br><a href=escene70.html>v 70</a> Introducir tamaño y angulo de la textura en parámetros de materiales y aplicar repeatX
+<br><a href=escene71.html>v 71</a> Sombras
 
   <script>
 document.write("parameters: " + designObj.parameters.length);
