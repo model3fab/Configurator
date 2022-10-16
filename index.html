@@ -3489,6 +3489,7 @@ function ramp(a,b,c,d,t) {
                                 }
                             } else if (isType(updateDesign.pieces[i].array[array_piece].light, "DirectionalLight")) {
                                 intensity = eval(updateDesign.pieces[i].intensity);
+                                if (intensity == null) intensity = 0;
 
                                 if (updateDesign.pieces[i].array[array_piece].light.intensity != intensity) {  // only create if theres is a change
 
