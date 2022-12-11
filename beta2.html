@@ -202,8 +202,10 @@ var API = {
     centerX: 0.0,
     centerY: 0.0,
     renders: 0,
+    Environment: "background color",
 };
 var shadowFlag = true;
+var environmentFlag = true;
 var autosaveFlag = true;
 var transparentControlFlag = false;
 var lastElement;
@@ -211,7 +213,9 @@ var createdLights = false;
 var defaultMaterial;
 var materialData;
 var materialGui;
-
+var material_UV;
+var materialOverride = null;
+var flagSetMaterialAll = false;
 
 loaders = {};
 
@@ -291,18 +295,25 @@ function ramp(a,b,c,d,t) {
     const settings = {
         debug: false,
         axes: true,
+        fov: 50.0,     // https://threejs.org/docs/#api/en/cameras/PerspectiveCamera.fov
         ground: true,
+        fog: true,
         UV: false,
-        env: false,
+        background: true,
+        blurriness: 0.3,  // will work with threejs version 146, currently using 141
+        env: true,
+        exposure: 1.0,
+        hemiLight: false,
         shadow: shadowFlag,
         autosave: autosaveFlag,
         transparentControl: transparentControlFlag,
     };
+    flagSetMaterialAll = settings.UV;
 
     var geometry;
-    var material_UV;
     var axesHelper;
     var groundMesh;
+    var hemiLightObject;
     var evalText;
     var guiPieces = null;
 
@@ -318,6 +329,7 @@ function ramp(a,b,c,d,t) {
         printTime("init");
         
         createdLights = false;
+        settings.UV = false;
         /*
         for (var i =0; i< designObj.parameters.length; i++) {
             if (designObj.parameters[i].type == "options") {
@@ -337,7 +349,11 @@ function ramp(a,b,c,d,t) {
         }
         */
 
-        renderer = new THREE.WebGLRenderer();
+        renderer = new THREE.WebGLRenderer({ antialias: true});
+        //renderer.physicallyCorrectLights = true;
+        renderer.toneMapping = THREE.LinearToneMapping;
+        renderer.toneMappingExposure = settings.exposure;
+        renderer.outputEncoding = THREE.sRGBEncoding;
         printTime("renderer created");
         lightHelperGroup = new THREE.Group();
         if (shadowFlag) {
@@ -347,7 +363,6 @@ function ramp(a,b,c,d,t) {
         } else {
             renderer.shadowMap.enabled = false;
         }
-        //renderer = new THREE.WebGLRenderer({ antialias: true});
         renderer.setPixelRatio( window.devicePixelRatio );
         rendererWidth = window.innerWidth;
         rendererHeight = window.innerHeight - bottomSpace;
@@ -377,7 +392,7 @@ function ramp(a,b,c,d,t) {
         printTime("scene");
         
         scene.add(lightHelperGroup);
-        camera = new THREE.PerspectiveCamera( 40, rendererWidth / rendererHeight, .01, 1000 );
+        camera = new THREE.PerspectiveCamera( settings.fov, rendererWidth / rendererHeight, .01, 1000 );
         camera.position.set( 4, 5, 1.6 );
         camera.up.set(0,0,1)   // z up (https://stackoverflow.com/questions/44630265/how-can-i-set-z-up-coordinate-system-in-three-js)
         scene.add( camera );
@@ -391,11 +406,11 @@ function ramp(a,b,c,d,t) {
 
         // Cube
         var textureCube;
-        const loader = new THREE.CubeTextureLoader();
+        const cubeTextureLoader = new THREE.CubeTextureLoader();
       //const ldrUrls = [ 'px.png', 'nx.png', 'py.png', 'ny.png', 'pz.png', 'nz.png'];
 //        loader.setPath( 'textures/cube/pisa/' );
 //        loader.setPath( 'textures/cube/pisa_Y/' );
-        loader.setPath( 'textures/cube/Park2/' );
+        cubeTextureLoader.setPath( 'textures/cube/Park2/' );
 //        loader.setPath( 'textures/cube/DallasW/' );
       //const ldrUrls = [ 'px2.png', 'nx2.png', 'py2.png', 'ny2.png', 'pz2.png', 'nz2.png'];
         //const ldrUrls = [ 'i_0.png', 'i_1.png', 'i_2.png', 'i_3.png', 'i_4.png', 'i_5.png'];
@@ -403,7 +418,7 @@ function ramp(a,b,c,d,t) {
         //const ldrUrls = [ 'Dice-Blue-1.png', 'Dice-Blue-2.png', 'Dice-Blue-3.png', 'Dice-Blue-4.png', 'Dice-Blue-5.png', 'Dice-Blue-6.png'];
         //loader.setPath( 'images/' );
 
-        textureCube = loader.load( ldrUrls );
+        textureCube = cubeTextureLoader.load( ldrUrls );
         //textureCube.rotation = 1.6;
         textureCube.encoding = THREE.sRGBEncoding;
 
@@ -413,7 +428,8 @@ function ramp(a,b,c,d,t) {
 
         //var sphereMaterial = new THREE.MeshPhysicalMaterial( { envMapIntensity: 3,premultipliedAlpha: true,specularIntensity: 1, envMap: textureCube } );
         //var sphereMaterial1 = new THREE.MeshPhysicalMaterial( { envMap: textureCube } );
-        textureEnv = textureCube;
+        
+        //textureEnv = textureCube;
         /*
         */
 
@@ -463,11 +479,16 @@ function ramp(a,b,c,d,t) {
             groundMesh.receiveShadow = false;
         }
         scene.add( groundMesh );
-        ground();
-        printTime("ground");
 
         initGui();
         printTime("initGui");
+
+        ground();
+        fog();
+        setBackground();
+        printTime("ground");
+        scene.backgroundBlurriness = settings.blurriness;
+
         updateMeasures();  // comment to improve speed while working in html forms
         printTime("updateMeasures 1");
         //updatePOMformulas(POM, 0);               // to update formulas with values
@@ -481,22 +502,35 @@ function ramp(a,b,c,d,t) {
         // Create lights if are not created
         if (!createdLights) {
             if (console_flag) console.log("Creating default lights");
-            const light = new THREE.PointLight( 0xffffff, 1.0, 10, 2 );
-            light.position.x = 1;
-            light.position.y = 2;
-            light.position.z = 1.5;
-            scene.add( light );
+            const light1 = new THREE.PointLight( 0xffffff, 1.0, 10, 2 );
+            if (shadowFlag) {
+                light1.castShadow = true;
+            } else {
+                light1.castShadow = false;
+            }
+            light1.position.x = 1;
+            light1.position.y = 2;
+            light1.position.z = 1.5;
+            scene.add( light1 );
             const light2 = new THREE.PointLight( 0xffffff, 1.0, 10, 2  );
+            if (shadowFlag) {
+                light2.castShadow = true;
+            } else {
+                light2.castShadow = false;
+            }
             light2.position.x = 3;
             light2.position.y = 4;
             light2.position.z = 1;
             scene.add( light2 );
             const light3 = new THREE.DirectionalLight( 0xffffff, .60 );
+            /*
             if (shadowFlag) {
                 light3.castShadow = true;
             } else {
                 light3.castShadow = false;
             }
+            */
+
             //light3.shadow.camera.near = 5;
             //light3.shadow.camera.far = 10;
             
@@ -512,6 +546,13 @@ function ramp(a,b,c,d,t) {
             light4.position.z = .5;
             scene.add( light4 );
         }
+        hemiLightObject = new THREE.HemisphereLight( 0xffffff, 0xffffff, 0.6 );
+        //hemiLightObject.color.setHSL( 0.6, 1, 0.6 );
+        //hemiLightObject.groundColor.setHSL( 0.095, 1, 0.75 );
+        hemiLightObject.position.set( 0, 50, 0 );
+        hemiLightObject.visible = settings.hemiLight;
+        scene.add( hemiLightObject );
+        
         printTime("createLights");
 
         //printModelTable("model", designObj);
@@ -615,6 +656,14 @@ function ramp(a,b,c,d,t) {
                     side = THREE.FrontSide;
                 }
                 var vector2D = new THREE.Vector2( 4, 4 );
+                var environmentTexture;
+                if (environmentFlag) {
+                    environmentTexture = textureEnv;
+                    scene.environment = textureEnv;
+                } else {
+                    environmentTexture = null;
+                    scene.environment = null;
+                }
                 meshMaterial = new THREE.MeshPhysicalMaterial({
                     metalness: .3,
                     roughness: .95,
@@ -630,7 +679,7 @@ function ramp(a,b,c,d,t) {
                     ior: 0.9,
                     //side: THREE.BackSide,
                     side: side,
-                    envMap: textureEnv,
+                    //envMap: environmentTexture,  // removed envMap, so it takes the property from scene.environment 78.02
                     normalMap: normalMap,
                     normalScale: vector2D,
                     })
@@ -830,32 +879,98 @@ function ramp(a,b,c,d,t) {
         lightHelperGroup.visible = settings.axes;
         render();
     }
+    function setEnvironmentImage() {
+        console.debug("set EnvironmentImage: " + API.Environment);
+        if (API.Environment == "background color") {
+            if (settings.background) {
+                scene.background = materialArr[2].material.color;
+            } else {
+                scene.background = null;
+            }
+        } else {
+            var envPath = "textures/cube/" + API.Environment + "/";
+            // Cube
+            var textureCube;
+            const cubeTextureLoader = new THREE.CubeTextureLoader();
+            cubeTextureLoader.setPath(envPath);
+            const ldrUrls = [ 'i_0.jpg', 'i_1.jpg', 'i_2.jpg', 'i_3.jpg', 'i_4.jpg', 'i_5.jpg'];
+            textureCube = cubeTextureLoader.load( ldrUrls );
+            textureCube.encoding = THREE.sRGBEncoding;
+            textureEnv = textureCube;
+            setEnv();
+            setBackground();
+        }
+    }
+    function setFov() {
+        console.debug("set Fov: " + settings.fov);
+        camera.fov = settings.fov;
+        camera.updateProjectionMatrix()
+        render();
+    }
     function ground(arg) {
         if (console_flag) console.log("ground: " + settings.ground);
         if (console_flag) console.log("ground arg: " + arg);
         // ground
         groundMesh.visible = settings.ground;
         //background
+        /*
         if (settings.ground) {
             scene.background = materialArr[2].material.color;
-            scene.fog = new THREE.Fog( 0xa0a0a0, 10, 50 );
-            scene.fog.color = materialArr[2].material.color;
-            //scene.fog = new THREE.Fog( materialArr[2].material.color, 10, 50 );
         } else {
             scene.background = null;
+        }
+        */
+        //render();
+    }
+    function fog() {
+        if (console_flag) console.log("fog: " + settings.fog);
+        if (settings.fog) {
+            //scene.fog = new THREE.Fog( materialArr[2].material.color, 10, 50 );
+            scene.fog = new THREE.Fog( 0xa0a0a0, 10, 50 );
+            scene.fog.color = materialArr[2].material.color;  // color background material
+        } else {
             scene.fog = null
         }
         render();
     }
+    function setBlurriness() {
+        console.debug("setBlurriness: " + settings.blurriness);
+        scene.backgroundBlurriness = settings.blurriness;
+        render();
+    }
     function setUV() {
         console.debug("setUV: " + settings.UV);
-        setUVSubsystem(designObj);
+        flagSetMaterialAll = settings.UV;
+        setUVSubsystem(designObj, settings.UV);
         render();
     }
     function setEnv() {
-        console.debug("set Environment: " + settings.env);
+        console.debug("set environment: " + settings.env);
         if (settings.env) {
-            scene.background = textureEnv;
+            scene.environment = textureEnv;  // inmediate change for GLTF
+        } else {
+            scene.environment = null;
+        }
+        environmentFlag = settings.env;
+    }
+    function setExposure() {
+        console.debug("set Exposure: " + settings.exposure);
+        renderer.toneMappingExposure = settings.exposure;
+        render();
+    }
+    function setHemiLight() {
+        console.debug("set hemiLight: " + settings.hemiLight);
+        hemiLightObject.visible = settings.hemiLight;
+        render();
+    }
+    function setBackground() {
+        console.debug("set Background: " + settings.background);
+        if (settings.background) {
+            if (API.Environment == "background color") {
+                scene.background = materialArr[2].material.color;
+            } else {
+                scene.background = textureEnv;
+            }
         } else {
             scene.background = null;
         }
@@ -875,30 +990,6 @@ function ramp(a,b,c,d,t) {
         } else {
             document.querySelector("div.lil-gui.root").style.backgroundColor     ="rgba(55, 55, 55, 1.0)";
             document.querySelector("div.lil-gui.root").style['--backgroundColor']="rgba(55, 55, 55, 1.0)";
-        }
-    }
-    function setUVSubsystem(designSubsystem) {
-        if (settings.UV) {
-            for (var i = 0; i< designSubsystem.pieces.length; i++) {
-                for (var j = 0; j < designSubsystem.pieces[i].array.length ; j++) {
-                    designSubsystem.pieces[i].array[j].mesh.materialOriginal = designSubsystem.pieces[i].array[j].mesh.material;
-                    designSubsystem.pieces[i].array[j].mesh.material = material_UV;
-                    designSubsystem.pieces[i].array[j].mesh.setUV = true;
-                    if ('subsystem' in designSubsystem.pieces[i]) {
-                        setUVSubsystem(designSubsystem.pieces[i].array[j].subsystemDesign);
-                    }
-                }
-            }
-        } else {
-            for (var i = 0; i< designSubsystem.pieces.length; i++) {
-                for (var j = 0; j < designSubsystem.pieces[i].array.length ; j++) {
-                    designSubsystem.pieces[i].array[j].mesh.material = designSubsystem.pieces[i].array[j].mesh.materialOriginal;
-                    designSubsystem.pieces[i].array[j].mesh.setUV = false;
-                    if ('subsystem' in designSubsystem.pieces[i]) {
-                        setUVSubsystem(designSubsystem.pieces[i].array[j].subsystemDesign);
-                    }
-                }
-            }
         }
     }
     function initGui() {
@@ -987,12 +1078,26 @@ function ramp(a,b,c,d,t) {
                 }
             }
             
+            var environmentAPI = [];
+            environmentAPI.push("background color");
+            environmentAPI.push("Park2");
+            environmentAPI.push("pisa_Y");
+            environmentAPI.push("DallasW");
+            environmentAPI.push("grid");
+            API["Environment"] = environmentAPI[0];  // .name when it's an object
+            settingsFolder.add( API, "Environment", environmentAPI).onChange( setEnvironmentImage);
 
             settingsFolder.add( settings, 'debug' ).onChange( debug );
             settingsFolder.add( settings, 'axes' ).onChange( axes );
+            settingsFolder.add( settings, 'fov', 8, 180 ).onChange( setFov );
             settingsFolder.add( settings, 'ground' ).onChange( ground );
+            settingsFolder.add( settings, 'fog' ).onChange( fog );
+            settingsFolder.add( settings, 'background' ).onChange( setBackground );
+            settingsFolder.add( settings, 'blurriness', 0, 1 ).onChange( setBlurriness );
             settingsFolder.add( settings, 'UV' ).onChange( setUV );
             settingsFolder.add( settings, 'env' ).onChange( setEnv );
+            settingsFolder.add( settings, 'exposure', 0, 3 ).onChange( setExposure );
+            settingsFolder.add( settings, 'hemiLight' ).onChange( setHemiLight );
             settingsFolder.add( settings, 'shadow' ).onChange( setShadow );
             settingsFolder.add( settings, 'autosave' ).onChange( setAutosave );
             settingsFolder.add( settings, 'transparentControl' ).onChange( setTransparentControl );
@@ -2985,8 +3090,43 @@ function ramp(a,b,c,d,t) {
                 normalTextureEdit = mat.material.normalMap;
                 copyMaterialPropertiesFromModelToEditor(mat, materialGui, true);
                 updatePhysicalMaterial();
+                if (materialOverride != null) {
+                    setUVSubsystem(designObj, flagSetMaterialAll);
+                    render();
+                }
             }
 
+            function setUVSubsystem(designSubsystem, setMaterialAll) {
+                if (setMaterialAll) {
+                    // use for material UV or any material selected in Materials Select
+                    if (currentMaterialName == null) {
+                        materialOverride = material_UV;
+                    } else {
+                        materialOverride = getMaterial(currentMaterialName).material;
+                    }
+                    for (var i = 0; i< designSubsystem.pieces.length; i++) {
+                        for (var j = 0; j < designSubsystem.pieces[i].array.length ; j++) {
+                            designSubsystem.pieces[i].array[j].mesh.materialOriginal = designSubsystem.pieces[i].array[j].mesh.material;
+                            designSubsystem.pieces[i].array[j].mesh.material = materialOverride; // material_UV;
+                            designSubsystem.pieces[i].array[j].mesh.setUV = true;
+                            if ('subsystem' in designSubsystem.pieces[i]) {
+                                setUVSubsystem(designSubsystem.pieces[i].array[j].subsystemDesign, setMaterialAll);
+                            }
+                        }
+                    }
+                } else {
+                    materialOverride = null;
+                    for (var i = 0; i< designSubsystem.pieces.length; i++) {
+                        for (var j = 0; j < designSubsystem.pieces[i].array.length ; j++) {
+                            designSubsystem.pieces[i].array[j].mesh.material = designSubsystem.pieces[i].array[j].mesh.materialOriginal;
+                            designSubsystem.pieces[i].array[j].mesh.setUV = false;
+                            if ('subsystem' in designSubsystem.pieces[i]) {
+                                setUVSubsystem(designSubsystem.pieces[i].array[j].subsystemDesign, setMaterialAll);
+                            }
+                        }
+                    }
+                }
+            }
 
             function updateMeasuresAPI(node, THREE, API, updateDesign){
 //                updateDesign.eval = makeEvalContext ();
@@ -4448,7 +4588,7 @@ h1, h2 {
 </style>
 
 
-<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 76
+<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 78.02
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
@@ -4518,9 +4658,13 @@ h1, h2 {
 <br><a href=escene72.html>v 72</a> Sombras en todos los tipos. Angulo de textura en grados
 <br><a href=escene73.html>v 73</a> Materiales como parámetros en componentes. Ejemplo en cajones y tapa del armario
 <br><a href=escene74.html>v 74</a> No recargar materiales en cada cambio de objeto
-<br><a href=escene74.html>v 75</a> Selector de materiales con imágenes, no tener que poner apóstrofe en las opciones de materiales
-<br><a href=escene74.html>v 76</a> Opción de textura perpendicular en caras de Box
-<br><a href=escene74.html>v 77</a> conditional logging with console
+<br><a href=escene75.html>v 75</a> Selector de materiales con imágenes, no tener que poner apóstrofe en las opciones de materiales
+<br><a href=escene76.html>v 76</a> Opción de textura perpendicular en caras de Box
+<br><a href=escene77.html>v 77</a> conditional logging with console - roles
+<br><a href=escene78.html>v 78</a> separar env y background; ground y fog. Añadir toneMapping. Añadir Semihesphere con control. Exposure.
+Movida carpeta build de three/build a build. (de momento copiada) para que tenga la misma estructura que la descarga de three.js original y los ejemplos.
+<br><a href=escene78.html>v 79</a> Ejemplo de cámara moviéndose en: https://github.com/mrdoob/three.js/blob/master/examples/misc_exporter_gltf.html
+Gestión del color: https://threejs.org/docs/#manual/en/introduction/Color-management
 
 
   <script>
