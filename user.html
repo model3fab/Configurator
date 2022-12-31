@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>My First Application</title>
+  <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+  <script type="text/javascript" type="text/javascript">
+    Parse.initialize("APP_ID","JS_KEY"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
+    Parse.serverURL = 'https://parseapi.back4app.com/'
+
+Parse.serverURL = 'https://parseapi.back4app.com';
+Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyxeKIRoZKc3fh3g0nxTpXdKN');
+
+(async () => {
+  const users = Parse.Object.extend('User');
+  const query = new Parse.Query(users);
+  try {
+    const results = await query.find();
+    for (const object of results) {
+      // Access the Parse Object attributes using the .GET method
+      const username = object.get('username')
+      const password = object.get('password')
+      console.log(username);
+      console.log(password);
+    }
+  } catch (error) {
+    console.error('Error while fetching users', error);
+  }
+})();
+;
+
+  </script>
+</head>
+<body>
+  <!--
+    Your code
+  -->
+</body>
+</html>
