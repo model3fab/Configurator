@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Login</title>
+  <link rel="stylesheet" href="forms_style.css">
+  <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+  <script type="text/javascript" type="text/javascript">
+Parse.serverURL = 'https://parseapi.back4app.com';
+Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyxeKIRoZKc3fh3g0nxTpXdKN');
+
+</script>
+</head>
+<style>
+.noDisplay {
+  display: none;
+}
+.setDisplay {
+  display: initial;
+}
+</style>
+<body>
+<script>
+async function validateForm() {
+    if (formSignUp.email.value == "") {
+        alert("The email is required!");
+        return false;
+    }
+    if (formSignUp.password.value == "") {
+        alert("The password is required!");
+        return false;
+    }
+
+    params1 = {}
+    params1.username = formSignUp.email.value;
+    params1.password = formSignUp.password.value;
+    console.log("run", params1)
+    const result = await Parse.Cloud.run('login', params1);
+    console.log("login", result)
+    if (result != null) {
+        document.getElementById("formSignUp").classList.toggle("noDisplay");
+        document.getElementById("collections").classList.toggle("noDisplay");
+    }
+    return true;  // don't send yet
+}
+</script>
+<form name="formSignUp" id="formSignUp" style="border:1px solid #ccc">
+  <div class="container">
+    <h1>Login in model3fab</h1>
+    <hr>
+
+    <label for="email"><b>Email</b></label>
+    <input type="text" placeholder="Enter Email" name="email" autocomplete="username" value="a3@aw.aw" required>
+
+    <label for="password"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" autocomplete="current-password" value="p" required>
+
+    <div class="clearfix">
+      <button type="button" onclick="validateForm()" class="signupbtn" >Login</button>
+    </div>
+  </div>
+</form>
+<h2 id="collections" class="noDisplay">Colletions</h2>
+<script>
+content={"materialArr":[{"name":"default","color_r":0.45,"color_g":0.72,"color_b":0.96,"emissive_r":0.33,"emissive_g":0.51,"emissive_b":0.66,"roughness":0.109,"metalness":0.35,"reflectivity":0.18,"clearcoat":0,"clearcoatRoughness":0,"transparent":true,"opacity":0.78,"diffuseMap":false,"normalFactor":1,"envMapIntensity":0.94,"ior":1.16,"wireframe":false},{"name":"ground","size_x":"0.001","size_y":"0.001","texture":"textures/uv_grid_opengl.jpg","color_r":"0.5","color_g":"0.5","color_b":"0.5","diffuseMap":false},{"name":"background","color_r":0.6,"color_g":0.6,"color_b":0.6,"diffuseMap":true},{"name":"UV_map","texture":"textures/uv_grid_opengl.jpg","diffuseMap":true}],"designArr":{"init":{"name":"init","parameters":[],"pieces":[]}}}
+</script>
+
+</body>
+</html>
