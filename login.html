@@ -17,9 +17,68 @@ Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyx
 .setDisplay {
   display: initial;
 }
+
+div.collections {
+    max-width: 570px;
+    margin: auto;
+}
 </style>
 <body>
+<form name="formSignUp" id="formSignUp" style="border:1px solid #ccc">
+  <div class="container">
+    <h1>Login in model3fab</h1>
+    <hr>
+
+    <label for="email"><b>Email</b></label>
+    <input type="text" placeholder="Enter Email" name="email" autocomplete="username" value="a9@aw.aw" required>
+
+    <label for="password"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="password" autocomplete="current-password" value="p" required>
+
+    <div class="clearfix">
+      <button type="button" onclick="validateForm()" class="signupbtn" >Login</button>
+    </div>
+  </div>
+</form>
+
+<div id="collections" class="collections noDisplay">
+  <h2 >Collections</h2>
+  <ul id="collectionsList" ></ul>
+  <button onclick="createCollection()">Create New Collection</button>
+</div>
+
 <script>
+function parse_query_string(query) {
+  var vars = query.split("&");
+  var query_string = {};
+  for (var i = 0; i < vars.length; i++) {
+    var pair = vars[i].split("=");
+    var key = decodeURIComponent(pair[0]);
+    var value = decodeURIComponent(pair[1]);
+    // If first entry with this name
+    if (typeof query_string[key] === "undefined") {
+      query_string[key] = decodeURIComponent(value);
+      // If second entry with this name
+    } else if (typeof query_string[key] === "string") {
+      var arr = [query_string[key], decodeURIComponent(value)];
+      query_string[key] = arr;
+      // If third or later entry with this name
+    } else {
+      query_string[key].push(decodeURIComponent(value));
+    }
+  }
+  return query_string;
+}
+
+var query = window.location.search.substring(1);
+var qs = parse_query_string(query);
+var company;
+if (qs.company != null) {
+    company = qs.company;
+    printCollections(qs.company);
+}
+
+
 async function validateForm() {
     if (formSignUp.email.value == "") {
         alert("The email is required!");
@@ -36,32 +95,55 @@ async function validateForm() {
     console.log("run", params1)
     const result = await Parse.Cloud.run('login', params1);
     console.log("login", result)
+    company = result;
     if (result != null) {
-        document.getElementById("formSignUp").classList.toggle("noDisplay");
-        document.getElementById("collections").classList.toggle("noDisplay");
+        printCollections(result);
     }
     return true;  // don't send yet
 }
-</script>
-<form name="formSignUp" id="formSignUp" style="border:1px solid #ccc">
-  <div class="container">
-    <h1>Login in model3fab</h1>
-    <hr>
 
-    <label for="email"><b>Email</b></label>
-    <input type="text" placeholder="Enter Email" name="email" autocomplete="username" value="a3@aw.aw" required>
+async function printCollections(result) {
+        document.getElementById("formSignUp").classList.toggle("noDisplay");
+        document.getElementById("collections").classList.toggle("noDisplay");
+        params2 = {}
+        params2.company = result;
+        const collectionsResult = await Parse.Cloud.run('readCollections', params2);
+        console.log("collectionsResult", collectionsResult);
+        for (i=0; i< collectionsResult.length; i++) {
+            addItem(collectionsResult[i].id, collectionsResult[i].name);
+        }
+        /* readCollectionById
+        params3 = {}
+        params3.id = collectionsResult[0].id;
+        const objectCollection = await Parse.Cloud.run('readCollectionById', params3);
+        console.log("objectCollection", objectCollection);
+        */
+}
 
-    <label for="password"><b>Password</b></label>
-    <input type="password" placeholder="Enter Password" name="password" autocomplete="current-password" value="p" required>
+function addItem(id, name) {
+            //document.write(collectionsResult[i].id + " " + collectionsResult[i].name + "<BR>");
+            var li = document.createElement('LI');
+            var a = document.createElement('a');
+            var linkText = document.createTextNode(name);
+            a.appendChild(linkText);
+            a.title = name;
+            a.href = "collection.html?collection=" + id;
+            document.getElementById("collectionsList").appendChild(li);
+            li.appendChild(a);
+}
 
-    <div class="clearfix">
-      <button type="button" onclick="validateForm()" class="signupbtn" >Login</button>
-    </div>
-  </div>
-</form>
-<h2 id="collections" class="noDisplay">Colletions</h2>
-<script>
 content={"materialArr":[{"name":"default","color_r":0.45,"color_g":0.72,"color_b":0.96,"emissive_r":0.33,"emissive_g":0.51,"emissive_b":0.66,"roughness":0.109,"metalness":0.35,"reflectivity":0.18,"clearcoat":0,"clearcoatRoughness":0,"transparent":true,"opacity":0.78,"diffuseMap":false,"normalFactor":1,"envMapIntensity":0.94,"ior":1.16,"wireframe":false},{"name":"ground","size_x":"0.001","size_y":"0.001","texture":"textures/uv_grid_opengl.jpg","color_r":"0.5","color_g":"0.5","color_b":"0.5","diffuseMap":false},{"name":"background","color_r":0.6,"color_g":0.6,"color_b":0.6,"diffuseMap":true},{"name":"UV_map","texture":"textures/uv_grid_opengl.jpg","diffuseMap":true}],"designArr":{"init":{"name":"init","parameters":[],"pieces":[]}}}
+
+async function createCollection() {
+    name = "collection "+ (document.getElementById("collectionsList").childElementCount + 1.0);
+    params1 = {}
+    params1.company  = company;
+    params1.collectionName = name;
+    params1.collectionData = JSON.stringify(content);
+    const result = await Parse.Cloud.run('createCollection', params1);
+    console.log("company created ", result);
+    addItem(company, name);
+}
 </script>
 
 </body>

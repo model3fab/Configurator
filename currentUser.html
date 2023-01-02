@@ -1,0 +1,40 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Current user</title>
+  <link rel="stylesheet" href="forms_style.css">
+  <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+  <script type="text/javascript" type="text/javascript">
+Parse.serverURL = 'https://parseapi.back4app.com';
+Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyxeKIRoZKc3fh3g0nxTpXdKN');
+
+
+
+  </script>
+</head>
+<style>
+
+</style>
+<body>
+<script>
+async function validateForm() {
+
+    const result = await Parse.Cloud.run('currentUser');
+    console.log("result", result)
+    return true;  // don't send yet
+}
+</script>
+<form name="formSignUp" style="border:1px solid #ccc">
+  <div class="container">
+    <h1>CurrentUser in model3fab</h1>
+    <hr>
+
+
+    <div class="clearfix">
+      <button type="button" onclick="validateForm()" class="signupbtn" >Current user</button>
+    </div>
+  </div>
+</form>
+
+</body>
+</html>

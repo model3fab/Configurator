@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Register</title>
+  <link rel="stylesheet" href="forms_style.css">
+  <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+  <script type="text/javascript" type="text/javascript">
+//    Parse.initialize("APP_ID","JS_KEY"); //PASTE HERE YOUR Back4App APPLICATION ID AND YOUR JavaScript KEY
+//    Parse.serverURL = 'https://parseapi.back4app.com/'
+
+Parse.serverURL = 'https://parseapi.back4app.com';
+Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyxeKIRoZKc3fh3g0nxTpXdKN');
+
+(async () => {
+  const users = Parse.Object.extend('User');
+  const query = new Parse.Query(users);
+  try {
+    const results = await query.find();
+    for (const object of results) {
+      // Access the Parse Object attributes using the .GET method
+      const username = object.get('username')
+      //const password = object.get('password')
+      console.log(username);
+      //console.log(password);
+    }
+  } catch (error) {
+    console.error('Error while fetching users', error);
+  }
+})();
+;
+
+async function hello() {
+console.log("ini helloFunction")
+const helloFunction = await Parse.Cloud.run("hello");
+console.log("variable: " + helloFunction)
+}
+async function sumNumbers() {
+console.log("ini sumNumbers")
+//const params1 = {number1:3, number2:4}
+params1 = {}
+params1.number1 = 5;
+params1.number2 = 7;
+const sum = await Parse.Cloud.run('sumNumbers', params1);
+console.log("sum: " + sum)
+}
+
+async function createToDo() {
+const params2 = {title:"Launch my App", done:true}
+const createToDo = await Parse.Cloud.run('createToDo', params2);
+
+
+const getToDos = await Parse.Cloud.run('getListToDo');
+}
+
+
+async function createUser() {
+console.log("createUser")
+params1 = {}
+params1.username = "username_param";
+params1.email = "email@company.com";
+params1.company = "company_param";
+params1.password = "password_param";
+const result = await Parse.Cloud.run('createUserParams', params1);
+}
+
+  </script>
+</head>
+<style>
+
+</style>
+<body>
+<script>
+content={"materialArr":[{"name":"default","color_r":0.45,"color_g":0.72,"color_b":0.96,"emissive_r":0.33,"emissive_g":0.51,"emissive_b":0.66,"roughness":0.109,"metalness":0.35,"reflectivity":0.18,"clearcoat":0,"clearcoatRoughness":0,"transparent":true,"opacity":0.78,"diffuseMap":false,"normalFactor":1,"envMapIntensity":0.94,"ior":1.16,"wireframe":false},{"name":"ground","size_x":"0.001","size_y":"0.001","texture":"textures/uv_grid_opengl.jpg","color_r":"0.5","color_g":"0.5","color_b":"0.5","diffuseMap":false},{"name":"background","color_r":0.6,"color_g":0.6,"color_b":0.6,"diffuseMap":true},{"name":"UV_map","texture":"textures/uv_grid_opengl.jpg","diffuseMap":true}],"designArr":{"init":{"name":"init","parameters":[],"pieces":[]}}}
+
+async function validateForm() {
+    if (formSignUp.email.value == "") {
+        alert("The email is required!");
+        return false;
+    }
+    if (formSignUp.psw.value == "") {
+        alert("The password is required!");
+        return false;
+    }
+    if (formSignUp.psw.value != formSignUp.psw_repeat.value) {
+        alert("The password doen't match!");
+        return false;
+    }
+    if (formSignUp.company.value == "") {
+        alert("The company is required!");
+        return false;
+    }
+
+// https://www.w3resource.com/javascript/form/email-validation.php
+ if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(formSignUp.email.value))
+  {
+    //alert("don't send yet")
+    console.log("createUser")
+    params1 = {}
+    params1.username = formSignUp.email.value;
+    params1.email    = formSignUp.email.value;
+    params1.company  = formSignUp.company.value;
+    params1.password = formSignUp.psw.value;
+    params1.collectionName = "new collection";
+    params1.collectionData = JSON.stringify(content);
+    const result = await Parse.Cloud.run('createUserParams', params1);
+    console.log("user created ", result)
+    if (result != null) {
+        document.getElementById("formSignUp").classList.toggle("noDisplay");
+        document.getElementById("collections").classList.toggle("noDisplay");
+    }
+    return true;  // don't send yet
+  }
+    alert("You have entered an invalid email address!")
+    return false;
+}
+</script>
+<style>
+.noDisplay {
+  display: none;
+}
+</style>
+<form name="formSignUp" id="formSignUp" style="border:1px solid #ccc">
+  <div class="container">
+    <h1>Create your model3fab account</h1>
+    <p>No credit card required.</p>
+    <hr>
+
+    <label for="email"><b>Email</b></label>
+    <input type="text" placeholder="Enter Email" name="email" autocomplete="username" required>
+
+    <label for="psw"><b>Password</b></label>
+    <input type="password" placeholder="Enter Password" name="psw" autocomplete="new-password" required>
+
+    <label for="psw_repeat"><b>Repeat Password</b></label>
+    <input type="password" placeholder="Repeat Password" name="psw_repeat" autocomplete="new-password" required>
+    
+    <label for="company"><b>Company name</b></label>
+    <input type="text" placeholder="Enter company name" name="company" required>
+
+    <p>By creating an account you agree to our <a href="#" style="color:dodgerblue">Terms & Privacy</a>.</p>
+
+    <div class="clearfix">
+      <button type="button" onclick="validateForm()" class="signupbtn" >Sign Up</button>
+    </div>
+  </div>
+</form>
+<h2 id="collections" class="noDisplay">Collections</h2>
+</body>
+</html>
