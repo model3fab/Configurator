@@ -6,6 +6,9 @@
   <meta name="robots" content="noindex, nofollow">
   <meta name="googlebot" content="noindex, nofollow">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" href="../w3.css">
+  <link rel="stylesheet" href="../family_Raleway.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
   <script>
@@ -122,6 +125,8 @@ function loadJSON() {
     if (designArr[objectName] == null) {  // if the objectName is not in the current collection
         objectName = null;  // we'll be set with getFirstObject()
         getFirstObject();
+    } else {
+        designObj = designArr[objectName];
     }
     init();
 }
@@ -159,6 +164,7 @@ function loadJSON() {
 </textarea>
 <a href='https://codebeautify.org/jsonviewer' target=_blank>See JSON beautify</a> <a href='bezier.html' target=_blank>Bezier curves</a>
 <div>url for final user: <span id="url_final"></span></div>
+<div>Share: <input id="url_share" size="150"></div>
 </div>
 
 
@@ -207,6 +213,7 @@ designArr = JSON.parse(document.getElementById('jsonObj').value).designArr;
 materialArr = JSON.parse(document.getElementById('jsonObj').value).materialArr;
 
 var objectName;
+// root = window.location.pathname.substr(1,window.location.pathname.indexOf("/",1)-1)
 var query = window.location.search.substring(1);
 var qs = parse_query_string(query);
 if (qs.object != null) {
@@ -227,10 +234,6 @@ if (qs.collection != null) {
     collectionId = qs.collection;
 }
 designObj = designArr[objectName];
-
-var url_final = document.getElementById("url_final");
-url_finalStr = window.location.origin + window.location.pathname + "?object=" + objectName + "&rol=1";
-url_final.innerHTML = "<a target='_blank' href='" + url_finalStr + "'>" + url_finalStr + "</a>";
 
 //materialsObj = materialArr;
 var renderer;
@@ -326,6 +329,31 @@ function ramp(a,b,c,d,t) {
 </head>
 <body>
 
+<!-- Navbar (sit on top) -->
+<div class="w3-top">
+  <div class="w3-bar w3-white w3-card" id="myNavbar">
+    <a href="/model3fab" class="w3-bar-item w3-button w3-wide">model3fab</a>
+    <!-- Right-sided navbar links -->
+    <div class="w3-right w3-hide-small">
+      <a href="#renderDiv" class="w3-bar-item w3-button">Inicio</a>
+      <a href="#Materials" class="w3-bar-item w3-button"><i class="fa fa-paint-brush"></i> Materials</a>
+      <a href="#fileDiv" class="w3-bar-item w3-button"><i class="fa fa-folder"></i> Ficheros</a>
+      <a href="#pricing" class="w3-bar-item w3-button"><i class="fa fa-table"></i> Planes</a>
+      <a href="#contact" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i> Contacto</a>
+      <a href="Configurator/login.html#contact" class="w3-bar-item w3-button"><i class="fa fa-user"></i> Login</a>
+      <a href="Configurator/registerCompany.html#contact" class="w3-bar-item w3-button"><i class="fa fa-user-plus"></i> Registro</a>
+      <!--  other icons fa-group -->
+    </div>
+    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+</div>
+
+
+
 <script>
     const settings = {
         debug: false,
@@ -387,10 +415,17 @@ function ramp(a,b,c,d,t) {
     defaultMaterial = new THREE.MeshPhysicalMaterial( { color: 0xffffff } );
     defaultMaterial.diffuseMap = true;
 
-    init(true);
+    if (designObj != null) {
+        init(true);
+    }
     //showForm();
     export function init(loadMaterialsFlag) {
         printTime("init");
+
+        var url_final = document.getElementById("url_final");
+        var url_finalStr = window.location.origin + window.location.pathname + "?collection=" + collectionId + "&object=" + objectName + "&rol=1";
+        url_final.innerHTML = "<a target='_blank' href='" + url_finalStr + "'>" + url_finalStr + "</a>";
+        url_share.value = "<iframe id='iframe01' width='100%' height='500px' src='" + url_finalStr + "'>" + "'</iframe>";
         
         createdLights = false;
         settings.UV = false;
@@ -624,6 +659,8 @@ function ramp(a,b,c,d,t) {
             showForm();
             var manufacturer_div =document.getElementById("manufacturer_div");
             manufacturer_div.style.display = "initial";
+            var version =document.getElementById("version");
+            version.style.display = "initial";
             expandPanel(document.getElementById(objectName), true)
         }
         printTime("showForm");
@@ -1515,6 +1552,7 @@ function ramp(a,b,c,d,t) {
     function loadObject(modelName) {
         objectName = modelName;
         exportCollection();
+
         designArr = JSON.parse(document.getElementById('jsonObj').value).designArr;
         designObj = designArr[modelName];
         init();
@@ -4437,13 +4475,26 @@ li.prepanel {
 
 div.material_option {
     width: 80px;
-    height: 50px;
+    height: 80px;
+    border-radius: 40px;
     /* background-color: pink; */
-    border: 5px #e0e0e0 solid;
+    /*border: 5px #e0e0e0 solid; */
+    border: 1px #dcdcdc solid;
     display: inline-block;
 }
 
+div.material_option span {
+    visibility: hidden;
+}
+div.material_option:hover span {
+    visibility: initial;
+    background-color: white;
+}
+
 div#manufacturer_div {
+    display: none;
+}
+#version {
     display: none;
 }
 </style>
@@ -4651,6 +4702,12 @@ h1, h2 {
 .controller.function:nth-of-type(1), .controller.function:nth-of-type(2), .controller.function:nth-of-type(3), .controller.function:nth-of-type(4) {
     width: 24%;
     display: inline-block;
+}
+
+div#materialPanel {
+    position: relative;
+    top: -160px;
+    width: fit-content;
 }
 
 </style>
