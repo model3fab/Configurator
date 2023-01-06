@@ -18,6 +18,7 @@ var start_time = (new Date).getTime();
 var console_flag = true;
 var console_flag_time = true;
 var user_rol;
+var embed = false;
 var collectionId;
 /*
 1 "rol_customer";
@@ -228,6 +229,9 @@ if (qs.rol != null) {
         console_flag_time = false;
     }
 }
+if (qs.embed != null) {
+    embed = true;
+}
 var designObj;
 if (qs.collection != null) {
     loadCollectionFromDatabase(qs.collection);
@@ -330,7 +334,7 @@ function ramp(a,b,c,d,t) {
 <body>
 
 <!-- Navbar (sit on top) -->
-<div class="w3-top">
+<div id="navbar" class="w3-top">
   <div class="w3-bar w3-white w3-card" id="myNavbar">
     <a href="/model3fab" class="w3-bar-item w3-button w3-wide">model3fab</a>
     <!-- Right-sided navbar links -->
@@ -425,7 +429,7 @@ function ramp(a,b,c,d,t) {
         var url_final = document.getElementById("url_final");
         var url_finalStr = window.location.origin + window.location.pathname + "?collection=" + collectionId + "&object=" + objectName + "&rol=1";
         url_final.innerHTML = "<a target='_blank' href='" + url_finalStr + "'>" + url_finalStr + "</a>";
-        url_share.value = "<iframe id='iframe01' width='100%' height='500px' src='" + url_finalStr + "'>" + "'</iframe>";
+        url_share.value = "<iframe id='iframe01' width='100%' height='500px' src='" + url_finalStr + "&embed'>" + "'</iframe>";
         
         createdLights = false;
         settings.UV = false;
@@ -662,6 +666,10 @@ function ramp(a,b,c,d,t) {
             var version =document.getElementById("version");
             version.style.display = "initial";
             expandPanel(document.getElementById(objectName), true)
+        }
+        if (!embed) {
+            var navbar_div =document.getElementById("navbar");
+            navbar_div.style.display = "initial";
         }
         printTime("showForm");
 
@@ -4495,6 +4503,9 @@ div#manufacturer_div {
     display: none;
 }
 #version {
+    display: none;
+}
+#navbar {
     display: none;
 }
 </style>
