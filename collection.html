@@ -138,9 +138,11 @@ function loadJSON() {
 <div id='renderDiv'></div>
 <div id='materialPanel'></div>
 <div id='manufacturer_div'>
+<!--
 <button onclick="newObject()">Create New Object</button>
 <button onclick="resetEditor()">Reset Editor</button>
-<a id=collectionsList href='login.html' >Collections</a>
+-->
+<!-- <a id=collectionsList href='login.html' >Collections</a> -->
 <div class="split">
   <div id='modelDiv'></div>
   <div id='renderColumnDiv'>
@@ -149,7 +151,8 @@ function loadJSON() {
 </div>
 <div id='fileDiv'></div>
 <br>
-<input id="collectionName"/> 
+<div id='experimentalDiv'>
+<input id="collectionName_old"/> 
 <button onclick="saveToDatabase()">Save (to Database)</button>
 <button onclick="saveFileAs()">Export to file</button>
 <button style="width:120px; height:30px;" onclick="document.getElementById('loadFile').click()">Import file</button>
@@ -160,14 +163,116 @@ function loadJSON() {
 <button onclick="exportCollection(), setTextAreaSize()">Show JSON</button>
 <button onclick="loadJSON()">Load JSON</button>
 
-<textarea ROWS=1 COLS=2 id='jsonObj'>
-{"materialArr":[{"name":"default","color_r":0.45,"color_g":0.72,"color_b":0.96,"emissive_r":0.33,"emissive_g":0.51,"emissive_b":0.66,"roughness":0.109,"metalness":0.35,"reflectivity":0.18,"clearcoat":0,"clearcoatRoughness":0,"transparent":true,"opacity":0.78,"diffuseMap":false,"normalFactor":1,"envMapIntensity":0.94,"ior":1.16,"wireframe":false},{"name":"ground","size_x":"0.001","size_y":"0.001","color_r":"0.5","color_g":"0.5","color_b":"0.5","diffuseMap":false},{"name":"background","color_r":0.6,"color_g":0.6,"color_b":0.6,"diffuseMap":true},{"name":"UV_map","diffuseMap":true}],"designArr":{"init":{"name":"init","parameters":[],"pieces":[]}}}
+<textarea ROWS=1 COLS=2 id='jsonObj_old'>
+{"materialArr":[{"name":"default","color_r":0.45,"color_g":0.72,"color_b":0.96,"emissive_r":0.33,"emissive_g":0.51,"emissive_b":0.66,"roughness":0.109,"metalness":0.35,"reflectivity":0.18,"clearcoat":0,"clearcoatRoughness":0,"transparent":true,"opacity":0.78,"diffuseMap":false,"normalFactor":1,"envMapIntensity":0.94,"ior":1.16,"wireframe":false},{"name":"ground","size_x":"0.001","size_y":"0.001","color_r":"0.5","color_g":"0.5","color_b":"0.5","diffuseMap":false},{"name":"background","color_r":0.6,"color_g":0.6,"color_b":0.6,"diffuseMap":true},{"name":"UV_map","diffuseMap":true}],"designArr":{"First Object":{"name":"First Object","parameters":[],"pieces":[]}}}
 </textarea>
+<script>
+textareaContent = '{"materialArr":[{"name":"default","color_r":0.45,"color_g":0.72,"color_b":0.96,"emissive_r":0.33,"emissive_g":0.51,"emissive_b":0.66,"roughness":0.109,"metalness":0.35,"reflectivity":0.18,"clearcoat":0,"clearcoatRoughness":0,"transparent":true,"opacity":0.78,"diffuseMap":false,"normalFactor":1,"envMapIntensity":0.94,"ior":1.16,"wireframe":false},{"name":"ground","size_x":"0.001","size_y":"0.001","color_r":"0.5","color_g":"0.5","color_b":"0.5","diffuseMap":false},{"name":"background","color_r":0.6,"color_g":0.6,"color_b":0.6,"diffuseMap":true},{"name":"UV_map","diffuseMap":true}],"designArr":{"First Object":{"name":"First Object","parameters":[],"pieces":[]}}}'
+</script>
 <a href='https://codebeautify.org/jsonviewer' target=_blank>See JSON beautify</a> <a href='bezier.html' target=_blank>Bezier curves</a>
-<div>url for final user: <span id="url_final"></span></div>
-<div>Share: <input id="url_share" size="150"></div>
+<div>url for final user: <span id="url_final_old"></span></div>
+<div>Share: <input id="url_share_old" size="150"></div>
+</div> <!--experimentalDiv-->
 </div>
 
+
+
+  <style id="compiled-css" type="text/css">
+      body {
+      margin: 0;
+}
+    /* EOS */
+  </style>
+
+  <script id="insert"></script>
+
+
+</head>
+<body>
+
+<!-- Navbar (sit on top) -->
+<div id="navbar" class="w3-top">
+  <div class="w3-bar w3-white w3-card" id="myNavbar">
+    <a href="/model3fab" class="w3-bar-item w3-button w3-wide">model3fab</a>
+    <span  class="w3-bar-item">Collection: </span>
+    <input id="collectionName" class="w3-bar-item w3-border-small"/> 
+    
+    <div class="w3-dropdown-hover w3-hide-small">
+        <button class="w3-button" title="Notifications">File <i class="fa fa-caret-down"></i></button>     
+        <div class="w3-dropdown-content w3-card-4 w3-bar-block">
+          <a href="#" onclick="saveFileAs()" class="w3-bar-item w3-button">Export</a>
+          <a href="#" onclick="document.getElementById('loadFile').click()" class="w3-bar-item w3-button">Import</a>
+          <a href="#" onclick="exportCollection(), document.getElementById('formJSONModal').style.display='block'" class="w3-bar-item w3-button">Show JSON</a>
+          <a href="#" onclick="loadJSON()" class="w3-bar-item w3-button">Load JSON</a>
+          <a href="#" onclick="document.getElementById('formEmbed').style.display='block'" class="w3-bar-item w3-button">Embed</a>
+          <a href="#" onclick="resetEditor()" class="w3-bar-item w3-button">Reset Editor</a>
+
+          <!-- <a href="#" onclick="document.getElementById('formJSONModal').style.display='block'" class="w3-bar-item w3-button">Modal</a>-->
+        </div>
+    </div>
+    <a id=collectionsList href='login.html' class="w3-bar-item w3-button">Collections</a>
+    <a href="#" onclick="saveToDatabase()" class="w3-bar-item w3-button">Save</a>
+    <a href="#renderDiv" class="w3-bar-item w3-button"><i class="fa fa-arrow-up"></i>Top</a>
+    <a href="#Materials" class="w3-bar-item w3-button"><i class="fa fa-paint-brush"></i> Materials</a>
+    <a href="#fileDiv" onclick="gotoObject()" class="w3-bar-item w3-button"><i class="fa fa-cube"></i> Object</a>
+    <!-- Right-sided navbar links -->
+    <!-- 
+    <div class="w3-right w3-hide-small">
+      <a href="#pricing" class="w3-bar-item w3-button"><i class="fa fa-table"></i> Planes</a>
+      <a href="#contact" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i> Contacto</a>
+      <a href="Configurator/login.html#contact" class="w3-bar-item w3-button"><i class="fa fa-user"></i> Login</a>
+      <a href="Configurator/registerCompany.html#contact" class="w3-bar-item w3-button"><i class="fa fa-user-plus"></i> Registro</a>
+    -->
+      <!--  other icons fa-group -->
+    </div>
+    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+</div>
+
+<!-- JSON Modal -->
+  <div id="formJSONModal" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+      <header class="w3-container w3-teal w3-center w3-padding-32"> 
+        <span onclick="document.getElementById('formJSONModal').style.display='none'" 
+       class="w3-button w3-teal w3-xlarge w3-display-topright">&times;</span>
+        <h2 class="w3-wide"><i class="fa fa-file w3-margin-right"></i>JSON</h2>
+      </header>
+      <div class="w3-container">
+        <p><label>JSON file</label></p>
+        <textarea rows="10" cols="80" id='jsonObj' class="w3-input w3-border" type="text" >
+{"materialArr":[{"name":"default","color_r":0.45,"color_g":0.72,"color_b":0.96,"emissive_r":0.33,"emissive_g":0.51,"emissive_b":0.66,"roughness":0.109,"metalness":0.35,"reflectivity":0.18,"clearcoat":0,"clearcoatRoughness":0,"transparent":true,"opacity":0.78,"diffuseMap":false,"normalFactor":1,"envMapIntensity":0.94,"ior":1.16,"wireframe":false},{"name":"ground","size_x":"0.001","size_y":"0.001","color_r":"0.5","color_g":"0.5","color_b":"0.5","diffuseMap":false},{"name":"background","color_r":0.6,"color_g":0.6,"color_b":0.6,"diffuseMap":true},{"name":"UV_map","diffuseMap":true}],"designArr":{"First Object":{"name":"First Object","parameters":[],"pieces":[]}}}
+        </textarea>
+        <button class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right" onclick="loadJSON(), document.getElementById('formJSONModal').style.display='none'">Load JSON <i class="fa"></i></button>
+        <button class="w3-button w3-block w3-red  w3-padding-16 w3-section w3-right" onclick="document.getElementById('formJSONModal').style.display='none'">Close <i class="fa fa-remove"></i></button>
+        <p class="w3-right">Tool: <a href="https://codebeautify.org/jsonviewer" target="_blank">See JSON beautify</a></p>
+      </div>
+    </div>
+  </div>
+
+<!-- Embed Modal -->
+  <div id="formEmbed" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+      <header class="w3-container w3-teal w3-center w3-padding-32"> 
+        <span onclick="document.getElementById('formEmbed').style.display='none'" 
+       class="w3-button w3-teal w3-xlarge w3-display-topright">&times;</span>
+        <h2 class="w3-wide"><i class="fa fa-file w3-margin-right"></i>JSON</h2>
+      </header>
+      <div class="w3-container">
+        <p><label>JSON file</label></p>
+        <div>url for final user: </div>
+        <div id="url_final"></div>
+        <BR>
+        <div>Embed: 
+        </div>
+          <textarea id="url_share"  rows="4" cols="80" class="w3-input w3-border" type="text"></textarea>
+        <button class="w3-button w3-block w3-red  w3-padding-16 w3-section w3-right" onclick="document.getElementById('formEmbed').style.display='none'">Close <i class="fa fa-remove"></i></button>
+      </div>
+    </div>
+  </div>
 
 <script>
 
@@ -208,7 +313,7 @@ function parse_query_string(query) {
     }
 
 
-defaultObject = "init";
+defaultObject = "First Object";
 
 designArr = JSON.parse(document.getElementById('jsonObj').value).designArr;
 materialArr = JSON.parse(document.getElementById('jsonObj').value).materialArr;
@@ -320,45 +425,10 @@ function ramp(a,b,c,d,t) {
 </script>
 
 
-  <style id="compiled-css" type="text/css">
-      body {
-      margin: 0;
-}
-    /* EOS */
-  </style>
-
-  <script id="insert"></script>
-
-
-</head>
-<body>
-
-<!-- Navbar (sit on top) -->
-<div id="navbar" class="w3-top">
-  <div class="w3-bar w3-white w3-card" id="myNavbar">
-    <a href="/model3fab" class="w3-bar-item w3-button w3-wide">model3fab</a>
-    <!-- Right-sided navbar links -->
-    <div class="w3-right w3-hide-small">
-      <a href="#renderDiv" class="w3-bar-item w3-button">Inicio</a>
-      <a href="#Materials" class="w3-bar-item w3-button"><i class="fa fa-paint-brush"></i> Materials</a>
-      <a href="#fileDiv" class="w3-bar-item w3-button"><i class="fa fa-folder"></i> Ficheros</a>
-      <a href="#pricing" class="w3-bar-item w3-button"><i class="fa fa-table"></i> Planes</a>
-      <a href="#contact" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i> Contacto</a>
-      <a href="Configurator/login.html#contact" class="w3-bar-item w3-button"><i class="fa fa-user"></i> Login</a>
-      <a href="Configurator/registerCompany.html#contact" class="w3-bar-item w3-button"><i class="fa fa-user-plus"></i> Registro</a>
-      <!--  other icons fa-group -->
-    </div>
-    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
-
-    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
-      <i class="fa fa-bars"></i>
-    </a>
-  </div>
-</div>
-
-
 
 <script>
+    document.getElementById('jsonObj').value = textareaContent;
+    
     const settings = {
         debug: false,
         axes: true,
@@ -842,6 +912,13 @@ function ramp(a,b,c,d,t) {
             }
         }
         createExpandPanels();
+        // button New Object
+        var buttonNewObject = document.createElement("BUTTON");
+        buttonNewObject.setAttribute("onClick", "newObject()");
+        var textNewObject = document.createTextNode("New Object");
+        buttonNewObject.appendChild(textNewObject);
+        modelDiv.appendChild(buttonNewObject);
+
     }
     function visibility(arg) {
         if (console_flag) console.log("visibility: " + arg + " " + this.property);
@@ -1796,8 +1873,8 @@ function ramp(a,b,c,d,t) {
         var tdEl = document.createElement("TD");
         tdEl.setAttribute("class", "edit");
         tdEl.innerHTML = 
-          "<a onclick='createForm(" + i_row + ", \"" + modelNameString + "\",\"E\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>Edit</a>" + "&nbsp;&nbsp;" + 
-          "<a onclick='createForm(" + i_row + ", \"" + modelNameString + "\",\"D\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>Duplicate</a>";
+          "&nbsp;<a onclick='createForm(" + i_row + ", \"" + modelNameString + "\",\"E\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'><i class='fa fa-pencil-square-o'></i></a>" + "&nbsp;&nbsp;" + 
+          "<a onclick='createForm(" + i_row + ", \"" + modelNameString + "\",\"D\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'><i class='fa fa-files-o'></i></a>";
 
         trEl.appendChild(tdEl);
         if (setOrderButtons) {
@@ -3131,7 +3208,7 @@ function ramp(a,b,c,d,t) {
             }
 
             function updateMeasures(){
-                printTime("init updateMeasures");
+                printTime("initialize updateMeasures");
                 evalText = evalPOMvalues(POM, false, null, 0, "", null, null, true);  // eval before formulas to avoid glitch in render
                 //updatePOMformulas(POM, 0, evalText);
                 evalText = "";
@@ -4609,8 +4686,19 @@ window.name = "result"
 
 
 <style>
-#modelDiv, button, input#collectionName {
-  margin-left: 2em;
+#modelDiv, #experimentalDiv button {
+    margin-left: 2em;
+}
+
+div#experimentalDiv {
+    display: none;
+}
+
+input#collectionName {
+    padding: 0px;
+    border: 1px solid;
+    margin-top: 0.5em;
+    padding-left: 1em;
 }
 
 #modelDiv h1 a {
@@ -4676,7 +4764,7 @@ button#addArrayRow {
     text-overflow: ellipsis;
 }
 #modelDiv td.new, #modelDiv td.edit {
-    width: 11em;
+    width: 7.3em;
     overflow: initial;
     white-space: initial;
     text-overflow: initial;
@@ -4745,6 +4833,7 @@ div#materialPanel {
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
+<a href='bezier.html' target=_blank>Bezier curves</a>
 <h3>Previous versions</h3>
 <br><a href=escene10.html>v 10</a> Include Subsystems
 <br><a href=escene11.html>v 11</a> Subsystems with evalText for each subsystem
