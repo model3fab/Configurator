@@ -20,6 +20,7 @@ var console_flag_time = true;
 var user_rol;
 var embed = false;
 var collectionId;
+var companyId;
 /*
 1 "rol_customer";
 2 "rol_manufacturer";
@@ -66,6 +67,7 @@ window.onerror = function(message, url, line, col, error) {
 
 
 async function saveToDatabase() {
+    document.getElementById("status").innerHTML = "Saving ...";
     exportCollection();
     data = document.getElementById("jsonObj").value;
     params3 = {}
@@ -74,7 +76,8 @@ async function saveToDatabase() {
     params3.name = document.getElementById("collectionName").value;
     const objectCollection = await Parse.Cloud.run('updateCollection', params3);
     console.log("Collection saved", objectCollection);
-
+    //document.getElementById("status").innerHTML = "Saved";
+    document.getElementById("status").innerHTML = objectCollection;
 }
 
 function saveFileAs() {
@@ -178,8 +181,12 @@ textareaContent = '{"materialArr":[{"name":"default","color_r":0.45,"color_g":0.
 
 
   <style id="compiled-css" type="text/css">
-      body {
+body {
       margin: 0;
+}
+
+.lil-gui.autoPlace {
+    top: 40px;
 }
     /* EOS */
   </style>
@@ -215,6 +222,7 @@ textareaContent = '{"materialArr":[{"name":"default","color_r":0.45,"color_g":0.
     <a href="#renderDiv" class="w3-bar-item w3-button"><i class="fa fa-arrow-up"></i>Top</a>
     <a href="#Materials" class="w3-bar-item w3-button"><i class="fa fa-paint-brush"></i> Materials</a>
     <a href="#fileDiv" onclick="gotoObject()" class="w3-bar-item w3-button"><i class="fa fa-cube"></i> Object</a>
+    <span class="w3-bar-item" style="padding-right: 0px;"><i class="fa fa-tachometer"></i></span><span  id="status" class="w3-bar-item">Status</span>
     <!-- Right-sided navbar links -->
     <!-- 
     <div class="w3-right w3-hide-small">
@@ -307,6 +315,7 @@ function parse_query_string(query) {
         const objectCollection = await Parse.Cloud.run('readCollectionById', params3);
         console.log("objectCollection", objectCollection);
         document.getElementById("collectionName").value = objectCollection.name;
+        companyId = objectCollection.company;
         document.getElementById("collectionsList").href = "login.html?company=" + objectCollection.company;
         document.getElementById('jsonObj').value = objectCollection.data;
         loadJSON();
@@ -2176,7 +2185,7 @@ function ramp(a,b,c,d,t) {
             }
             
         } else {
-            moveRenderDivUp(renderDiv);
+            //moveRenderDivUp(renderDiv);
             document.getElementById("formArea").scrollIntoView();
         }
         // final size because it was initially collapsed
@@ -2382,7 +2391,33 @@ function ramp(a,b,c,d,t) {
             }
           }
         }
+        if (level == 0) {
+            API["Order"] = orderPOM;
+            currentFolder.add( API, "Order").name( 'Order' );
+        }
     }
+    function orderPOM (){
+       var txt;
+       var order = JSON.stringify(POM);
+       var customer = prompt( "You are going to save an order\nPlease enter your email or phone");
+       if (customer == null || customer == "") {
+        return;
+      } else {
+        saveOrder(customer, order);
+      }
+    }
+    async function saveOrder(customer, order) {
+        name = "collection "+ (document.getElementById("collectionsList").childElementCount + 1.0);
+        params1 = {}
+        params1.company  = companyId;
+        params1.customer = customer;
+        params1.collectionId = collectionId;
+        params1.designName = designObj.name;
+        params1.data = order;
+        const result = await Parse.Cloud.run('createOrder', params1);
+        console.log("order created ", result);
+    }
+
     function setMaterialFromPanel(parameterName, array_p, parameterValue) {
         POM[parameterName][array_p].value = parameterValue;
         updateMeasures();
@@ -2799,7 +2834,7 @@ function ramp(a,b,c,d,t) {
     }
     function cancelEdit() {
         var divEl = document.getElementById("renderDiv");
-        moveRenderDivUp(divEl);
+        //moveRenderDivUp(divEl);
         var formEl = document.getElementById("editObject");
         if (formEl != null) {
             formEl.remove();

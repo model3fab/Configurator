@@ -2,6 +2,10 @@
 <html>
 <head>
   <title>Login</title>
+  <link rel="stylesheet" href="../w3.css">
+  <link rel="stylesheet" href="../family_Raleway.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
+
   <link rel="stylesheet" href="forms_style.css">
   <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
   <script type="text/javascript" type="text/javascript">
@@ -22,9 +26,45 @@ div.collections {
     max-width: 570px;
     margin: auto;
 }
+h2 {
+    margin-top: 3em;
+}
 </style>
 <body>
-<form name="formSignUp" id="formSignUp" style="border:1px solid #ccc">
+
+<!-- Navbar (sit on top) -->
+<div id="navbar" class="w3-top">
+  <div class="w3-bar w3-white w3-card" id="myNavbar">
+    <a href="/model3fab" class="w3-bar-item w3-button w3-wide">model3fab</a>
+    <span  class="w3-bar-item">Company: </span>
+    <input id="companyName" class="w3-bar-item w3-border-small"/> 
+    
+    <!-- 
+    <a id=collectionsList href='login.html' class="w3-bar-item w3-button">Collections</a>
+    <a href="#" onclick="saveToDatabase()" class="w3-bar-item w3-button">Save</a>
+    <a href="#renderDiv" class="w3-bar-item w3-button"><i class="fa fa-arrow-up"></i>Top</a>
+    <a href="#Materials" class="w3-bar-item w3-button"><i class="fa fa-paint-brush"></i> Materials</a>
+    <a href="#fileDiv" onclick="gotoObject()" class="w3-bar-item w3-button"><i class="fa fa-cube"></i> Object</a>
+    -->
+    <span class="w3-bar-item" style="padding-right: 0px;"><i class="fa fa-tachometer"></i></span><span  id="status" class="w3-bar-item">Status</span>
+    <!-- Right-sided navbar links -->
+    <div class="w3-right w3-hide-small">
+      <a href="/model3fab#contact" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i> Contacto</a>
+      <a href="login.html" class="w3-bar-item w3-button"><i class="fa fa-user"></i> <span id="loginName"> Login</a><span>
+      <a href="#" onclick="logout()" class="w3-bar-item w3-button"> <span id="logoutName"> Logout</a><span>
+      <a href="/model3fab#register" class="w3-bar-item w3-button"><i class="fa fa-user-plus"></i> Registro</a>
+      <!--  other icons fa-group -->
+    </div>
+    <!-- Hide right-floated links on small screens and replace them with a menu icon -->
+
+    <a href="javascript:void(0)" class="w3-bar-item w3-button w3-right w3-hide-large w3-hide-medium" onclick="w3_open()">
+      <i class="fa fa-bars"></i>
+    </a>
+  </div>
+</div>
+
+
+<form name="formSignUp" id="formSignUp" style="border:1px solid #ccc" class="noDisplay">
   <div class="container">
     <h1>Login in model3fab</h1>
     <hr>
@@ -70,14 +110,23 @@ function parse_query_string(query) {
   return query_string;
 }
 
-var query = window.location.search.substring(1);
-var qs = parse_query_string(query);
-var company;
-if (qs.company != null) {
-    company = qs.company;
-    printCollections(qs.company);
+async function checkUser() {
+    var query = window.location.search.substring(1);
+    var qs = parse_query_string(query);
+    var company;
+    if (qs.company != null) {
+        company = qs.company;
+        printCollections(qs.company);
+    } else {
+        const result = await Parse.Cloud.run('currentUser');
+        if (result == null) {
+            document.getElementById("formSignUp").classList.remove("noDisplay");
+        } else {
+            printCollections();
+        }
+    }
 }
-
+checkUser();
 
 async function validateForm() {
     if (formSignUp.email.value == "") {
@@ -92,25 +141,30 @@ async function validateForm() {
     params1 = {}
     params1.username = formSignUp.email.value;
     params1.password = formSignUp.password.value;
-    console.log("run", params1)
     const result = await Parse.Cloud.run('login', params1);
     console.log("login", result)
     company = result;
     if (result != null) {
+        document.getElementById("loginName").innerHTML = result.username.split('@')[0]
         printCollections(result);
     }
     return true;  // don't send yet
 }
 
 async function printCollections(result) {
-        document.getElementById("formSignUp").classList.toggle("noDisplay");
-        document.getElementById("collections").classList.toggle("noDisplay");
+    const collectionsResult = await Parse.Cloud.run('readCollections');
+    if (collectionsResult == null) {
+        document.getElementById("formSignUp").classList.remove("noDisplay");
+    } else {
+        document.getElementById("loginName").innerHTML = collectionsResult.username.split('@')[0]
+        document.getElementById("formSignUp").classList.add("noDisplay");
+        document.getElementById("collections").classList.remove("noDisplay");
         params2 = {}
         params2.company = result;
-        const collectionsResult = await Parse.Cloud.run('readCollections', params2);
-        console.log("collectionsResult", collectionsResult);
-        for (i=0; i< collectionsResult.length; i++) {
-            addItem(collectionsResult[i].id, collectionsResult[i].name);
+        console.log("collectionsResult", collectionsResult.collections);
+        console.log("Company name", collectionsResult.companyName);
+        for (i=0; i< collectionsResult.collections.length; i++) {
+            addItem(collectionsResult.collections[i].id, collectionsResult.collections[i].name);
         }
         /* readCollectionById
         params3 = {}
@@ -118,6 +172,7 @@ async function printCollections(result) {
         const objectCollection = await Parse.Cloud.run('readCollectionById', params3);
         console.log("objectCollection", objectCollection);
         */
+    }
 }
 
 function addItem(id, name) {
@@ -144,6 +199,12 @@ async function createCollection() {
     console.log("company created ", result);
     addItem(company, name);
 }
+
+async function logout() {
+    const result = await Parse.Cloud.run('logout');
+    console.log("logout", result);
+    window.location.href = "login.html";
+ }
 </script>
 
 </body>
