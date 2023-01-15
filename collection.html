@@ -11,6 +11,7 @@
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 
   <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+  <script type="text/javascript" type="text/javascript" src="../user.js"></script>
   <script>
 // debug varialbes
 var start_time = (new Date).getTime();
@@ -74,6 +75,7 @@ async function saveToDatabase() {
     params3.id = collectionId;
     params3.data = data;
     params3.name = document.getElementById("collectionName").value;
+    params3.token = getCookie("confToken");
     const objectCollection = await Parse.Cloud.run('updateCollection', params3);
     console.log("Collection saved", objectCollection);
     //document.getElementById("status").innerHTML = "Saved";

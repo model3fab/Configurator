@@ -4,6 +4,7 @@
   <title>Current user</title>
   <link rel="stylesheet" href="forms_style.css">
   <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+  <script type="text/javascript" type="text/javascript" src="../user.js"></script>
   <script type="text/javascript" type="text/javascript">
 Parse.serverURL = 'https://parseapi.back4app.com';
 Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyxeKIRoZKc3fh3g0nxTpXdKN');
@@ -19,8 +20,9 @@ Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyx
 <script>
 async function validateForm() {
 
-    const result = await Parse.Cloud.run('currentUser');
-    console.log("result", result)
+    const result = await Parse.Cloud.run('currentUser', {token: getCookie("confToken")});
+    document.getElementById("message").innerHTML = JSON.stringify(result);
+    console.log("result", result);
     return true;  // don't send yet
 }
 </script>
@@ -35,6 +37,7 @@ async function validateForm() {
     </div>
   </div>
 </form>
+<div id="message"></div>
 
 </body>
 </html>

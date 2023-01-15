@@ -8,6 +8,7 @@
 
   <link rel="stylesheet" href="forms_style.css">
   <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
+  <script type="text/javascript" type="text/javascript" src="../user.js"></script>
   <script type="text/javascript" type="text/javascript">
 Parse.serverURL = 'https://parseapi.back4app.com';
 Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyxeKIRoZKc3fh3g0nxTpXdKN');
@@ -22,7 +23,7 @@ Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyx
   display: initial;
 }
 
-div.collections {
+div.collections, div.orders {
     max-width: 570px;
     margin: auto;
 }
@@ -37,7 +38,7 @@ h2 {
   <div class="w3-bar w3-white w3-card" id="myNavbar">
     <a href="/model3fab" class="w3-bar-item w3-button w3-wide">model3fab</a>
     <span  class="w3-bar-item">Company: </span>
-    <input id="companyName" class="w3-bar-item w3-border-small"/> 
+    <span id="companyName" class="w3-bar-item w3-border-small"></span> 
     
     <!-- 
     <a id=collectionsList href='login.html' class="w3-bar-item w3-button">Collections</a>
@@ -50,8 +51,8 @@ h2 {
     <!-- Right-sided navbar links -->
     <div class="w3-right w3-hide-small">
       <a href="/model3fab#contact" class="w3-bar-item w3-button"><i class="fa fa-envelope"></i> Contacto</a>
-      <a href="login.html" class="w3-bar-item w3-button"><i class="fa fa-user"></i> <span id="loginName"> Login</a><span>
-      <a href="#" onclick="logout()" class="w3-bar-item w3-button"> <span id="logoutName"> Logout</a><span>
+      <a href="login.html" class="w3-bar-item w3-button"><i class="fa fa-user"></i> <span id="loginName"> Login<span></a>
+      <a href="#" onclick="logout()" class="w3-bar-item w3-button"> <span id="logoutName"> Logout<span></a>
       <a href="/model3fab#register" class="w3-bar-item w3-button"><i class="fa fa-user-plus"></i> Registro</a>
       <!--  other icons fa-group -->
     </div>
@@ -86,6 +87,11 @@ h2 {
   <ul id="collectionsList" ></ul>
   <button onclick="createCollection()">Create New Collection</button>
 </div>
+<div id="orders" class="orders noDisplay">
+  <h2 >Orders</h2>
+  <ul id="ordersList" ></ul>
+  <button onclick="listOrders()">List Orders</button>
+</div>
 
 <script>
 function parse_query_string(query) {
@@ -118,7 +124,7 @@ async function checkUser() {
         company = qs.company;
         printCollections(qs.company);
     } else {
-        const result = await Parse.Cloud.run('currentUser');
+        const result = await Parse.Cloud.run('currentUser', {token: getCookie("confToken")});
         if (result == null) {
             document.getElementById("formSignUp").classList.remove("noDisplay");
         } else {
@@ -141,28 +147,33 @@ async function validateForm() {
     params1 = {}
     params1.username = formSignUp.email.value;
     params1.password = formSignUp.password.value;
+
     const result = await Parse.Cloud.run('login', params1);
     console.log("login", result)
-    company = result;
     if (result != null) {
-        document.getElementById("loginName").innerHTML = result.username.split('@')[0]
+        setCookie("confToken", result.get("sessionToken"), 30);
+        setLoginName(result.get("username"));
         printCollections(result);
     }
     return true;  // don't send yet
 }
 
+var collectionsArr;
 async function printCollections(result) {
-    const collectionsResult = await Parse.Cloud.run('readCollections');
+    const collectionsResult = await Parse.Cloud.run('readCollections', {token: getCookie("confToken")});
     if (collectionsResult == null) {
         document.getElementById("formSignUp").classList.remove("noDisplay");
     } else {
-        document.getElementById("loginName").innerHTML = collectionsResult.username.split('@')[0]
+        setLoginName(collectionsResult.username);
         document.getElementById("formSignUp").classList.add("noDisplay");
         document.getElementById("collections").classList.remove("noDisplay");
+        document.getElementById("orders").classList.remove("noDisplay");
         params2 = {}
         params2.company = result;
         console.log("collectionsResult", collectionsResult.collections);
         console.log("Company name", collectionsResult.companyName);
+        document.getElementById("companyName").innerHTML = collectionsResult.companyName;
+        collectionsArr = collectionsResult.collections; // to get the names of the collections for the orders
         for (i=0; i< collectionsResult.collections.length; i++) {
             addItem(collectionsResult.collections[i].id, collectionsResult.collections[i].name);
         }
@@ -197,12 +208,35 @@ async function createCollection() {
     params1.collectionData = JSON.stringify(content);
     const result = await Parse.Cloud.run('createCollection', params1);
     console.log("company created ", result);
-    addItem(company, name);
 }
 
+async function listOrders() {
+    const result = await Parse.Cloud.run('readOrders', {token: getCookie("confToken")});
+        document.getElementById("ordersList").innerHTML = "";
+        for (i=0; i< result.orders.length; i++) {
+                addOrderItem(result.orders[i].id, result.orders[i].customer, result.orders[i].collectionId);
+        }
+}
+
+function addOrderItem(id, customer, collectionId) {
+            var li = document.createElement('LI');
+            var a = document.createElement('a');
+            collection =collectionsArr.find(({ id }) => id === collectionId);
+            var linkText = document.createTextNode("Customer: " + customer
+             + " Collection: " + collection.name);
+            a.appendChild(linkText);
+            a.title = name;
+            a.href = "collection.html?collection=" + collectionId;
+            document.getElementById("ordersList").appendChild(li);
+            li.appendChild(a);
+}
+
+
 async function logout() {
-    const result = await Parse.Cloud.run('logout');
+//    const result = await Parse.Cloud.run('logout', {token: getCookie("confToken")});
+    result = await Parse.User.logOut();
     console.log("logout", result);
+    setCookie("confToken", "", 0);
     window.location.href = "login.html";
  }
 </script>
