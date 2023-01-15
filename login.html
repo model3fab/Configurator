@@ -214,24 +214,44 @@ async function listOrders() {
     const result = await Parse.Cloud.run('readOrders', {token: getCookie("confToken")});
         document.getElementById("ordersList").innerHTML = "";
         for (i=0; i< result.orders.length; i++) {
-                addOrderItem(result.orders[i].id, result.orders[i].customer, result.orders[i].collectionId);
+                addOrderItem(result.orders[i].id, result.orders[i].customer, result.orders[i].collectionId,
+                result.orders[i].designName, result.orders[i].data);
         }
 }
 
-function addOrderItem(id, customer, collectionId) {
-            var li = document.createElement('LI');
-            var a = document.createElement('a');
-            collection =collectionsArr.find(({ id }) => id === collectionId);
-            var linkText = document.createTextNode("Customer: " + customer
-             + " Collection: " + collection.name);
-            a.appendChild(linkText);
-            a.title = name;
-            a.href = "collection.html?collection=" + collectionId;
-            document.getElementById("ordersList").appendChild(li);
-            li.appendChild(a);
+function addOrderItem(id, customer, collectionId, designName, data) {
+        var li = document.createElement('LI');
+        document.getElementById("ordersList").appendChild(li);
+        var a = document.createElement('a');
+        var linkText = document.createTextNode("Show");
+        a.appendChild(linkText);
+        a.title = name;
+        a.href = "#";
+        a.setAttribute('onclick', "showOrder(" + data + ")");
+        li.appendChild(a);
+        var textNode = document.createTextNode(" ");
+        li.appendChild(textNode);
+        var a2 = document.createElement('a');
+        collection =collectionsArr.find(({ id }) => id === collectionId);
+        var linkText = document.createTextNode(" Customer: " + customer
+         + " Collection: " + collection.name);
+        a2.appendChild(linkText);
+        a2.title = name;
+        a2.href = "collection.html?collection=" + collectionId;
+        li.appendChild(a2);
 }
 
-
+function showOrder(orderParameters) {
+    out = "";
+    for (var prop in orderParameters) {
+        if (Object.prototype.hasOwnProperty.call(orderParameters, prop)) {
+            for (var i=0;i<orderParameters[prop].length;i++) {
+                out += orderParameters[prop][i].name + ": " + orderParameters[prop][i].value + "\n" //"<BR>";
+            }
+        }
+    }
+    alert(out)
+}
 async function logout() {
 //    const result = await Parse.Cloud.run('logout', {token: getCookie("confToken")});
     result = await Parse.User.logOut();
