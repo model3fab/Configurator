@@ -23,7 +23,7 @@ Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyx
   display: initial;
 }
 
-div.collections, div.orders {
+div.collections, div.orders, div.images, div.noTextures {
     max-width: 570px;
     margin: auto;
 }
@@ -93,7 +93,75 @@ h2 {
   <button onclick="listOrders()">List Orders</button>
 </div>
 
+<!-- Checkbox notexture -->
+<div id="notextureDiv" class="noTextures noDisplay">
+<label for="notexture"></label> 
+<input type="checkbox" id="notexture" onclick="noTexture()">
+<span id="text" style="">No textures (to fastest rendering)</span>
+</div>
+
 <script>
+if (getCookie("notexture") == "1") {
+    document.getElementById("notexture").checked  = true;
+}
+function noTexture() {
+  var checkBox = document.getElementById("notexture");
+  if (checkBox.checked == true){
+    setCookie("notexture", "1");
+  } else {
+    setCookie("notexture", "0");
+  }
+  location.reload();
+}
+</script>
+
+<div id="images" class="images noDisplay">
+  <h2 >Images</h2>
+  <ul id="imagesList" ></ul>
+  <input id="file" type="file" MULTIPLE/>
+  <br/>
+  <button id="imageButton">Load
+  
+  <button onclick="listImages()">List Images</button>
+</div>
+
+<script>
+document.getElementById('imageButton').addEventListener('click', function() {
+  var files = document.getElementById('file').files;
+//  if (files.length > 0) {
+  for (i=0; i < files.length; i++) {
+    getBase64(files[i]);
+  }
+  
+  
+});
+
+function getBase64(file) {
+  var reader = new FileReader();
+  reader.readAsDataURL(file);
+  reader.onload = async function () {
+    console.log(reader.result);
+    params1 = {}
+    params1.token = getCookie("confToken");
+    var name = file.name;
+    if ((lengthIndex = name.indexOf("[1]")) != -1) {
+        name = name.substr(0,lengthIndex) + name.substr(lengthIndex+3);
+    }
+    if (name.substr(name.length-4) != ".jpg" && name.substr(name.length-4) != ".png") {
+        name = name + ".jpg";
+    }
+    params1.name = name;
+    params1.data = reader.result;
+    const result = await Parse.Cloud.run('createImage', params1);
+    console.log("Image created ", result);
+    listImages();
+  };
+  reader.onerror = function (error) {
+     console.log('Error: ', error);
+  };
+}
+
+
 function parse_query_string(query) {
   var vars = query.split("&");
   var query_string = {};
@@ -117,6 +185,7 @@ function parse_query_string(query) {
 }
 
 async function checkUser() {
+/*
     var query = window.location.search.substring(1);
     var qs = parse_query_string(query);
     var company;
@@ -124,13 +193,14 @@ async function checkUser() {
         company = qs.company;
         printCollections(qs.company);
     } else {
+*/
         const result = await Parse.Cloud.run('currentUser', {token: getCookie("confToken")});
         if (result == null) {
             document.getElementById("formSignUp").classList.remove("noDisplay");
         } else {
             printCollections();
         }
-    }
+//    }
 }
 checkUser();
 
@@ -153,13 +223,14 @@ async function validateForm() {
     if (result != null) {
         setCookie("confToken", result.get("sessionToken"), 30);
         setLoginName(result.get("username"));
-        printCollections(result);
+        printCollections();  // result
     }
     return true;  // don't send yet
 }
 
 var collectionsArr;
-async function printCollections(result) {
+async function printCollections() {  // result
+    document.getElementById("collectionsList").innerHTML = "";
     const collectionsResult = await Parse.Cloud.run('readCollections', {token: getCookie("confToken")});
     if (collectionsResult == null) {
         document.getElementById("formSignUp").classList.remove("noDisplay");
@@ -168,8 +239,10 @@ async function printCollections(result) {
         document.getElementById("formSignUp").classList.add("noDisplay");
         document.getElementById("collections").classList.remove("noDisplay");
         document.getElementById("orders").classList.remove("noDisplay");
+        document.getElementById("notextureDiv").classList.remove("noDisplay");
+        document.getElementById("images").classList.remove("noDisplay");
         params2 = {}
-        params2.company = result;
+        //params2.company = result;
         console.log("collectionsResult", collectionsResult.collections);
         console.log("Company name", collectionsResult.companyName);
         document.getElementById("companyName").innerHTML = collectionsResult.companyName;
@@ -194,6 +267,8 @@ function addItem(id, name) {
             a.appendChild(linkText);
             a.title = name;
             a.href = "collection.html?collection=" + id;
+            var notexture = getCookie("notexture");
+            if (notexture == "1") a.href += "&notexture";
             document.getElementById("collectionsList").appendChild(li);
             li.appendChild(a);
 }
@@ -203,23 +278,46 @@ content={"materialArr":[{"name":"default","color_r":0.45,"color_g":0.72,"color_b
 async function createCollection() {
     name = "collection "+ (document.getElementById("collectionsList").childElementCount + 1.0);
     params1 = {}
-    params1.company  = company;
+    params1.token = getCookie("confToken");
     params1.collectionName = name;
     params1.collectionData = JSON.stringify(content);
     const result = await Parse.Cloud.run('createCollection', params1);
     console.log("company created ", result);
+    printCollections();
 }
 
 async function listOrders() {
     const result = await Parse.Cloud.run('readOrders', {token: getCookie("confToken")});
         document.getElementById("ordersList").innerHTML = "";
+/*
+        var check = document.createElement('INPUT');
+        check.setAttribute("type", "checkbox");
+        check.setAttribute("id", "notexture");
+        check.setAttribute("name", "notexture");
+        check.setAttribute("value", true);
+        var textNode = document.createTextNode("No textures");
+        document.getElementById("ordersList").appendChild(check);
+        document.getElementById("ordersList").appendChild(textNode);
+*/
+
         for (i=0; i< result.orders.length; i++) {
                 addOrderItem(result.orders[i].id, result.orders[i].customer, result.orders[i].collectionId,
-                result.orders[i].designName, result.orders[i].data);
+                result.orders[i].objectId, result.orders[i].data);
         }
 }
 
-function addOrderItem(id, customer, collectionId, designName, data) {
+async function listImages() {
+    const result = await Parse.Cloud.run('readImages', {token: getCookie("confToken")});
+        document.getElementById("imagesList").innerHTML = "";
+        for (i=0; i< result.images.length; i++) {
+                addImageItem(result.images[i].id,
+                             result.images[i].name,
+                             result.images[i].date,
+                             result.images[i].data);
+        }
+}
+
+function addOrderItem(id, customer, collectionId, objectId, data) {
         var li = document.createElement('LI');
         document.getElementById("ordersList").appendChild(li);
         var a = document.createElement('a');
@@ -237,10 +335,30 @@ function addOrderItem(id, customer, collectionId, designName, data) {
          + " Collection: " + collection.name);
         a2.appendChild(linkText);
         a2.title = name;
-        a2.href = "collection.html?collection=" + collectionId;
+//        a2.href = "collection.html?collection=" + collectionId;
+        a2.href = "collection.html?order=" + id;
+        var notexture = getCookie("notexture");
+        if (notexture == "1") a2.href += "&notexture";
         li.appendChild(a2);
 }
 
+function addImageItem(id, name, date, data) {
+        var li = document.createElement('LI');
+        document.getElementById("imagesList").appendChild(li);
+        var a = document.createElement('a');
+        var linkText = document.createTextNode("Image " + name);
+        a.appendChild(linkText);
+        a.title = date;
+        a.href = "#";
+        if (data != null) {
+            a.setAttribute('onclick', "showImage('" + data._url + "')");
+        }
+        li.appendChild(a);
+}
+
+function showImage(url) {
+    window.open(url);
+}
 function showOrder(orderParameters) {
     out = "";
     for (var prop in orderParameters) {
