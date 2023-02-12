@@ -12,6 +12,7 @@
 
   <script type="text/javascript" src="https://npmcdn.com/parse/dist/parse.min.js"></script>
   <script type="text/javascript" type="text/javascript" src="../user.js"></script>
+  <script type="text/javascript" type="text/javascript" src="materials.js"></script>
   <script>
 // debug varialbes
 var start_time = (new Date).getTime();
@@ -117,6 +118,11 @@ function readFile() {
     fileReader.readAsText(fileToLoad, "UTF-8");
 }
 
+    function goTop() {
+        scrollOffset("renderDiv", 0);
+
+    }
+
     function gotoObject() {
         //const objectName = window.location.search.substring( 1 ) || 'armario';
         //const objectName = objectName;
@@ -192,8 +198,12 @@ function convertObjectToArray() {
 </script>
 <script src="js/split.min.js"></script> <!-- https://github.com/nathancahill/split/tree/master/packages/splitjs -->
 
-<div id='renderDiv'></div>
-<div id='materialPanel'></div>
+<div id='renderPanelDiv'>
+  <div id='renderDiv'>
+  </div>
+  <div id='materialPanel'>
+  </div>
+</div>  <!-- renderPanelDiv -->
 <div id='manufacturer_div'>
 <!--
 <button onclick="newObject()">Create New Object</button>
@@ -242,6 +252,12 @@ body {
 .lil-gui.autoPlace {
     top: 40px;
 }
+
+
+.lil-gui {
+/*	--background-color: #22569b00;  */
+/*	--widget-color: #b91313;        */
+}
     /* EOS */
   </style>
 
@@ -263,6 +279,7 @@ body {
         <div class="w3-dropdown-content w3-card-4 w3-bar-block">
           <a href="#" onclick="saveFileAs()" class="w3-bar-item w3-button">Export</a>
           <a href="#" onclick="document.getElementById('loadFile').click()" class="w3-bar-item w3-button">Import</a>
+          <a href="#" onclick="showImportMaterials()" class="w3-bar-item w3-button">Import materials</a>
           <a href="#" onclick="exportCollection(), document.getElementById('formJSONModal').style.display='block'" class="w3-bar-item w3-button">Show JSON</a>
           <a href="#" onclick="loadJSON(), init();" class="w3-bar-item w3-button">Load JSON</a>
           <a href="#" onclick="document.getElementById('formEmbed').style.display='block'" class="w3-bar-item w3-button">Embed</a>
@@ -273,7 +290,9 @@ body {
     </div>
     <a id=collectionsList href='login.html' class="w3-bar-item w3-button">Collections</a>
     <a href="#" onclick="saveToDatabase()" class="w3-bar-item w3-button">Save</a>
-    <a href="#renderDiv" class="w3-bar-item w3-button"><i class="fa fa-arrow-up"></i>Top</a>
+    <a href="javascript:setRenderTop()" class="w3-bar-item w3-button"><i class="fa fa-window-maximize"></i></a>
+    <a href="javascript:setRenderInColumn()" class="w3-bar-item w3-button"><i class="fa fa-columns"></i></a>
+    <a href="javascript:goTop()" class="w3-bar-item w3-button"><i class="fa fa-arrow-up"></i>Top</a>
     <a href="javascript:scrollOffset('Materials', -38.5)" class="w3-bar-item w3-button"><i class="fa fa-paint-brush"></i> Materials</a>
     <a href="javascript:gotoObject()" class="w3-bar-item w3-button"><i class="fa fa-cube"></i> Object</a>
     <span class="w3-bar-item" style="padding-right: 0px;"><i class="fa fa-tachometer"></i></span><span  id="status" class="w3-bar-item">Status</span>
@@ -321,10 +340,10 @@ body {
       <header class="w3-container w3-teal w3-center w3-padding-32"> 
         <span onclick="document.getElementById('formEmbed').style.display='none'" 
        class="w3-button w3-teal w3-xlarge w3-display-topright">&times;</span>
-        <h2 class="w3-wide"><i class="fa fa-file w3-margin-right"></i>JSON</h2>
+        <h2 class="w3-wide"><i class="fa fa-file w3-margin-right"></i>Share & Embed</h2>
       </header>
       <div class="w3-container">
-        <p><label>JSON file</label></p>
+        <p><label>Share</label></p>
         <div>url for final user: </div>
         <div id="url_final"></div>
         <BR>
@@ -332,6 +351,24 @@ body {
         </div>
           <textarea id="url_share"  rows="4" cols="80" class="w3-input w3-border" type="text"></textarea>
         <button class="w3-button w3-block w3-red  w3-padding-16 w3-section w3-right" onclick="document.getElementById('formEmbed').style.display='none'">Close <i class="fa fa-remove"></i></button>
+      </div>
+    </div>
+  </div>
+
+<!-- Import materials  -->
+  <div id="formImportMaterials" class="w3-modal">
+    <div class="w3-modal-content w3-animate-top w3-card-4">
+      <header class="w3-container w3-teal w3-center w3-padding-32"> 
+        <span onclick="document.getElementById('formImportMaterials').style.display='none'" 
+       class="w3-button w3-teal w3-xlarge w3-display-topright">&times;</span>
+        <h2 class="w3-wide"><i class="fa fa-file w3-margin-right"></i>Import materials</h2>
+      </header>
+      <div class="w3-container">
+        <p><label>Select the materials to import (use Control key to select multiple materials)</label></p>
+        <div id="importMaterials"></div>
+        <BR>
+        <button class="w3-button w3-block w3-teal w3-padding-16 w3-section w3-right" onclick="importMaterials(); document.getElementById('formImportMaterials').style.display='none'">Import <i class="fa"></i></button>
+        <button class="w3-button w3-block w3-red  w3-padding-16 w3-section w3-right" onclick="document.getElementById('formImportMaterials').style.display='none'">Close <i class="fa fa-remove"></i></button>
       </div>
     </div>
   </div>
@@ -654,30 +691,24 @@ function loadCollection() {
         } else {
             renderer.shadowMap.enabled = false;
         }
+        /*
         renderer.setPixelRatio( window.devicePixelRatio );
         rendererWidth = window.innerWidth;
         rendererHeight = window.innerHeight - bottomSpace;
         renderer.setSize( rendererWidth, rendererHeight );
         printTime("renderer.setSize");
+        */
         var divEl = document.getElementById("renderDiv");
-/*
-        if (divEl == null) {  // create node or delete content node
-            divEl = document.createElement("DIV");
-            divEl.setAttribute("id", "renderDiv");
-//            document.appendChild( divEl);
-            document.insertBefore(divEl, document.firstChild);
-        } else {
-            divEl.textContent = ''
-        }
-*/
         if (divEl != null) {  // create node or delete content node
             divEl.remove();
         }
         divEl = document.createElement("DIV");
         divEl.setAttribute("id", "renderDiv");
-//            document.appendChild( divEl);
-        document.body.insertBefore(divEl, document.body.firstChild);
         divEl.appendChild( renderer.domElement );
+        //document.getElementById("renderPanelDiv").appendChild(divEl);
+        document.getElementById("renderPanelDiv").insertBefore(divEl, document.getElementById("renderPanelDiv").firstChild);
+        //document.getElementById("renderPanelDiv").insertBefore(divEl, document.getElementById("renderPanelDiv").firstChild);
+        //setRenderTop(divEl);
 
         scene = new THREE.Scene();
         printTime("scene");
@@ -877,6 +908,11 @@ function loadCollection() {
         render();
         printTime("render");
 
+        if (user_rol == 1) {
+            setRenderTop();
+        } else {
+            setRenderInColumn();
+        }
         window.addEventListener( 'resize', onWindowResize );
 
     }  // init
@@ -1150,6 +1186,8 @@ function loadCollection() {
             //folder.add( materialData, 'roughnessMap', roughnessMapKeys ).onChange( updateTexture( material, 'roughnessMap', roughnessMaps ) );
             //folder.add( materialData, 'alphaMap', alphaMapKeys ).onChange( updateTexture( material, 'alphaMap', alphaMaps ) );
             // TODO metalnessMap
+            folder.close();
+
         }
         return folder;
 
@@ -1302,11 +1340,14 @@ function loadCollection() {
     function setTransparentControl() {
         transparentControlFlag = settings.transparentControl;
         if (transparentControlFlag) {
-            document.querySelector("div.lil-gui.root").style.backgroundColor     ="rgba(55, 55, 55, 0.0)";
-            document.querySelector("div.lil-gui.root").style['--backgroundColor']="rgba(55, 55, 55, 0.0)";
+            document.querySelector("div.lil-gui.allow-touch-styles.root.autoPlace").style.removeProperty('--background-color');
+            document.querySelector("div.lil-gui.allow-touch-styles.root.autoPlace").style.backgroundColor     ="rgba(55, 55, 55, 0.0)";
+            document.querySelector("div.lil-gui.allow-touch-styles.root.autoPlace").style['--backgroundColor']="rgba(55, 55, 55, 0.0)";
+            document.querySelector("div.lil-gui.allow-touch-styles.root.autoPlace").style['--background-color']="rgba(55, 55, 55, 0.0)";
         } else {
             document.querySelector("div.lil-gui.root").style.backgroundColor     ="rgba(55, 55, 55, 1.0)";
             document.querySelector("div.lil-gui.root").style['--backgroundColor']="rgba(55, 55, 55, 1.0)";
+            
         }
     }
     function initGui() {
@@ -1363,7 +1404,7 @@ function loadCollection() {
 
         if (user_rol >= 2) {
             const textureFolder = gui.addFolder( 'texture properties' );
-            //textureFolder.close();
+            textureFolder.close();
 
             textureFolder.add( API, 'offsetX', 0.0, 1.0 ).name( 'offset.x' ).onChange( updateUvTransform );
             textureFolder.add( API, 'offsetY', 0.0, 1.0 ).name( 'offset.y' ).onChange( updateUvTransform );
@@ -1376,7 +1417,6 @@ function loadCollection() {
 
         if (user_rol >= 3) {
             const settingsFolder = gui.addFolder( 'settings' );
-            settingsFolder.open();
 
             API["Render"] = updateMeasures;
             settingsFolder.add( API, "Render").name( 'Render' )
@@ -1429,19 +1469,16 @@ function loadCollection() {
             settingsFolder.add( API, "Full screen").name( 'Full screen' )
 
             API["reload GUI"] = reloadGuiPieces;
-            gui.add( API, "reload GUI").name( 'Load pieces GUI' )
+            settingsFolder.add( API, "reload GUI").name( 'Load pieces GUI' )
             API["reload parameters"] = reloadGuiParameters;
-            gui.add( API, "reload parameters").name( 'reload parameters' )
+            settingsFolder.add( API, "reload parameters").name( 'reload parameters' )
+            settingsFolder.close();
         }
     }
     
     function fullScreen() {
         bottomSpace = 0;
         document.querySelector("div.lil-gui.root").remove();
-    }
-    function goTop() {
-        document.getElementById("renderDiv").scrollIntoView()
-
     }
     function gotoMaterials() {
         //document.getElementById("modelDiv").scrollIntoView()
@@ -1573,7 +1610,47 @@ function loadCollection() {
             document.getElementById("jsonObj").style.height = "230px";
         }
     }
-    function exportCollection() {
+    function showImportMaterials() {
+        document.getElementById('formImportMaterials').style.display='block'
+        var divMat = document.getElementById("importMaterials");
+        divMat.innerHTML = "";
+        var selectEl = document.createElement("SELECT");
+        selectEl.setAttribute("id", "importMaterialsSelect");
+        selectEl.setAttribute("MULTIPLE", true);
+        selectEl.setAttribute("SIZE", 12);
+        for (var i_mat =0; i_mat< materialArrImport.length; i_mat++) {
+            var option = document.createElement("option");
+            option.text  = materialArrImport[i_mat].name;
+            option.value = materialArrImport[i_mat].id;
+            selectEl.add(option);
+        }
+        divMat.appendChild(selectEl);
+    }
+    function getSelectValues(select) {
+      var result = [];
+      var options = select && select.options;
+      var opt;
+
+      for (var i=0, iLen=options.length; i<iLen; i++) {
+        opt = options[i];
+
+        if (opt.selected) {
+          result.push(opt.value || opt.text);
+        }
+      }
+      return result;
+    }
+    function importMaterials() {
+        var importSelect = document.getElementById("importMaterialsSelect");
+        importMaterialsArr = getSelectValues(importSelect);
+        for (var i_mat =0; i_mat< importMaterialsArr.length; i_mat++) {
+            materialArr.push(getArrayElementById(materialArrImport, importMaterialsArr[i_mat]));
+        }
+        tableMat = printMaterialTable();
+        updatePanelSize(document.getElementById("Materials"));
+    }
+ 
+ function exportCollection() {
         collectionExport = {};
         //collectionExport.materials = materialArr;
         //collectionExport.materialOptions = materialOptionsObj;
@@ -1660,6 +1737,7 @@ function loadCollection() {
 //        var tableMat = createTable("materialTable", materialArr, "obj_material", materialProperties);
         var tableMat = createTable("Materials", "Materials", materialArr, "obj_material", materialPropertiesTable);
         divEl.appendChild( tableMat);
+        return tableMat;
     }
 
     function printObjectsTable() {
@@ -2093,7 +2171,7 @@ function loadCollection() {
         
         var formObjectDesign = getArrayElementById(designArr_final, model_id);
         
-        var renderDiv = document.getElementById("renderDiv");  // get renderDiv before delete formArea
+        var renderPanelDiv = document.getElementById("renderPanelDiv");  // get renderPanelDiv before delete formArea
 
         var formDivMain = addDivForEdit(model_id);
         
@@ -2299,25 +2377,8 @@ function loadCollection() {
         if (form_entity == "obj_piece") {
             // We print the 3D after the form, so if there is an error with parameters
             // at updateMeasures() the form is printed anyway and the user can modify it
-            if (renderDiv != null) {
-                //renderArea = document.createElement("DIV");  //Changed from FORM to DIV to prevent send
-                //renderArea.setAttribute("id", "renderArea");
-                renderArea = document.getElementById("renderArea");
-                //formDivMain.appendChild(renderArea);
-                var renderColumnDiv = document.getElementById("renderColumnDiv");
-                renderColumnDiv.appendChild(renderArea);
-                renderArea.appendChild(renderDiv);
-                rendererWidth  = renderArea.offsetWidth - 8;
-                rendererHeight = renderArea.offsetHeight- 8;
-                // move the renderDiv node here2
-        //        renderer.setPixelRatio( rendererWidth / rendererHeight);
-                camera.aspect = rendererWidth / rendererHeight;
-                camera.updateProjectionMatrix();
-                renderer.setSize( rendererWidth, rendererHeight);
-                updateMeasures();
-                onWindowResize();
-                
-            }
+
+                setRenderInColumn(renderPanelDiv);
             
         } else {
             //moveRenderDivUp(renderDiv);
@@ -2332,6 +2393,41 @@ function loadCollection() {
         }
     }
     
+    function setRenderInColumn(renderPanelDiv) {
+        if (renderPanelDiv == null) {   // // we used renderPanelDiv saved before delete formArea if not, here
+            renderPanelDiv = document.getElementById("renderPanelDiv");  
+        }
+        //renderArea = document.createElement("DIV");  //Changed from FORM to DIV to prevent send
+        //renderArea.setAttribute("id", "renderArea");
+        renderArea = document.getElementById("renderArea");
+        //formDivMain.appendChild(renderArea);
+        var renderColumnDiv = document.getElementById("renderColumnDiv");
+        renderColumnDiv.appendChild(renderArea);
+        renderArea.appendChild(renderPanelDiv);
+/*
+        rendererWidth  = renderArea.offsetWidth - 8;
+        rendererHeight = renderArea.offsetHeight- 8;
+        // move the renderPanelDiv node here2
+//        renderer.setPixelRatio( rendererWidth / rendererHeight);
+
+        camera.aspect = rendererWidth / rendererHeight;
+        camera.updateProjectionMatrix();
+        renderer.setSize( rendererWidth, rendererHeight);
+*/
+        //updateMeasures();
+        onWindowResize();
+            
+    }
+
+    function setRenderTop(renderPanelDiv) {
+        if (renderPanelDiv == null) {   // // we used renderPanelDiv saved before delete formArea if not, here
+            renderPanelDiv = document.getElementById("renderPanelDiv");  
+        }
+        document.body.insertBefore(renderPanelDiv, document.body.firstChild);
+        //document.getElementById("renderPanelDiv").insertBefore(renderDiv, document.getElementById("renderPanelDiv").firstChild)
+        onWindowResize();
+        goTop();
+    }
     function elementOninput(element) {
         if (element != null) {
             if (console_flag) console.log("elementOninput:" + element.value);
@@ -2468,7 +2564,7 @@ function loadCollection() {
                 && typeof currentPOM[parameterName] == "object") {
             if (console_flag) console.log(parameterName);
             var parameter = currentPOM[parameterName];
-            if (!(parameter.designObjParameter.hidden != null && parameter.designObjParameter.hidden == "true")) {
+            if (!(parameter.designObjParameter.hidden != null && parameter.designObjParameter.hidden == "true" && user_rol  == "1")) {
                 //var designObjParameter = currentPOM[parameterName].designObjParameter;
                 var array_length;
                 if (parameter.array_size_value != null) {
@@ -2737,7 +2833,7 @@ function loadCollection() {
     function addHiddenField(name, value) {
         var hiddenEl = document.createElement("INPUT");
         hiddenEl.setAttribute("id", name);
-        hiddenEl.setAttribute("type", "text");  // text for debugger, hidden for profuction
+        hiddenEl.setAttribute("type", "text");  // text for debugger, hidden for production
         hiddenEl.value = value;
         return hiddenEl;
     }
@@ -2886,8 +2982,7 @@ function loadCollection() {
         } else {
         // move renderDiv to beggining of body
             var divEl = document.getElementById("renderDiv");
-            document.body.insertBefore(divEl, document.body.firstChild);
-            onWindowResize();
+            //setRenderTop(divEl);
             //printModelTable(sys_object, getArrayElementByName(designArr_final, sys_object));
             printModelTable(getArrayElementByName(designArr_final, sys_object));
         }
@@ -2995,25 +3090,33 @@ function loadCollection() {
     }
     function resizeRendererToDisplaySize(renderer) {  // explained in https://threejs.org/manual/#en/responsive
       const canvas = renderer.domElement;
-      const parentElement = canvas.parentElement.parentElement.parentElement  // 
+      const parentElement = canvas.parentElement.parentElement.parentElement.parentElement  // 
       const pixelRatio = window.devicePixelRatio;
-      const width  = parentElement.clientWidth  * pixelRatio | 0;
-      const height = window.innerHeight * pixelRatio | 0;
+      const width  = parentElement.clientWidth//  * pixelRatio | 0;
+      const height = window.innerHeight// * pixelRatio | 0;
+      /*
+      const width  = canvas.clientWidth  * pixelRatio | 0;
+      const height = canvas.clientHeight * pixelRatio | 0;
+      */
+      
       const needResize = canvas.width !== width || canvas.height !== height;
       if (needResize) {
         renderer.setSize(width, height, true);
       }
       return needResize;
+      //return true;
     }
     function setRendererWidthHeight() {
         rendererWidth  = window.innerWidth;
         rendererHeight = window.innerHeight - bottomSpace;
     }
+    /* not used, and now there is setRenderTop()
     function moveRenderDivUp(divEl) {
         // move renderDiv to beggining of body
         document.body.insertBefore(divEl, document.body.firstChild);
         onWindowResize();
     }
+    */
     function cancelEdit() {
         var divEl = document.getElementById("renderDiv");
         //moveRenderDivUp(divEl);
@@ -4802,6 +4905,10 @@ div#manufacturer_div {
 #navbar {
     display: none;
 }
+
+select#importMaterialsSelect {
+    width: 250px;
+}
 </style>
 
 
@@ -4832,13 +4939,21 @@ function expandPanel(elem, finalState) {
     element_i = elem.querySelector("i.accIcon");
     element_i.classList.toggle("fa-caret-down");
     element_i.classList.toggle("fa-caret-up");
+    setPanelSize(elem.id);
+}
+function setPanelSize(elemId) {
     //var panel = elem.nextElementSibling;
-    var panel = document.getElementById("panel_" + elem.id);
+    var panel = document.getElementById("panel_" + elemId);
     if (panel.style.maxHeight) {
       panel.style.maxHeight = null;
     } else {
       panel.style.maxHeight = panel.scrollHeight + "px";
     } 
+}
+function updatePanelSize(elem) {
+    if (!elem.classList.contains("active")) return;  // only update active panels
+    var panel = document.getElementById("panel_" + elem.id);
+    panel.style.maxHeight = panel.scrollHeight + "px";
 }
 
 var expandedAll = false;
@@ -4906,6 +5021,7 @@ window.name = "result"
 <style>
 #modelDiv, #experimentalDiv button {
     margin-left: 2em;
+    margin-top: 3em;
 }
 
 div#experimentalDiv {
@@ -4966,7 +5082,7 @@ button#addArrayRow {
     table-layout: fixed;
 }
 
-#modelDiv table.obj_piece {
+#modelDiv table {
     margin-bottom: 10px;
 }
 
@@ -5005,6 +5121,9 @@ td+td {
 #renderColumnDiv div#renderArea {
     position: fixed;
 }
+div#renderColumnDiv {
+    padding-top: 40px;
+}
 #none {
     width: 57%;
     min-width: 625px;
@@ -5022,11 +5141,17 @@ h1, h2 {
 }
 
 div#materialPanel {
-    position: relative;
-    top: -160px;
+    /* position: relative;  */
+    /* margin-top: -160px;  */
+    /* height: 160px;       */
     width: fit-content;
+    position: absolute;
+    bottom: 0px;
 }
 
+div#renderArea div#materialPanel {
+    bottom: 40px;
+}
 </style>
 <style>
 .split {
