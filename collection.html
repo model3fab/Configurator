@@ -672,6 +672,7 @@ function loadCollection() {
 
         var pos = window.location.pathname.indexOf("/",1)
         var application = window.location.pathname.substring(0,pos);
+        if (application == "/Configurator") application = "";
         var url_collection = document.getElementById("url_collection");
         var url_collectionStr = window.location.origin + application + "/web.html?" + companyName;
         url_collection.innerHTML = "<a target='_blank' href='" + url_collectionStr + "'>" + url_collectionStr + "</a>";
