@@ -2103,6 +2103,9 @@ function loadCollection() {
                     option = document.createElement("option");
                     option.text = designArr_final[iObject].name;
                     option.value = designArr_final[iObject].id;  //"Module";
+                    if (designArr_final[iObject].id == model_id) {
+                        option.disabled = true;
+                    }
                     optgroup.appendChild(option);
             }
             var lightsGroup = document.createElement("optgroup");
