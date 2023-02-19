@@ -23,7 +23,7 @@ Parse.initialize('3BvaDwQZMh46667Meslf8E2DuUWKjb5RBiAuXNxv', 'CRR8qDBiWK1UG04hyx
   display: initial;
 }
 
-div.collections, div.orders, div.images, div.noTextures {
+div.collections, div.orders, div.images, div.noTextures, div.additional {
     max-width: 570px;
     margin: auto;
 }
@@ -93,16 +93,24 @@ h2 {
   <button onclick="listOrders()">List Orders</button>
 </div>
 
-<!-- Checkbox notexture -->
+<!-- Checkbox notexture, additional features -->
 <div id="notextureDiv" class="noTextures noDisplay">
 <label for="notexture"></label> 
 <input type="checkbox" id="notexture" onclick="noTexture()">
 <span id="text" style="">No textures (to fastest rendering)</span>
 </div>
+<div id="additionalDiv" class="additional noDisplay">
+<label for="additional"></label> 
+<input type="checkbox" id="additional" onclick="additional()">
+<span id="text" style="">Additional features (for experimented users</span>
+</div>
 
 <script>
 if (getCookie("notexture") == "1") {
     document.getElementById("notexture").checked  = true;
+}
+if (getCookie("additional") == "1") {
+    document.getElementById("additional").checked  = true;
 }
 function noTexture() {
   var checkBox = document.getElementById("notexture");
@@ -110,6 +118,15 @@ function noTexture() {
     setCookie("notexture", "1");
   } else {
     setCookie("notexture", "0");
+  }
+  location.reload();
+}
+function additional() {
+  var checkBox = document.getElementById("additional");
+  if (checkBox.checked == true){
+    setCookie("additional", "1");
+  } else {
+    setCookie("additional", "0");
   }
   location.reload();
 }
@@ -240,6 +257,7 @@ async function printCollections() {  // result
         document.getElementById("collections").classList.remove("noDisplay");
         document.getElementById("orders").classList.remove("noDisplay");
         document.getElementById("notextureDiv").classList.remove("noDisplay");
+        document.getElementById("additionalDiv").classList.remove("noDisplay");
         document.getElementById("images").classList.remove("noDisplay");
         params2 = {}
         //params2.company = result;
@@ -269,6 +287,8 @@ function addItem(id, name) {
             a.href = "collection.html?collection=" + id;
             var notexture = getCookie("notexture");
             if (notexture == "1") a.href += "&notexture";
+            var additional = getCookie("additional");
+            if (additional == "1") a.href += "&rol=3";
             document.getElementById("collectionsList").appendChild(li);
             li.appendChild(a);
 }

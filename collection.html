@@ -20,6 +20,7 @@ var start_time = (new Date).getTime();
 var console_flag = true;
 var console_flag_time = true;
 var noTextureFlag = false;
+var initialTextureFlag = false;
 var user_rol;
 var embed = false;
 var orderId;
@@ -34,7 +35,7 @@ var collectionDescription = "";
 2 "rol_manufacturer";
 3 "rol_advanced";
 */
-user_rol = 3;
+user_rol = 2;
 
 
 materialOptionsObj = {
@@ -87,7 +88,7 @@ async function saveToDatabase() {
     params3.name = document.getElementById("collectionName").value;
     params3.token = getCookie("confToken");
     const objectCollection = await Parse.Cloud.run('updateCollection', params3);
-    console.log("Collection saved", objectCollection);
+    if (console_flag) console.log("Collection saved", objectCollection);
     //document.getElementById("status").innerHTML = "Saved";
     document.getElementById("status").innerHTML = objectCollection;
     document.querySelector("#Collection span span").innerHTML = params3.name;
@@ -192,7 +193,7 @@ function convertObjectToArray() {
     designArr_final = [];
     for (var prop in designArr) {
         if (Object.prototype.hasOwnProperty.call(designArr, prop)) {
-            console.log(designArr[prop].name, designArr[prop]);
+            if (console_flag) console.log(designArr[prop].name, designArr[prop]);
             designArr_final.push(designArr[prop]);
             if (designArr[prop].id == null) {
                 designArr[prop].id = designArr[prop].name.replaceAll(" ","_"); // + "_id";
@@ -292,7 +293,7 @@ body {
           <a href="#" onclick="showImportMaterials()" class="w3-bar-item w3-button">Import materials</a>
           <a href="#" onclick="exportCollection(), document.getElementById('formJSONModal').style.display='block'" class="w3-bar-item w3-button">Show JSON</a>
           <a href="#" onclick="loadJSON(), init();" class="w3-bar-item w3-button">Load JSON</a>
-          <a href="#" onclick="document.getElementById('formEmbed').style.display='block'" class="w3-bar-item w3-button">Embed</a>
+          <a href="#" onclick="document.getElementById('formEmbed').style.display='block'" class="w3-bar-item w3-button">Share</a>
           <a href="#" onclick="resetEditor()" class="w3-bar-item w3-button">Reset Editor</a>
 
           <!-- <a href="#" onclick="document.getElementById('formJSONModal').style.display='block'" class="w3-bar-item w3-button">Modal</a>-->
@@ -418,7 +419,7 @@ function parse_query_string(query) {
         params3 = {}
         params3.id = order;
         const objectOrder = await Parse.Cloud.run('readOrderById', params3);
-        console.log("objectOrder", objectOrder);
+        if (console_flag) console.log("objectOrder", objectOrder);
         objectId = objectOrder.objectId;
         collectionId = objectOrder.collectionId;
         objectPOM = JSON.parse(objectOrder.data);
@@ -428,7 +429,7 @@ function parse_query_string(query) {
         params3 = {}
         params3.id = collection;
         const objectCollection = await Parse.Cloud.run('readCollectionById', params3);
-        console.log("objectCollection", objectCollection);
+        if (console_flag) console.log("objectCollection", objectCollection);
         setCollectionData(objectCollection);
     }
     function setCollectionData(objectCollection) {
@@ -455,6 +456,7 @@ defaultObject = "First Object";
 
 designArr = JSON.parse(document.getElementById('jsonObj').value).designArr;
 materialArr = JSON.parse(document.getElementById('jsonObj').value).materialArr;
+var texturesArr = [];
 
 var objectId;
 var objectName;  // the reference must be the objectId
@@ -468,10 +470,10 @@ if (qs.object != null) {
 }
 if (qs.rol != null) {
     user_rol = qs.rol;
-    if (user_rol == 1) {
-        console_flag = false;
-        console_flag_time = false;
-    }
+}
+if (user_rol <= 2) {
+    console_flag = false;
+    console_flag_time = false;
 }
 if (qs.embed != null) {
     embed = true;
@@ -999,6 +1001,17 @@ function loadCollection() {
             } else if (materialArr[i].type == "None array_***") {
             //} else if (materialArr[i].type == "arrayEnvmap" || materialArr[i].type == "array" || true) {
             } else if (true) {
+        
+            var texturesObj;
+            if (initialTextureFlag) {   // only set if you want to load all the textures (not recommended)
+                texturesObj = loadTextures(materialArr[i]);
+            } else {
+                texturesObj = {};
+                texturesObj.texture = null;
+                texturesObj.normalMap = null;
+                texturesObj.roughnessMap = null;
+            }
+        /*
                 var texture = null;
                 if (materialArr[i].texture != null && materialArr[i].texture != "") {
                     texture = loadTexture(materialArr[i], materialArr[i].texture);
@@ -1015,6 +1028,7 @@ function loadCollection() {
                 } else {
                     roughnessMap = null;
                 }
+            */
                 var side;
                 if (materialArr[i].side == 1) {
                     side = THREE.BackSide;
@@ -1033,10 +1047,10 @@ function loadCollection() {
                 meshMaterial = new THREE.MeshPhysicalMaterial({
                     metalness: .3,
                     roughness: .95,
-                    roughnessMap: roughnessMap,
+                    roughnessMap: texturesObj.roughnessMap,
                     envMapIntensity: 0,
                     clearcoat: 1,
-                    map: texture,
+                    map: texturesObj.texture,
                     transparent: false,
                     // transmission: .95,
                     opacity: 1,
@@ -1046,19 +1060,12 @@ function loadCollection() {
                     //side: THREE.BackSide,
                     side: side,
                     //envMap: environmentTexture,  // removed envMap, so it takes the property from scene.environment 78.02
-                    normalMap: normalMap,
+                    normalMap: texturesObj.normalMap,
                     normalScale: vector2D,
                     })
                     
-                meshMaterial.map_backup = texture;
+                meshMaterial.map_backup = texturesObj.texture;
                 materialArr[i].material = meshMaterial;
-                /*
-                if (materialArr[i].transparent != null && eval(materialArr[i].transparent) == false) {
-                    materialArr[i].transparent = false;
-                } else {
-                    materialArr[i].transparent = true;
-                }
-                */
                 if (materialArr[i].diffuseMap != null && eval(materialArr[i].diffuseMap) == false) {
                     materialArr[i].diffuseMap = false;
                 } else {
@@ -1124,28 +1131,6 @@ function loadCollection() {
         return dot;
     }
     */
-    function loadTexture(materialElement, file) {
-        if (noTextureFlag) return null;
-    
-//        if (console_flag) console.log("loadTexture: " + (new Date().toLocaleTimeString()) + " " + file);
-        printTime("loadTexture " + file);
-        var texture = new THREE.TextureLoader().load( file,function (texture) {
-            //meshMaterial.needsUpdate = true;
-            //console.log("texture loaded: " + (new Date().toLocaleTimeString()) + " " + file);
-            printTime("texture loaded: " + file);
-            render();
-        } )
-        //var meshMaterial = new THREE.MeshBasicMaterial( { map: texture });
-        //var meshMaterial = new THREE.MeshStandardMaterial( { map: texture });
-        
-        //var meshMaterial = new THREE.MeshStandardMaterial( { color: 0xffffff, map: texture } );
-        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
-        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
-        texture.matrixAutoUpdate = false;
-        texture.material = materialElement;
-        updateUvTransformTexture(texture);
-        return texture;
-    }
 
 /*
     const envMapKeys = getObjectsKeys( envMaps );
@@ -1218,8 +1203,6 @@ function loadCollection() {
             //folder.add( materialData, 'roughnessMap', roughnessMapKeys ).onChange( updateTexture( material, 'roughnessMap', roughnessMaps ) );
             //folder.add( materialData, 'alphaMap', alphaMapKeys ).onChange( updateTexture( material, 'alphaMap', alphaMaps ) );
             // TODO metalnessMap
-            folder.close();
-
         }
         return folder;
 
@@ -1259,7 +1242,7 @@ function loadCollection() {
         render();
     }
     function setEnvironmentImage() {
-        console.debug("set EnvironmentImage: " + API.Environment);
+        if (console_flag) console.log("set EnvironmentImage: " + API.Environment);
         if (API.Environment == "background color") {
             if (settings.background) {
                 scene.background = materialArr[2].material.color;
@@ -1281,7 +1264,7 @@ function loadCollection() {
         }
     }
     function setFov() {
-        console.debug("set Fov: " + settings.fov);
+        if (console_flag) console.log("set Fov: " + settings.fov);
         camera.fov = settings.fov;
         camera.updateProjectionMatrix()
         render();
@@ -1313,23 +1296,23 @@ function loadCollection() {
         render();
     }
     function setBlurriness() {
-        console.debug("setBlurriness: " + settings.blurriness);
+        if (console_flag) console.log("setBlurriness: " + settings.blurriness);
         scene.backgroundBlurriness = settings.blurriness;
         render();
     }
     function setUV() {
-        console.debug("setUV: " + settings.UV);
+        if (console_flag) console.log("setUV: " + settings.UV);
         flagSetMaterialAll = settings.UV;
         setUVSubsystem(designObj, settings.UV);
         render();
     }
     function setLight() {
-        console.debug("setLight: " + settings.pointLightFactor + " " + settings.directionalLightFactor);
+        if (console_flag) console.log("setLight: " + settings.pointLightFactor + " " + settings.directionalLightFactor);
         updateMeasures();
         render();
     }
     function setEnv() {
-        console.debug("set environment: " + settings.env);
+        if (console_flag) console.log("set environment: " + settings.env);
         if (settings.env) {
             scene.environment = textureEnv;  // inmediate change for GLTF
         } else {
@@ -1338,17 +1321,17 @@ function loadCollection() {
         environmentFlag = settings.env;
     }
     function setExposure() {
-        console.debug("set Exposure: " + settings.exposure);
+        if (console_flag) console.log("set Exposure: " + settings.exposure);
         renderer.toneMappingExposure = settings.exposure;
         render();
     }
     function setHemiLight() {
-        console.debug("set hemiLight: " + settings.hemiLight);
+        if (console_flag) console.log("set hemiLight: " + settings.hemiLight);
         hemiLightObject.visible = settings.hemiLight;
         render();
     }
     function setBackground() {
-        console.debug("set Background: " + settings.background);
+        if (console_flag) console.log("set Background: " + settings.background);
         if (settings.background) {
             if (API.Environment == "background color") {
                 scene.background = materialArr[2].material.color;
@@ -1429,14 +1412,15 @@ function loadCollection() {
         materialGui.diffuseMap = true;
         materialGui.normalFactor = 3;
         var materialFolder = guiMeshPhysicalMaterial(gui, materialGui);
+
         if (user_rol >= 2) {
             API["SaveMaterial"] = saveMaterial;
             materialFolder.add( API, "SaveMaterial").name( 'Save material' );
         }
 
+        var textureFolder;
         if (user_rol >= 2) {
-            const textureFolder = gui.addFolder( 'texture properties' );
-            textureFolder.close();
+            textureFolder = gui.addFolder( 'texture properties' );
 
             textureFolder.add( API, 'offsetX', 0.0, 1.0 ).name( 'offset.x' ).onChange( updateUvTransform );
             textureFolder.add( API, 'offsetY', 0.0, 1.0 ).name( 'offset.y' ).onChange( updateUvTransform );
@@ -1447,8 +1431,9 @@ function loadCollection() {
             textureFolder.add( API, 'centerY', 0.0, 1.0 ).name( 'center.y' ).onChange( updateUvTransform );
         }
 
+        var settingsFolder;
         if (user_rol >= 3) {
-            const settingsFolder = gui.addFolder( 'settings' );
+            settingsFolder = gui.addFolder( 'settings' );
 
             API["Render"] = updateMeasures;
             settingsFolder.add( API, "Render").name( 'Render' )
@@ -1504,8 +1489,15 @@ function loadCollection() {
             settingsFolder.add( API, "reload GUI").name( 'Load pieces GUI' )
             API["reload parameters"] = reloadGuiParameters;
             settingsFolder.add( API, "reload parameters").name( 'reload parameters' )
+        }
+        if (user_rol >= 2) {
+            materialFolder.close();
+            textureFolder.close();
+        }
+        if (user_rol >= 3) {
             settingsFolder.close();
         }
+
     }
     
     function fullScreen() {
@@ -2223,7 +2215,7 @@ function loadCollection() {
         return formEl;
     }
 
-    function createForm(i_array, modelName, model_id, formType, form_entity, i_element, selected_type, selected_module) {
+    function createForm(i_array, modelName, model_id, formType, form_entity, i_element, selected_type, selected_value) {
         if (console_flag) console.log("createForm " + i_element);
         
         var formObjectDesign = getArrayElementById(designArr_final, model_id);
@@ -2255,8 +2247,12 @@ function loadCollection() {
             objectElement = formObjectDesign.pieces[i_array];
             if (objectElement != null) type = objectElement.type;
             if (formType == "N") {
-                if (console_flag) console.log("createForm type: " + selected_type);
-                type = selected_type;
+                if (selected_type == "Module") {
+                    type = selected_type;
+                } else { // for primitives (Box,Cylinder, ...) and Lights
+                    type = selected_value;
+                }
+                if (console_flag) console.log("createForm type: " + type);
             }
             if (type == null || type == "") type = "Box";
             properties = pieceProperties[type];
@@ -2287,11 +2283,11 @@ function loadCollection() {
             var propertyValue = "";
             if (formType == "N") {
                 if (form_entity == "obj_piece" && propertyName == "type") {
-                    propertyValue = selected_type;
+                    propertyValue = type;
                 } else if (form_entity == "obj_parameter" && propertyName == "type") {
                     propertyValue = selected_type;
                 } else if (form_entity == "obj_piece" && propertyName == "subsystem") {
-                    propertyValue = selected_module;
+                    propertyValue = selected_value;
                 }
             } else {
                 if (objectElement[properties[j]] != null) {
@@ -2304,7 +2300,7 @@ function loadCollection() {
 
             } else if (form_entity == "obj_piece" && propertyName == "parameters"){
                 if (formType == "N") {
-                    arrayProperties = getArrayElementById(designArr_final, selected_module).parameters;
+                    arrayProperties = getArrayElementById(designArr_final, selected_value).parameters;
                     // create an array of properties with the default values
                     arrayPropertiesWithDefaultValues = [];
                     for (var i_property =0; i_property < arrayProperties.length; i_property++) {
@@ -2716,7 +2712,7 @@ function loadCollection() {
         params1.objectId = designObj.id;  // changed from designName to objectId
         params1.data = order;
         const result = await Parse.Cloud.run('createOrder', params1);
-        console.log("order created ", result);
+        if (console_flag) console.log("order created ", result);
     }
 
     function setMaterialFromPanel(parameterName, array_p, parameterValue) {
@@ -2899,7 +2895,12 @@ function loadCollection() {
     function addHiddenField(name, value) {
         var hiddenEl = document.createElement("INPUT");
         hiddenEl.setAttribute("id", name);
-        hiddenEl.setAttribute("type", "text");  // text for debugger, hidden for production
+        if (user_rol >= 3) {
+            hiddenEl.setAttribute("type", "text");  // text for debugger, hidden for production
+            hiddenEl.classList.add("debugControl");
+        } else {
+            hiddenEl.setAttribute("type", "hidden");
+        }
         hiddenEl.value = value;
         return hiddenEl;
     }
@@ -3127,7 +3128,7 @@ function loadCollection() {
 
 
     function onWindowResize() {
-        console.debug("Resize window: " + window.innerWidth + " " + window.innerHeight);
+        if (console_flag) console.log("Resize window: " + window.innerWidth + " " + window.innerHeight);
         if (camera == null) return;  // not defined 3D view yet
 
         var divEl = document.getElementById("renderDiv");  // get renderDiv before delete formArea
@@ -4777,6 +4778,72 @@ function loadCollection() {
                     }
                 }
             }
+
+    function checkTextures(materialElement) {
+        if (noTextureFlag) {
+            return;
+        }
+        if ((materialElement.texture != null && materialElement.texture != "" 
+             && materialElement.material.map == null)
+           || (materialElement.normalMap != null && materialElement.normalMap != "" 
+             && materialElement.material.normalMap == null)
+           || (materialElement.roughnessMap != null && materialElement.roughnessMap != "" 
+             && materialElement.material.roughnessMap == null) ) {
+             loadTextures(materialElement);
+        }
+    }
+    function loadTextures(materialElement) {
+        var texturesObj = {};
+        if (materialElement.texture != null && materialElement.texture != "") {
+            texturesObj.texture = loadTexture(materialElement, materialElement.texture);
+        }
+        if (materialElement.normalMap != null && materialElement.normalMap != "") {
+            texturesObj.normalMap = loadTexture(materialElement, materialElement.normalMap);
+        } else {
+            texturesObj.normalMap = null;
+        }
+        if (materialElement.roughnessMap != null && materialElement.roughnessMap != "") {
+            texturesObj.roughnessMap = loadTexture(materialElement, materialElement.roughnessMap);
+        } else {
+            texturesObj.roughnessMap = null;
+        }
+        if (materialElement.material != null) {  // THREE.MeshPhysicalMaterial already created
+            materialElement.material.map          = texturesObj.texture;
+            materialElement.material.normalMap    = texturesObj.normalMap;
+            materialElement.material.roughnessMap = texturesObj.roughnessMap;
+            
+            materialElement.material.map_backup = texturesObj.texture;
+            materialElement.material.needsUpdate = true;;
+
+        }
+        return texturesObj;
+    }
+        
+    function loadTexture(materialElement, file) {
+        //if (noTextureFlag) return null;
+    
+//        if (console_flag) console.log("loadTexture: " + (new Date().toLocaleTimeString()) + " " + file);
+        printTime("loadTexture " + file);
+        var texture = new THREE.TextureLoader().load( file,function (texture) {
+            //meshMaterial.needsUpdate = true;
+            //console.log("texture loaded: " + (new Date().toLocaleTimeString()) + " " + file);
+            texture.loadStatus = "loaded";
+            printTime("texture loaded: " + file);
+            render();
+        } )
+        //var meshMaterial = new THREE.MeshBasicMaterial( { map: texture });
+        //var meshMaterial = new THREE.MeshStandardMaterial( { map: texture });
+        
+        //var meshMaterial = new THREE.MeshStandardMaterial( { color: 0xffffff, map: texture } );
+        texture.loadStatus = "loading";
+        texture.wrapS = texture.wrapT = THREE.RepeatWrapping;
+        texture.anisotropy = renderer.capabilities.getMaxAnisotropy();
+        texture.matrixAutoUpdate = false;
+        texture.material = materialElement;
+        updateUvTransformTexture(texture);
+        return texture;
+    }
+
             function getMaterialArrayName(piece, meshMaterialArray) {
                 var materialProperties = ["","material_1","material_2","material_3","material_4","material_5","material_6"];
                 var materialArrayName = "";
@@ -4849,8 +4916,11 @@ function loadCollection() {
                 if (material_1 == null) {
                     material_1Mat = materialArr[0].material;
                     material_1 = materialArr[0].name;
+                    checkTextures(material_1Mat);
                 } else {
                     material_1Mat = getMaterial(material_1).material;
+                    materialElement = getMaterial(material_1);
+                    checkTextures(materialElement);
                 }
                 if (n_materials == 1) {
                     material_1Mat.previousName = material_1;
@@ -4862,6 +4932,8 @@ function loadCollection() {
                     material_Mat = getPieceMaterial2andFollowing(piece, i);
                     if (material_Mat != null) {
                         meshMaterialArray.push(material_Mat);
+                        materialElement = getMaterial(getPieceMaterialParameter(piece, i));
+                        checkTextures(materialElement);
                     } else {
                         meshMaterialArray.push(meshMaterialArray[meshMaterialArray.length - 1]);  // repeat the last
                     }
@@ -4915,6 +4987,22 @@ i.fa.fa-caret-down, i.fa.fa-caret-up {
 table td.edit i.accIcon.fa.fa-caret-up,
 table td.edit i.accIcon.fa.fa-caret-down {
     float: right;
+}
+
+#modelDiv table {
+    background-color: #ebebeb;
+    border-spacing: 0px;
+}
+
+#modelDiv table td, #modelDiv table th {
+    border-color: #ffffffcc;
+    border-style: solid;
+    border-width: 1px;
+    padding-left: 5px;
+}
+
+#modelDiv table th {
+    background-color: #bbbbbb;
 }
 
 #modelDiv .panel, #panel_version.panel {
@@ -5123,6 +5211,10 @@ input#collectionName {
 
 input.error {
     background-color: lightsalmon;
+}
+
+input.debugControl {
+    background-color: lightgoldenrodyellow;
 }
 
 #modelDiv div#editObject input.property {
