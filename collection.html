@@ -138,7 +138,8 @@ function readFile() {
         
         //document.getElementById(objectId).scrollIntoView()
         
-        scrollOffset(objectId, -38.5)
+        //scrollOffset(objectId, -38.5)
+        scrollOffset("Objects", -38.5)
 
     }
 
@@ -295,17 +296,18 @@ body {
           <a href="#" onclick="loadJSON(), init();" class="w3-bar-item w3-button">Load JSON</a>
           <a href="#" onclick="document.getElementById('formEmbed').style.display='block'" class="w3-bar-item w3-button">Share</a>
           <a href="#" onclick="resetEditor()" class="w3-bar-item w3-button">Reset Editor</a>
+          <a href="#" onclick="about()" class="w3-bar-item w3-button">About</a>
 
           <!-- <a href="#" onclick="document.getElementById('formJSONModal').style.display='block'" class="w3-bar-item w3-button">Modal</a>-->
         </div>
     </div>
     <a id=collectionsList href='login.html' class="w3-bar-item w3-button">Collections</a>
-    <a href="#" onclick="saveToDatabase()" class="w3-bar-item w3-button">Save</a>
-    <a href="javascript:setRenderTop()" class="w3-bar-item w3-button"><i class="fa fa-window-maximize"></i></a>
-    <a href="javascript:setRenderInColumn()" class="w3-bar-item w3-button"><i class="fa fa-columns"></i></a>
-    <a href="javascript:goTop()" class="w3-bar-item w3-button"><i class="fa fa-arrow-up"></i>Top</a>
-    <a href="javascript:scrollOffset('Materials', -38.5)" class="w3-bar-item w3-button"><i class="fa fa-paint-brush"></i> Materials</a>
-    <a href="javascript:gotoObject()" class="w3-bar-item w3-button"><i class="fa fa-cube"></i> Object</a>
+    <a href="#" onclick="saveToDatabase()" class="w3-bar-item w3-button" title='Save collection to database'><span style="padding-right: 0px;"><i class="fa fa-database"></i>&nbsp;Save</span></a>
+    <a href="javascript:setRenderTop()" class="w3-bar-item w3-button"><i class="fa fa-window-maximize" title='View 3D in full window'></i></a>
+    <a href="javascript:setRenderInColumn()" class="w3-bar-item w3-button"><i class="fa fa-columns" title='View in edit mode'></i></a>
+    <!-- <a href="javascript:goTop()" class="w3-bar-item w3-button"><i class="fa fa-arrow-up"></i>&nbsp;Top</a> -->
+    <a href="javascript:expandPanel(document.getElementById('Materials'), true); scrollOffset('Materials', -38.5);" class="w3-bar-item w3-button" title='Go to materials section'><i class="fa fa-paint-brush"></i> Materials</a>
+    <a href="javascript:gotoObject()" class="w3-bar-item w3-button" title='Go to object card'><i class="fa fa-cube"></i> Object</a>
     <span class="w3-bar-item" style="padding-right: 0px;"><i class="fa fa-tachometer"></i></span><span  id="status" class="w3-bar-item">Status</span>
     <!-- Right-sided navbar links -->
     <!-- 
@@ -669,7 +671,7 @@ function loadCollection() {
 
     loadCollection();
 
-    export function init(loadMaterialsFlag) {
+    export function init(loadMaterialsFlag, showFormFlag) {
         printTime("init");
 
         var pos = window.location.pathname.indexOf("/",1)
@@ -914,11 +916,15 @@ function loadCollection() {
 
         //printModelTable("model", designObj);
         if (user_rol >= 2) {
-            showForm();
+            if (showFormFlag != null && showFormFlag == false) {
+                //not print form
+            } else {
+                showForm();
+            }
             var manufacturer_div =document.getElementById("manufacturer_div");
             manufacturer_div.style.display = "initial";
-            var version =document.getElementById("version");
-            version.style.display = "initial";
+            //var version =document.getElementById("version");
+            //version.style.display = "initial";
             //expandPanel(document.getElementById(objectId), true)  //removeModelTable
             expandPanel(document.getElementById("Objects"));
         }
@@ -1108,15 +1114,18 @@ function loadCollection() {
             //set id for design objects without id - moved to convertObjectToArray()
             if (user_rol == 3) {
                 printModelTable(designArr_final[i]);  //removeModelTable
+                document.getElementById("version").classList.remove("noDisplay");
             }
         }
         createExpandPanels();
+        /*
         // button New Object
         var buttonNewObject = document.createElement("BUTTON");
         buttonNewObject.setAttribute("onClick", "newObject()");
         var textNewObject = document.createTextNode("New Object");
         buttonNewObject.appendChild(textNewObject);
         modelDiv.appendChild(buttonNewObject);
+        */
     }
     function visibility(arg) {
         if (console_flag) console.log("visibility: " + arg + " " + this.property);
@@ -1370,7 +1379,7 @@ function loadCollection() {
     function initGui() {
         if (gui != null) gui.destroy();  // if previous GUI exists
         gui = new GUI();
-        if (user_rol >= 2) {
+        if (user_rol >= 3) {
             API["goTop"] = goTop;
             gui.add( API, "goTop").name( 'Top' );
             API["gotoMaterials"] = gotoMaterials;
@@ -1508,6 +1517,7 @@ function loadCollection() {
     }
     function gotoMaterials() {
         //document.getElementById("modelDiv").scrollIntoView()
+        expandPanel(document.getElementById("Materials"));
         scrollOffset("modelDiv", -38.5);
 
     }
@@ -1757,7 +1767,7 @@ function loadCollection() {
         H1El.setAttribute("class", "materials");
         divEl.appendChild( H1El);
         */
-        var divEl = createPanel("materials", "Materials", "Materials")
+        var divEl = createPanel("Materials", "Materials", "Materials")
 
 
 //        var tableMat = createTable("materialTable", materialArr, "obj_material", materialProperties);
@@ -1769,7 +1779,7 @@ function loadCollection() {
     function printCollectionTable() {
         var modelDiv = document.getElementById('modelDiv')
 
-        var divEl = createPanel("collection", collectionName, "Collection")
+        var divEl = createPanel("Collection", collectionName, "Collection")
         var checked;
         if (collectionShow) {
             checked = " checked";
@@ -1791,7 +1801,7 @@ function loadCollection() {
         if (console_flag) console.log("Objects: " + "ObjectsTable");
         var modelDiv = document.getElementById('modelDiv')
 
-        var divEl = createPanel("objects", "Objects", "Objects")
+        var divEl = createPanel("Objects", "Objects", "Objects")
         var tableObj = createTable("Objects", "Objects", designArr_final, "obj_object", objectPropertiesTable);
         divEl.appendChild( tableObj);
         //expandPanel(divEl);
@@ -1809,7 +1819,11 @@ function loadCollection() {
             var spanEl = document.createElement("span");
             //var liText = document.createTextNode(typePanel + ": <span>" + elementName + "</span>");
             //spanEl.appendChild(liText);
-            spanEl.innerHTML = typePanel + ": <span>" + elementName + "</span>";
+            if (typePanel == elementName) {
+                spanEl.innerHTML = "<span>" + typePanel + "</span>";
+            } else {
+                spanEl.innerHTML = typePanel + ": <span>" + elementName + "</span>";
+            }
             liEl.appendChild(spanEl);
             liEl.setAttribute("id", elementId);
             modelDiv.appendChild( liEl);
@@ -1835,13 +1849,14 @@ function loadCollection() {
         } else {
             divEl.textContent = ''
         }
+        divEl.innerHTML = '<div>&nbsp;</div>';
 
-        var H1El = document.createElement("H1");
         if (typePanel == "object") {
+            var H1El = document.createElement("H1");
             H1El.setAttribute("onClick", "editObjectName('" + elementName + "')");
+            H1El.innerHTML  = elementName;
+            divEl.appendChild( H1El);
         }
-        H1El.innerHTML  = elementName;
-        divEl.appendChild( H1El);
         return divEl;
     }
 
@@ -1849,7 +1864,7 @@ function loadCollection() {
         var modelName = obj.name;
         var modelDiv = document.getElementById('modelDiv')
 
-        var divEl = createPanel("object", modelName, obj.id)
+        var divEl = createPanel("Object", modelName, obj.id)
         
         // View object
         printViewObject(divEl, obj);
@@ -1858,7 +1873,7 @@ function loadCollection() {
         printGoTop(divEl);
 
         // Duplicate object
-        printDuplicateObject(divEl, modelName);
+        printDuplicateObject(divEl, obj.id);
 
         // Parameters
         printParameteres(divEl, modelName, obj, parameterProperties);
@@ -1885,9 +1900,9 @@ function loadCollection() {
         divEl.appendChild(aEl);
     }
 
-    function printDuplicateObject(divEl, modelName) {
+    function printDuplicateObject(divEl, model_id) {
         var dEl = document.createElement("A");
-        dEl.setAttribute("onClick", "duplicateObject('" + modelName + "')");
+        dEl.setAttribute("onClick", "duplicateObject('" + model_id + "')");
         dEl.setAttribute("class", "objectLink duplicateLink");
         var linkText = document.createTextNode("Duplicate object");
         dEl.appendChild(linkText);
@@ -1899,12 +1914,12 @@ function loadCollection() {
         var objectHeaderDiv = document.createElement("div");
         objectHeaderDiv.setAttribute("id", "objectHeader");
         divEl.appendChild( objectHeaderDiv);
-        var nameDiv = document.createElement("div");
+        var nameDiv = document.createElement("h2");
         nameDiv.innerHTML = obj.name;
         objectHeaderDiv.appendChild(nameDiv);
         var publishDiv = document.createElement("div");
         var publishSpan = document.createElement("span");
-        publishSpan.innerHTML = "publish";
+        publishSpan.innerHTML = "publish ";
         var publishInput = document.createElement("input");
         publishInput.setAttribute("type", "checkbox");
         publishInput.disabled = true;
@@ -1971,7 +1986,7 @@ function loadCollection() {
         loadJSON();
 //        designArr = JSON.parse(document.getElementById('jsonObj').value).designArr;
 //        setDesignObject();
-        init();
+        init(true, false);
         expandPanel(document.getElementById("Objects"), true);
     }
 
@@ -1980,15 +1995,30 @@ function loadCollection() {
         init();
     }
 
-    function duplicateObject(modelName) {
+    function about() {
+        var txt = "Model3fab";
+        txt += "\n" + document.getElementById("version").innerText.trim();
+        txt += " - date: " + document.lastModified;
+        alert(txt);
+    }
+
+
+    function duplicateObjectByIndex(array_i) {
+        objectEl = designArr_final[array_i];
+        duplicateObject(objectEl.id);
+    }
+    function duplicateObject(model_id) {
         exportCollection();
         designArr = JSON.parse(document.getElementById('jsonObj').value).designArr_final;
-        designObj2 = JSON.parse(JSON.stringify(getArrayElementByName(designArr_final, modelName)));
-        newName = modelName + "_2";
+        objectOriginal = getArrayElementById(designArr_final, model_id);
+        designObj2 = JSON.parse(JSON.stringify(objectOriginal));
+        newName = objectOriginal.name + "_2";
         designObj2.name = newName;
         designObj2.id = randomString(10);
         designArr_final.push(designObj2);
         viewObject(designObj2.id);
+        printObjectsTable();
+        cardObject(getArrayIndexById(designArr_final, designObj2.id));  
     }
 
     function newObject() {
@@ -1999,6 +2029,8 @@ function loadCollection() {
         designObj2.parameters = [];
         designObj2.pieces = [];
         designArr_final.push(designObj2);
+        printObjectsTable();
+        cardObject(designArr_final.length - 1);  
         viewObject(designObj2.id);
     }
     
@@ -2186,6 +2218,9 @@ function loadCollection() {
             }
 
             tdEl.appendChild(selectParameterType);
+        } else if (form_entity == "obj_object") {
+            tdEl.innerHTML = 
+              "<a onclick='newObject()' href='javascript:void(0);'>New object</a>";
         } else{
             tdEl.innerHTML = 
               "<a onclick='createForm(" + -1 + ", \"" + modelName + "\", \"" + model_id + "\",\"N\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'>New</a>";
@@ -2200,21 +2235,26 @@ function loadCollection() {
         var td_innerHTML = "";
         if (form_entity == "obj_object") {  // view object
             td_innerHTML += 
-              "&nbsp;<a onclick=\"viewObject('" + designArr_final[i_row].id + "'); cardObject(" + i_row + ");\" href='javascript:void(0);'><i class='fa fa-play-circle-o'></i></a>";
+              "&nbsp;<a onclick=\"viewObject('" + designArr_final[i_row].id + "'); cardObject(" + i_row + ");\" href='javascript:void(0);'><i class='fa fa-cube' title='View 3D'></i></a>";  // fa-play-circle-o
             td_innerHTML += 
-              "&nbsp;<a onclick='cardObject(" + i_row + ")' href='javascript:void(0);'><i class='fa fa-file-text-o'></i></a>";
+              "&nbsp;<a onclick='cardObject(" + i_row + ")' href='javascript:void(0);'><i class='fa fa-file-text-o' title='Vied object card'></i></a>";
         }
-        if (form_entity != "obj_object") {  // view object
+        if (form_entity != "obj_object") {  // edit object
           // Edit
           td_innerHTML += 
-          "&nbsp;<a onclick='createForm(" + i_row + ", \"" + modelNameString + "\", \"" + model_id + "\",\"E\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'><i class='fa fa-pencil-square-o'></i></a>";
+            "&nbsp;<a onclick='createForm(" + i_row + ", \"" + modelNameString + "\", \"" + model_id + "\",\"E\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'><i class='fa fa-pencil-square-o' title='Edit'></i></a>";
         }
           // Copy
-        td_innerHTML += 
-           "&nbsp;" + "<a onclick='createForm(" + i_row + ", \"" + modelNameString + "\", \"" + model_id + "\",\"D\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'><i class='fa fa-files-o'></i></a>";
+          if (form_entity == "obj_object") {  // copy object with parameters and pieces
+            td_innerHTML += 
+              "&nbsp;" + "<a onclick='duplicateObjectByIndex(" + i_row + ")' href='javascript:void(0);'><i class='fa fa-files-o' title='Duplicate object'></i></a>";
+          } else {
+            td_innerHTML += 
+              "&nbsp;" + "<a onclick='createForm(" + i_row + ", \"" + modelNameString + "\", \"" + model_id + "\",\"D\", \"" + form_entity + "\", " + i_piece +")' href='javascript:void(0);'><i class='fa fa-files-o' title='Duplicate'></i></a>";
+          }
           // Delete
-        td_innerHTML += 
-           "&nbsp;" + "<a onclick='deleteItem(" + i_row + ", \"" + model_id + "\", \"" + form_entity + "\")' href='javascript:void(0);'><i class='fa fa-trash-o'></i></a>";
+          td_innerHTML += 
+             "&nbsp;" + "<a onclick='deleteItem(" + i_row + ", \"" + model_id + "\", \"" + form_entity + "\")' href='javascript:void(0);'><i class='fa fa-trash-o' title='Delete'></i></a>";
         tdEl.innerHTML = td_innerHTML;
         trEl.appendChild(tdEl);
         if (setOrderButtons) {
@@ -2327,13 +2367,14 @@ function loadCollection() {
         formDivMain.appendChild(headerActions);
         headerActions.setAttribute("id", "headerActions");
         printEditObject(headerActions, i_array);
-        printViewObject(headerActions, objectElement);
+        printViewObjectIcon(headerActions, model_id);
+        printCloseCard(headerActions);
 
         // Go top
-        printGoTop(headerActions);
+        //printGoTop(headerActions);  // replaced with icons
 
         // Duplicate object
-        printDuplicateObject(headerActions, objectElement.name);
+        //printDuplicateObject(headerActions, objectElement.id);  // replaced with icons
 
         // Parameters
         printParameteres(formDivMain, objectElement.name, objectElement, parameterProperties);
@@ -2346,10 +2387,19 @@ function loadCollection() {
     
     function printEditObject(divEl, i_row) {
         var spanEl = document.createElement("span");
-        spanEl.innerHTML = "&nbsp;<a onclick='createForm(" + i_row + ", \"" + "Objects" + "\", \"" + "Objects" + "\",\"E\", \"" + "obj_object" + "\", " + "" +")' href='javascript:void(0);'><i class='fa fa-pencil-square-o'></i></a>";
+        spanEl.innerHTML = "&nbsp;<a onclick='createForm(" + i_row + ", \"" + "Objects" + "\", \"" + "Objects" + "\",\"E\", \"" + "obj_object" + "\", " + "" +")' href='javascript:void(0);'><i class='fa fa-pencil-square-o' title='Edit object header'></i></a>";
         divEl.appendChild(spanEl);
     }
-    
+    function printViewObjectIcon(divEl, model_id) {
+        var spanEl = document.createElement("span");
+        spanEl.innerHTML = "&nbsp;<a onclick=\"viewObject('" + model_id + "');\" href='javascript:void(0);'><i class='fa fa-cube' title='View 3D'></i></a>";
+        divEl.appendChild(spanEl);
+    }
+    function printCloseCard(divEl) {
+        var spanEl = document.createElement("span");
+        spanEl.innerHTML = "&nbsp;<a onclick=\"closeCard();\" href='javascript:void(0);'><i class='fa fa-window-close-o' title='Close object card'></i></a>";
+        divEl.appendChild(spanEl);
+    }
 
     function createForm(i_array, modelName, model_id, formType, form_entity, i_element, selected_type, selected_value) {
         if (console_flag) console.log("createForm " + i_element);
@@ -3395,12 +3445,23 @@ function loadCollection() {
     }
     */
     function cancelEdit() {
-        var divEl = document.getElementById("renderDiv");
-        //moveRenderDivUp(divEl);
-        var formEl = document.getElementById("editObject");
-        if (formEl != null) {
-            formEl.remove();
+        var sys_type   = document.getElementById("sys_type").value;
+        var sys_object = document.getElementById("sys_object").value;
+        var sys_array  = document.getElementById("sys_array").value;
+        if (sys_type == "sys_collectionObject") {
+            printObjectsTable();
+            cardObject(sys_array);  
+        } else {
+            var divEl = document.getElementById("renderDiv");
+            //moveRenderDivUp(divEl);
+            var formEl = document.getElementById("formArea");
+            if (formEl != null) {
+                formEl.remove();
+            }
         }
+    }
+    function closeCard() {
+        printObjectsTable();
     }
 </script>
 <script>
@@ -4792,9 +4853,9 @@ function loadCollection() {
                                 intensity = eval(updateDesign.pieces[i].intensity);
                                 distance  = eval(updateDesign.pieces[i].distance);
                                 decay    = eval(updateDesign.pieces[i].decay);
-                                if (intensity == null) intensity = 0;
-                                if (distance == null)  distance = 0;
-                                if (decay == null)     decay = 1;  // default value of decay
+                                if (intensity == null || intensity == "") intensity = 0;
+                                if (distance == null || distance == "")  distance = 0;
+                                if (decay == null || decay == "")     decay = 2;  // default value of decay
 
                                 if (updateDesign.pieces[i].array[array_piece].light.intensity != intensity ||
                                     updateDesign.pieces[i].array[array_piece].light.distance  != distance  ||
@@ -5240,6 +5301,10 @@ li.prepanel {
     display: flex;
 }
 
+body li.prepanel.noDisplay {
+  display: none;
+}
+
 #modelDiv span {
     /* width: 65%;  */
 }
@@ -5281,9 +5346,7 @@ div.material_option:hover span {
 div#manufacturer_div {
     display: none;
 }
-#version {
-    display: none;
-}
+
 #navbar {
     display: none;
 }
@@ -5521,8 +5584,9 @@ td+td {
     /* width: 42%; */
     /* float: left; */
 }
-#headerActions i.fa.fa-pencil-square-o {
-    font-size: 2em;
+#headerActions i.fa {
+    font-size: 1.8em;
+    margin-right: 0.5em;
 }
 #renderColumnDiv div#renderArea {
     position: fixed;
@@ -5578,7 +5642,7 @@ div#renderArea div#materialPanel {
 </style>
 
 
-<li  class="prepanel" id="version" onclick='expandPanel(this);'>Version 79
+<li  class="prepanel noDisplay" id="version" onclick='expandPanel(this);'>Version 80
 <i class="accIcon fa fa-caret-down"></i>
 </li>
 <div class="panel" id="panel_version">
@@ -5656,8 +5720,14 @@ div#renderArea div#materialPanel {
 <br><a href=escene79.html>v 79</a> objects y materials con id, guardar y recuperar ordenes, guardar imagenes
 Movida carpeta build de three/build a build. (de momento copiada) para que tenga la misma estructura que la descarga de three.js original y los ejemplos.
 Quitar "materials ext" y opciones de materiales. Cambiar background el checkbox por select de fondos. Intensidad de hemiLight y de lueces punto y direccional. Ver si poner HemisphereLight como tipo de luz en la escena.
-<br><a href=escene78.html>v 79</a> Ejemplo de cámara moviéndose en: https://github.com/mrdoob/three.js/blob/master/examples/misc_exporter_gltf.html
+<br><a href=escene80.html>v 80</a> Estilo de formularios de edición, cambiado de panel a tabla de objetos
+
+<br>
+<pre>
+Referencias:
+ Ejemplo de cámara moviéndose en: https://github.com/mrdoob/three.js/blob/master/examples/misc_exporter_gltf.html
 Gestión del color: https://threejs.org/docs/#manual/en/introduction/Color-management
+</pre>
 
 
   <script>
