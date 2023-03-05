@@ -28,7 +28,19 @@ div.collections, div.orders, div.images, div.noTextures, div.additional {
     margin: auto;
 }
 h2 {
-    margin-top: 3em;
+    margin-top: 1.3em;
+}
+
+#collections .w3-ul li, #orders .w3-ul li, #images .w3-ul li {
+    padding: 0px 0px;
+}
+
+li a.w3-button {
+    text-align: left;
+}
+
+a.linkCollection.w3-button.w3-teal.w3-hover-blue-grey {
+    width: 86%;
 }
 </style>
 <body>
@@ -84,17 +96,28 @@ h2 {
 
 <div id="collections" class="collections noDisplay">
   <h2 >Collections</h2>
-  <ul id="collectionsList" ></ul>
+  <ul id="collectionsList" class="w3-ul w3-border w3-hoverable"></ul>
   <button onclick="createCollection()">Create New Collection</button>
 </div>
 <div id="orders" class="orders noDisplay">
-  <h2 >Orders</h2>
-  <ul id="ordersList" ></ul>
+  <h2 >Orders </h2>
+  <ul id="ordersList" class="w3-ul w3-border w3-hoverable"></ul>
   <button onclick="listOrders()">List Orders</button>
+</div>
+
+<div id="images" class="images noDisplay">
+  <h2 >Images</h2>
+  <ul id="imagesList" class="w3-ul w3-border w3-hoverable"></ul>
+  <input id="file" type="file" MULTIPLE/>
+  <br/>
+  <button id="imageButton">Load
+  
+  <button onclick="listImages()">List Images</button>
 </div>
 
 <!-- Checkbox notexture, additional features -->
 <div id="notextureDiv" class="noTextures noDisplay">
+  <h2 >Configuration</h2>
 <label for="notexture"></label> 
 <input type="checkbox" id="notexture" onclick="noTexture()">
 <span id="text" style="">No textures (to fastest rendering)</span>
@@ -132,15 +155,7 @@ function additional() {
 }
 </script>
 
-<div id="images" class="images noDisplay">
-  <h2 >Images</h2>
-  <ul id="imagesList" ></ul>
-  <input id="file" type="file" MULTIPLE/>
-  <br/>
-  <button id="imageButton">Load
-  
-  <button onclick="listImages()">List Images</button>
-</div>
+
 
 <script>
 document.getElementById('imageButton').addEventListener('click', function() {
@@ -285,6 +300,7 @@ function addItem(id, name) {
             a.appendChild(linkText);
             a.title = name;
             a.href = "collection.html?collection=" + id;
+            a.setAttribute("class", "w3-button w3-teal w3-block w3-hover-blue-grey");
             var notexture = getCookie("notexture");
             if (notexture == "1") a.href += "&notexture";
             var additional = getCookie("additional");
@@ -341,6 +357,7 @@ function addOrderItem(id, customer, collectionId, objectId, data) {
         var li = document.createElement('LI');
         document.getElementById("ordersList").appendChild(li);
         var a = document.createElement('a');
+        a.setAttribute("class", "w3-button w3-teal w3-hover-blue-grey");
         var linkText = document.createTextNode("Show");
         a.appendChild(linkText);
         a.title = name;
@@ -350,6 +367,7 @@ function addOrderItem(id, customer, collectionId, objectId, data) {
         var textNode = document.createTextNode(" ");
         li.appendChild(textNode);
         var a2 = document.createElement('a');
+        a2.setAttribute("class", "linkCollection w3-button w3-teal w3-hover-blue-grey");
         collection =collectionsArr.find(({ id }) => id === collectionId);
         var linkText = document.createTextNode(" Customer: " + customer
          + " Collection: " + collection.name);
@@ -370,6 +388,7 @@ function addImageItem(id, name, date, data) {
         a.appendChild(linkText);
         a.title = date;
         a.href = "#";
+        a.setAttribute("class", "w3-button w3-teal w3-block w3-hover-blue-grey");
         if (data != null) {
             a.setAttribute('onclick', "showImage('" + data._url + "')");
         }

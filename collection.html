@@ -1588,7 +1588,7 @@ function loadCollection() {
 
 <script>
 
-    var parameterTypes = ["m", "u", "cm", "options", "materials", "internal", "formula", "group", "ungroup"];
+    var parameterTypes = ["m", "u", "cm", "options", "materials", "formula", "group", "ungroup"]; //, "internal" removed, instead we use hidden property in any parameter type
     var parameterProperties = ["name", "type", "array_size", "options", "hidden", "min","max", "step", "default"];
     var pieceTypes = ["Box", "Cylinder", "Sphere", "Triangle", "Extrude", "Revolution", "Gltf"]; //, "Module"];  Module is replaced by each type of object
     var pieceProperties1 = ["name", "type", "operation"];
@@ -2821,12 +2821,38 @@ function loadCollection() {
               && pieceElement.rx.toString().indexOf("index") < 0
               && pieceElement.ry.toString().indexOf("index") < 0
               && pieceElement.rz.toString().indexOf("index") < 0
-              && pieceElement.x.toString().indexOf("index") < 0
-              && pieceElement.y.toString().indexOf("index") < 0
-              && pieceElement.z.toString().indexOf("index") < 0
-              && (pieceElement.x == "" || pieceElement.x == 0)) {
-                document.getElementById("x").value = "index";
+              && (pieceElement.x.toString().indexOf("index") < 0 || document.getElementById("x").setByArray)
+              && (pieceElement.y.toString().indexOf("index") < 0 || document.getElementById("y").setByArray)
+              && (pieceElement.z.toString().indexOf("index") < 0 || document.getElementById("z").setByArray)) {
+                factorArray = element.value.split("*");
+                if (factorArray.length == 1) {
+                  if (pieceElement.x == "" || pieceElement.x == 0 || document.getElementById("x").setByArray) {
+                    document.getElementById("x").value = "index";
+                    document.getElementById("x").setByArray = true;  // to allow modify it  later with this function 
+                  }
+                } else if (factorArray.length == 2 && factorArray[1] != "") {
+                  if ((pieceElement.x == "" || pieceElement.x == 0 || document.getElementById("x").setByArray)
+                   && (pieceElement.y == "" || pieceElement.y == 0 || document.getElementById("y").setByArray)) {
+                    document.getElementById("x").value = "index_x(" + factorArray[0] + ", " + factorArray[1] + ")";
+                    document.getElementById("y").value = "index_y(" + factorArray[0] + ", " + factorArray[1] + ")";
+                    document.getElementById("x").setByArray = true;
+                    document.getElementById("y").setByArray = true;
+                  }
+                } else if (factorArray.length == 3 && factorArray[1] != "" && factorArray[2] != "") {
+                  if ((pieceElement.x == "" || pieceElement.x == 0 || document.getElementById("x").setByArray)
+                   && (pieceElement.y == "" || pieceElement.y == 0 || document.getElementById("y").setByArray)
+                   && (pieceElement.z == "" || pieceElement.z == 0 || document.getElementById("z").setByArray)) {
+                    document.getElementById("x").value = "index_x(" + factorArray[0] + ", " + factorArray[1] + ")";
+                    document.getElementById("y").value = "index_y(" + factorArray[0] + ", " + factorArray[1] + ")";
+                    document.getElementById("z").value = "index_z(" + factorArray[0] + ", " + factorArray[1] + ", " + factorArray[2] + ")";
+                    document.getElementById("x").setByArray = true;
+                    document.getElementById("y").setByArray = true;
+                    document.getElementById("z").setByArray = true;
+                  }
+                }
             }
+        } else {
+            element.setByArray = false;
         }
     }
     function getParametersOfModuleOption(object, parameterElementName) {
@@ -3361,6 +3387,7 @@ function loadCollection() {
         }
         createParametersObjectModel(POM, 0);
         updateMeasures();
+        updateMeasures();  // with only one call, don't show the first element of the array after Save
     }
     function updateObjectClose() {
         updateObject();
@@ -4057,6 +4084,17 @@ function loadCollection() {
                 }
             }
 
+            function evalCatch(exp, defaultValue) {
+                var res;
+                try {
+                    res = eval(exp);
+              }
+                catch (e) {
+                    res = defaultValue;
+                }
+                return res;
+            }
+
             function updateMeasuresAPI(node, THREE, API, updateDesign){
 //                updateDesign.eval = makeEvalContext ();
 //                updateDesign.eval(evalText);
@@ -4070,7 +4108,7 @@ function loadCollection() {
 
                     var array_length;
                     if ('array_size' in updateDesign.pieces[i]) {
-                        array_length = Math.round(eval(updateDesign.pieces[i].array_size));
+                        array_length = Math.round(evalCatch(updateDesign.pieces[i].array_size, 1));
                     } else {
                         array_length = 1;
                     }
