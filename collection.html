@@ -249,8 +249,11 @@ body {
 
 
 .lil-gui {
-/*	--background-color: #22569b00;  */
-/*	--widget-color: #b91313;        */
+    --background-color: #1f1f1f30;
+    --widget-color: #42424280;
+    --title-background-color: #1111111a;
+    /*--number-color: #ffffff94;*/
+    --slider-knob-width: 9px;
 }
     /* EOS */
   </style>
@@ -1503,6 +1506,7 @@ function loadCollection() {
         var parametersFolder;
         if (guiParametersFolder != null) guiParametersFolder.destroy();
         if (user_rol == 1) {
+            if (gui != null) gui.destroy();  // if previous GUI exists
             gui = new GUI();
             parametersFolder = gui;
         } else {
@@ -5927,6 +5931,7 @@ Quitar "materials ext" y opciones de materiales. Cambiar background el checkbox 
 <br><a href=escene81.html>v 81</a> Luces de area (RectAreaLight); index como variable en lugar de array_i, y array_size en lugar de array_n. index_x, y y z. Arreglar mover parámetros arriba y abajo
 <br><a href=escene82.html>v 82</a> Quitar materialOptionsObj. Corregir setUV
 <br><a href=escene83.html>v 83</a> Poner selector de modulos (modules)
+<br><a href=escene83.html>v 84</a> Poner selector de materiales en propiedad materials de modules
 
 <br>
 <pre>
