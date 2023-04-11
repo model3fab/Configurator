@@ -110,9 +110,17 @@ a.linkCollection.w3-button.w3-teal.w3-hover-blue-grey {
   <ul id="imagesList" class="w3-ul w3-border w3-hoverable"></ul>
   <input id="file" type="file" MULTIPLE/>
   <br/>
-  <button id="imageButton">Load
+  <button id="imageButton">Load</button>
   
-  <button onclick="listImages()">List Images</button>
+  <div class="w3-section">
+  <button class="w3-button  m4 w3-blue" onclick="listImages('image')">List images</button>
+  <button class="w3-button  m4 w3-blue" onclick="listImages('gltf')">List gltf objects</button>
+  <button class="w3-button  m4 w3-blue" onclick="listImages('other')">List other files</button>
+  <br/>
+  <button class="w3-button  m4 w3-blue" onclick="listImages('color')">List color textures</button>
+  <button class="w3-button  m4 w3-blue" onclick="listImages('normal')">List normal textures</button>
+  <button class="w3-button  m4 w3-blue" onclick="listImages('roughness')">List roughness textures</button>
+  </div>  <!-- w3-section  -->
 </div>
 
 <!-- Checkbox notexture, additional features -->
@@ -159,6 +167,10 @@ function additional() {
 
 <script>
 document.getElementById('imageButton').addEventListener('click', function() {
+  if (typeFile == null) {
+    alert("You must select a type of file\nSelect the type listing a type of file");
+    return;
+  }
   var files = document.getElementById('file').files;
 //  if (files.length > 0) {
   for (i=0; i < files.length; i++) {
@@ -179,11 +191,14 @@ function getBase64(file) {
     if ((lengthIndex = name.indexOf("[1]")) != -1) {
         name = name.substr(0,lengthIndex) + name.substr(lengthIndex+3);
     }
-    if (name.substr(name.length-4) != ".jpg" && name.substr(name.length-4) != ".png") {
+    if (name.substr(name.length-4) != ".jpg"
+     && name.substr(name.length-4) != ".png"
+     && name.substr(name.length-4) != ".glb") {
         name = name + ".jpg";
     }
     params1.name = name;
     params1.data = reader.result;
+    params1.type = typeFile;
     const result = await Parse.Cloud.run('createImage', params1);
     console.log("Image created ", result);
     listImages();
@@ -342,8 +357,16 @@ async function listOrders() {
         }
 }
 
-async function listImages() {
-    const result = await Parse.Cloud.run('readImages', {token: getCookie("confToken")});
+var typeFile = null;
+async function listImages(type) {
+    if (type != null) {
+        typeFile = type;
+    }
+    params1 = {}
+    params1.token = getCookie("confToken");
+    params1.type = typeFile;
+
+    const result = await Parse.Cloud.run('readImages', params1);
         document.getElementById("imagesList").innerHTML = "";
         for (i=0; i< result.images.length; i++) {
                 addImageItem(result.images[i].id,
